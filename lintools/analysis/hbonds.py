@@ -13,10 +13,10 @@ class HBonds(object):
         self.donors = []
         self.acceptors = []
         self.h_bonds = None
+        self.hbonds_for_drawing = []
         self.universe = topol_object
         self.find_donors_and_acceptors_in_ligand(ligand_name)
         self.analyse_hbonds(ligand_name)
-        self.hbonds_for_drawing = []
     def find_donors_and_acceptors_in_ligand(self,ligand_name):
         atom_names=[x.name for x in self.universe.ligand]
         

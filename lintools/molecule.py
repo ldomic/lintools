@@ -11,8 +11,9 @@ from itertools import combinations
 import colorsys
 
 class Molecule(object):
-    def __init__(self, ligand_name, rmsf_object=None):
+    def __init__(self, ligand_name, topol_object, rmsf_object=None):
         self.svg = None
+        self.universe = topol_object
         self.rmsf = rmsf_object
         self.final_svg = None
         self.load_molecule_in_rdkit(ligand_name)
@@ -37,8 +38,8 @@ class Molecule(object):
         highlight = []
         colors = {}
         rdDepictor.Compute2DCoords(self.ligand_in_rdkit)
+        #rdDepictor.Compute2DCoords(self.ligand_in_rdkit)
         if self.rmsf is not None:
-            print self.ligand_in_rdkit.GetNumAtoms()
             for i in range(self.ligand_in_rdkit.GetNumAtoms()):
                 highlight.append(i)
                 colors[i] = self.pseudocolor(self.rmsf.ligand_rmsf[i], self.rmsf.min_value, self.rmsf.max_value)
@@ -50,39 +51,22 @@ class Molecule(object):
         drawer.DrawMolecule(self.ligand_in_rdkit,highlightAtoms=highlight,highlightBonds=[], highlightAtomColors=colors)
         drawer.FinishDrawing()
         self.svg = drawer.GetDrawingText().replace('svg:','')
-        filesvg = open("molecule_for_reading.svg", "w+")
+        filesvg = open("molecule.svg", "w+")
         filesvg.write(self.svg)
-        filesvg.close()
-        # Make a cleaner version of molecule svg through SMILES
-        mol_from_smiles = Chem.MolFromSmiles(Chem.MolToSmiles(self.ligand_in_rdkit))
-        mc = Chem.Mol(mol_from_smiles.ToBinary())
-        if kekulize:
-            try:
-                Chem.Kekulize(mc)
-            except:
-                mc = Chem.Mol(mol.ToBinary())
-        if not mc.GetNumConformers():
-            rdDepictor.Compute2DCoords(mc)
-        drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0],molSize[1])
-        drawer.DrawMolecule(mc)
-        drawer.FinishDrawing()
-        self.final_svg = drawer.GetDrawingText().replace('svg:','')
-        filesvg_final = open("molecule.svg", "w+")
-        filesvg_final.write(self.final_svg)
-        filesvg_final.close()
+    
     def convex_hull(self):
         """Draws a convex hull around ligand atoms and expands it, giving space to put diagramms on"""
         #Get coordinates of ligand atoms (needed to draw the convex hull around)
         ligand_atom_coords = []
-        with open ("molecule_for_reading.svg", "r") as f:
+        with open ("molecule.svg", "r") as f:
             lines = f.readlines()
             i=0
             for line in lines:
                 if line.startswith("<ellipse"): 
                     ligand_atom_coords.append([float(line.rsplit("'",10)[1]), float(line.rsplit("'",10)[3])]) 
-                    for atom in range(len(md_sim.closest_atoms.keys())):
-                        if md_sim.closest_atoms.values()[atom][1]==i:
-                            self.atom_coords_from_diagramm[md_sim.closest_atoms.keys()[atom]] = [float(line.rsplit("'",10)[1]), float(line.rsplit("'",10)[3]),md_sim.closest_atoms.values()[atom][0]]
+                    for atom in range(len(self.universe.closest_atoms.keys())):
+                        if self.universe.closest_atoms.values()[atom][1]==i:
+                            self.atom_coords_from_diagramm[self.universe.closest_atoms.keys()[atom]] = [float(line.rsplit("'",10)[1]), float(line.rsplit("'",10)[3]),self.universe.closest_atoms.values()[atom][0]]
                     i+=1
         ligand_atom_coords=np.array(ligand_atom_coords)  
         # Get the convex hull around ligand atoms 
@@ -162,14 +146,13 @@ class Molecule(object):
         coeff_value = [v for v in self.b_for_all.values()]
         #values = [x for x in startvalues]
         #xy_values = [x for x in startvalues1]
-        print {i for k,i in enumerate(xy_values)}
         energy = 100
         while energy > 0.2:
             values, energy = self.do_step(values,xy_values,coeff_value, width=90)
             i=0
             xy_values =[]
             for residue in  self.nearest_points_coords:
-                b = self.a.boundary.parallel_offset(md_sim.closest_atoms[residue][2]*32.0+24,"left",join_style=2).convex_hull
+                b = self.a.boundary.parallel_offset(self.universe.closest_atoms[residue][2]*32.0+24,"left",join_style=2).convex_hull
                 self.nearest_points_projection[residue] = values[i]
                 self.nearest_points[residue] = b.boundary.interpolate(self.nearest_points_projection[residue] % b.boundary.length)
                 self.nearest_points_coords[residue] = self.nearest_points[residue].x, self.nearest_points[residue].y
@@ -180,21 +163,9 @@ class Molecule(object):
         self.y_dim = max(x[1] for i,x in enumerate(xy_values))-min(x[1] for i,x in enumerate(xy_values))+216.00
     def make_multiple_hulls(self):
         for residue in self.atom_coords_from_diagramm:
-            b = self.a.boundary.parallel_offset(md_sim.closest_atoms[residue][2]*32.0+24,"left",join_style=2).convex_hull
+            b = self.a.boundary.parallel_offset(self.universe.closest_atoms[residue][2]*32.0+24,"left",join_style=2).convex_hull
             point =geometry.Point((self.atom_coords_from_diagramm[residue][0],self.atom_coords_from_diagramm[residue][1]))
             self.nearest_points_projection[residue] = (b.boundary.project(point) % b.boundary.length)
             self.nearest_points[residue] = b.boundary.interpolate(self.nearest_points_projection[residue] % b.boundary.length)
             self.nearest_points_coords[residue]=self.nearest_points[residue].x,self.nearest_points[residue].y
-    def moltosvg(mol,molSize=(450,150),kekulize=True):
-        mc = Chem.Mol(mol.ToBinary())
-        if kekulize:
-            try:
-                Chem.Kekulize(mc)
-            except:
-                mc = Chem.Mol(mol.ToBinary())
-        if not mc.GetNumConformers():
-            rdDepictor.Compute2DCoords(mc)
-        drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0],molSize[1])
-        drawer.DrawMolecule(mc)
-        drawer.FinishDrawing()
-        self.final_svg = drawer.GetDrawingText().replace('svg:','')
+    

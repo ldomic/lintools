@@ -43,8 +43,12 @@ if __name__ == '__main__':
 		md_sim = Topol_Data(args.grofile, None, ligand_name, args.offset)
 		occurance = Occurance_analysis(args.grofile, args.xtcfile, ligand_name, args.cutoff, args.offset, md_sim)
 	else: #if analysis type is anything different only one traj at time is going to be analysed
-		assert len(args.xtcfile)<=1, "Only one trajectory at the time can be analysed."
-		md_sim = Topol_Data(args.grofile, args.xtcfile[0], ligand_name, args.offset)
+		assert args.xtcfile is None or len(args.xtcfile)<=1, "Only one trajectory at the time can be analysed."
+		if args.xtcfile	is None:
+			md_sim = Topol_Data(args.grofile, args.xtcfile, ligand_name, args.offset)
+		else:
+			md_sim = Topol_Data(args.grofile, args.xtcfile[0], ligand_name, args.offset)
+
 		md_sim.find_res_to_plot(ligand_name, args.cutoff)
 	md_sim.get_closest_ligand_atoms(ligand_name)
 
@@ -79,6 +83,12 @@ if __name__ == '__main__':
 	figure.put_everything_together()
 	figure.write_final_draw_file(args.output_name)
 
+	file_list=["molecule.svg"]
+	for residue in md_sim.dict_of_plotted_res.keys():
+		file_list.append(str(residue[3:])+".svg")
+	for f in file_list:
+		os.remove(f)
+
 	print "Ready!"
 
 	print "The figure you created has been saved under filename "+args.output_name+".svg"
@@ -88,6 +98,5 @@ if __name__ == '__main__':
 	print "#########################################################################"
 	print "       "
 	print "Thank you for using Ligand Interaction Network. Check our GitHub account"
-	print "(insert link). Developers: Laura Domicevica, Tom Newport and Teresa Paramo"
-	print "at SBCB, Oxford University."
+	print "https://github.com/ldomic/lintools."
 	
