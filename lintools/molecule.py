@@ -11,12 +11,12 @@ from itertools import combinations
 import colorsys
 
 class Molecule(object):
-    def __init__(self, mol2_file, topol_object, rmsf_object=None):
+    def __init__(self, ligand_name, topol_object, rmsf_object=None):
         self.svg = None
         self.universe = topol_object
         self.rmsf = rmsf_object
         self.final_svg = None
-        self.load_molecule_in_rdkit(mol2_file)
+        self.load_molecule_in_rdkit(ligand_name)
         self.atom_coords_from_diagramm = {}
         self.nearest_points ={}
         self.nearest_points_projection = {}
@@ -32,8 +32,9 @@ class Molecule(object):
         # note: the hsv_to_rgb() function expects h to be in the range 0..1 not 0..360
         r, g, b = colorsys.hsv_to_rgb(h/360, 1., 1.)
         return (r, g, b)
-    def load_molecule_in_rdkit(self, mol2_file, molSize=(600,300),kekulize=True):
-        self.ligand_in_rdkit=Chem.MolFromMol2File(mol2_file)
+    def load_molecule_in_rdkit(self, ligand_name,molSize=(600,300),kekulize=True):
+        ligand_mol2=ligand_name+".mol2"
+        self.ligand_in_rdkit=Chem.MolFromMol2File(str(ligand_mol2))
         highlight = []
         colors = {}
         rdDepictor.Compute2DCoords(self.ligand_in_rdkit)

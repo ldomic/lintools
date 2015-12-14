@@ -21,7 +21,6 @@ if __name__ == '__main__':
 	parser.add_argument('-ro', '--residueoffset', dest = "offset", default = 0, help='Input the number of offset residues for the protein. (Optional, default is 0)')
 	parser.add_argument('-d', '--diagram_type', dest = "diagram_type", default="amino", help='Input type of diagramm required. Options: "clock" for clock diagrams (Only available with trajectory present), "helices" for diagrams representing residue membership to certain helices (requires user input to determine helices), "amino" showing the amino acid type')
 	parser.add_argument('-hf', '--helix_file', dest = "helix_file", default=None, help='Input file for helices of your protein. To see the required format, check README or our GitHub page')
-	parser.add_argument('-m', '--mol2_file', dest = "mol2_file", default=None, help="Input the name of the mol2 file.")
 	args = parser.parse_args()
 
 	###################################################################################################################
@@ -31,14 +30,14 @@ if __name__ == '__main__':
 	list_of_non_ligands=["HOH","ARG","LYS","HIS","ASP","GLU","SER","THR", "ASN","GLN","PHE","TYR","TRP","CYS","GLY","PRO","ALA","VAL","ILE","LEU","MET"]
 	potential_ligands={}
 	i=0
-	for residue in gro.residues:
-	    if residue.resnames[0] not in list_of_non_ligands:
-	        potential_ligands[i]=residue
+	for resname in gro.residues.resnames:
+	    if resname not in list_of_non_ligands and resname not in potential_ligands.values():
+	        potential_ligands[i]=resname
 	        i+=1
-	print "# Nr  # Name   # Resnumber  # Chain ID"
 	for lig in potential_ligands:
-	    print lig, potential_ligands[lig].resnames[0], potential_ligands[lig].resids[0], potential_ligands[lig].segids[0]
+	    print lig, potential_ligands[lig]
 	ligand_name=potential_ligands[int(raw_input( "Choose a ligand to analyse:"))]
+
 
 	if args.analysis_type=="occurance":
 		md_sim = Topol_Data(args.grofile, None, ligand_name, args.offset)
@@ -50,10 +49,10 @@ if __name__ == '__main__':
 		else:
 			md_sim = Topol_Data(args.grofile, args.xtcfile[0], ligand_name, args.offset)
 
-		md_sim.find_res_to_plot(args.cutoff)
-	md_sim.get_closest_ligand_atoms()
+		md_sim.find_res_to_plot(ligand_name, args.cutoff)
+	md_sim.get_closest_ligand_atoms(ligand_name)
 
-	hbonds = HBonds(md_sim, args.mol2_file)
+	hbonds = HBonds(md_sim, ligand_name)
 
 
 	plots = Plots(md_sim)
@@ -69,10 +68,10 @@ if __name__ == '__main__':
 		plots.plot_clock_diagramms()
 
 
-	molecule = Molecule(args.mol2_file, md_sim)
+	molecule = Molecule(ligand_name, md_sim)
 	if args.analysis_type=="RMSF" or args.analysis_type=="rmsf":
 		rmsf = RMSF_measurements(md_sim)
-		molecule = Molecule(args.mol2_file, md_sim, rmsf)
+		molecule = Molecule(ligand_name, md_sim, rmsf)
 	molecule.convex_hull()
 	molecule.make_new_projection_values()
 
