@@ -7,7 +7,7 @@ from MDAnalysis.analysis import distances
 
 
 class Topol_Data(object):
-    def __init__(self, topology, trajectory=None, ligand_name="not protein", offset=0):
+    def __init__(self, topology, trajectory=None, ligand_name=None, offset=0):
         self.universe = None
         self.protein = None
         self.ligand = None
@@ -23,30 +23,21 @@ class Topol_Data(object):
         else:
             self.universe = MDAnalysis.Universe(topology, trajectory)
     def define_ligand(self,ligand_name):
-        if ligand_name == "not protein":
-            self.ligand = self.universe.select_atoms("not protein")
-        else:
-            self.ligand = self.universe.select_atoms("resname "+ligand_name)
+        self.ligand = ligand_name
     def renumber_system(self, offset=0):
         self.protein = self.universe.select_atoms("protein")
         self.protein.set_resids(self.protein.resids+int(offset))
-    def find_res_to_plot(self, ligand_name="not protein", cutoff=3.5):
-        if ligand_name!="not protein":
-            selection = self.universe.select_atoms('protein and around '+str(cutoff)+' resname '+ligand_name)
-        else:
-            selection = self.universe.select_atoms('protein and around '+str(cutoff)+' '+ligand_name)
+    def find_res_to_plot(self, cutoff=3.5):
+        selection = self.universe.select_atoms('protein and around '+str(cutoff)+' (segid '+str(self.ligand.segids[0])+' and resid '+str(self.ligand.resids[0])+')')
         for atom in selection:
             if atom.resid not in self.dict_of_plotted_res.keys():
                 #for non-analysis plots
                 self.dict_of_plotted_res[atom.resname+str(atom.resid)]=[atom.resid, 1]
             
-    def get_closest_ligand_atoms(self, ligand_name="not protein"):
+    def get_closest_ligand_atoms(self):
         """Finds the ligand atom that is closest to a particular residue"""
         ## Selecting ligand without hydrogen atoms as these are not depicted in the RDKit fig
-        if ligand_name!="not protein":
-            self.ligand_no_H= self.universe.select_atoms("resname "+ligand_name+" and not name H*")
-        else:
-            self.ligand_no_H = self.universe.select_atoms(ligand_name+" and not name H*")
+        self.ligand_no_H = self.universe.select_atoms('segid '+str(self.ligand.segids[0])+' and resid '+str(self.ligand.resids[0])+" and not name H*")
         lig_pos = self.ligand_no_H.positions
         for residue in self.dict_of_plotted_res:
             residue_select= self.universe.select_atoms("resid "+str(self.dict_of_plotted_res[residue][0]))
