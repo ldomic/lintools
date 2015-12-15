@@ -19,8 +19,8 @@ if __name__ == '__main__':
 	parser.add_argument('-a', '--analysis', dest = "analysis_type", default = None, help='Select type of analysis for plotting. Available types - RMSF of ligand, occurance_analysis. (Optional, default is None.)')
 	parser.add_argument('-c', '--cutoff', dest = "cutoff", default = 3.5, help='Input cutoff distance from the ligand that is taken into account in angstroms (Example: 3.5).')
 	parser.add_argument('-ro', '--residueoffset', dest = "offset", default = 0, help='Input the number of offset residues for the protein. (Optional, default is 0)')
-	parser.add_argument('-d', '--diagram_type', dest = "diagram_type", default="amino", help='Input type of diagramm required. Options: "clock" for clock diagrams (Only available with trajectory present), "helices" for diagrams representing residue membership to certain helices (requires user input to determine helices), "amino" showing the amino acid type')
-	parser.add_argument('-hf', '--helix_file', dest = "helix_file", default=None, help='Input file for helices of your protein. To see the required format, check README or our GitHub page')
+	parser.add_argument('-d', '--diagram_type', dest = "diagram_type", default="amino", help='Input type of diagramm required. Options: "clock" for clock diagrams (Only available with trajectory present), "domains" for diagrams representing residue membership to certain domains (requires user input to determine domains), "amino" showing the amino acid type')
+	parser.add_argument('-df', '--domain_file', dest = "domain_file", default=None, help='Input file for domains of your protein. To see the required format, check README or our GitHub page')
 	parser.add_argument('-m', '--mol2_file', dest = "mol2_file", default=None, help="Input the name of the mol2 file.")
 	args = parser.parse_args()
 
@@ -60,10 +60,10 @@ if __name__ == '__main__':
 	if args.diagram_type=="amino":
 		plots.define_amino_acids()
 		plots.plot_amino_diagramms()
-	if args.diagram_type=="helices":
-		assert len(args.helix_file)>0, "Provide a file defining helices"
-		plots.define_helices(args.helix_file, args.offset)
-		plots.plot_helices_diagramms()
+	if args.diagram_type=="domains":
+		assert len(args.domain_file)>0, "Provide a file defining domains"
+		plots.define_domains(args.domain_file, args.offset)
+		plots.plot_domains_diagramms()
 	if args.diagram_type=="clock":
 		assert args.analysis_type=="occurance", "Only occurance can be plotted with clock diagrams"
 		plots.plot_clock_diagramms()
