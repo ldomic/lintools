@@ -1,0 +1,62 @@
+<g>
+  <circle
+     cx="20"
+     cy="20"
+     r="15"
+     transform="matrix(1,0,0,-1,0,40)"
+     id="circle4"
+     style="fill:#d9774b;fill-opacity:1" />
+  <text
+     x="40"
+     y="25"
+     id="text6"
+     style="font-size:14px;fill:#000000;font-family:Verdana">acidic</text>
+  <circle
+     cx="120"
+     cy="20"
+     r="15"
+     transform="translate(-20,0)"
+     id="circle8"
+     style="fill:#d06ac1;fill-opacity:1" />
+  <text
+     x="120"
+     y="25"
+     id="text10"
+     style="font-size:14px;fill:#000000;font-family:Verdana">polar</text>
+  <circle
+     cx="220"
+     cy="20"
+     r="15"
+     transform="translate(-40,0)"
+     id="circle12"
+     style="fill:#6ac297" />
+  <text
+     x="200"
+     y="25"
+     id="text14"
+     style="font-size:14px;fill:#000000;font-family:Verdana">hydrophobic</text>
+  <circle
+     cx="320"
+     cy="20"
+     r="15"
+     transform="translate(-10,0)"
+     id="circle16"
+     style="fill:#9fc74a" />
+  <text
+     x="330"
+     y="25"
+     id="text18"
+     style="font-size:14px;fill:#000000;font-family:Verdana">aromatic</text>
+  <circle
+     cx="420"
+     cy="20"
+     r="15"
+     transform="translate(-5,0)"
+     id="circle20"
+     style="fill:#889dcc;fill-opacity:1" />
+  <text
+     x="435"
+     y="25"
+     id="text22"
+     style="font-size:14px;fill:#000000;font-family:Verdana">basic</text>
+</g>

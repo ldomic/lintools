@@ -3,13 +3,15 @@ import fileinput
 import sys
 
 class Figure(object):
-    def __init__(self, molecule_object, hbonds_object=None):
+    def __init__(self, molecule_object, diagram_type, hbonds_object=None):
         self.draw_plots = None
         self.draw_molecule =None
         self.draw_lines=" "
         self.final_molecule =None
         self.molecule = molecule_object
         self.hbonds = hbonds_object
+        self.legend = None
+        self.make_legends(diagram_type)
     def change_lines_in_svg(self,filename, string1,string2):
         for i,line in enumerate(fileinput.input(filename, inplace=1)):
             sys.stdout.write(line.replace(str(string1),str(string2)))
@@ -48,6 +50,12 @@ class Figure(object):
             lines = f.readlines()
             self.draw_molecule ="".join(map(str,lines))
             f.close()
+    def make_legends(self, diagram_type):
+        if diagram_type=="amino":
+            with open("legends/amino_legend.svg","r") as f:
+                lines = f.readlines()
+                self.legend ="".join(map(str,lines))
+                f.close()
     def draw_lines_in_graph(self):
         for residue in self.molecule.nearest_points_coords:
             self.draw_lines=self.draw_lines+"<line x1='"+str(int(self.molecule.nearest_points_coords[residue][0])+(self.molecule.x_dim-600)/2)+"' y1='"+str(int(self.molecule.nearest_points_coords[residue][1])+(self.molecule.y_dim-300)/2)+"' x2='"+str(float(self.molecule.atom_coords_from_diagramm[residue][0])+(self.molecule.x_dim-600)/2)+"' y2='"+str(float(self.molecule.atom_coords_from_diagramm[residue][1])+(self.molecule.y_dim-300)/2)+"' style='stroke:'red';stroke-width:2' />"
@@ -55,7 +63,7 @@ class Figure(object):
         for bond in self.hbonds.hbonds_for_drawing:
             self.draw_lines=self.draw_lines+"<line stroke-dasharray='5,5'  x1='"+str(int(self.molecule.nearest_points_coords[bond[1]][0])+(self.molecule.x_dim-600)/2)+"' y1='"+str(int(self.molecule.nearest_points_coords[bond[1]][1])+(self.molecule.y_dim-300)/2)+"' x2='"+str(float(self.molecule.atom_coords_from_diagramm[bond[1]][0])+(self.molecule.x_dim-600)/2)+"' y2='"+str(float(self.molecule.atom_coords_from_diagramm[bond[1]][1])+(self.molecule.y_dim-300)/2)+"' style='stroke:black;stroke-width:4' />"
     def put_everything_together(self):
-        molecule_list = [self.draw_molecule]+[self.draw_lines]+[self.draw_plots]+[self.end_symbol]
+        molecule_list = [self.draw_molecule]+[self.draw_lines]+[self.draw_plots]+[self.legend]+[self.end_symbol]
         self.final_molecule = "".join(map(str,molecule_list))
     def write_final_draw_file(self, output_name):
         finalsvg = open(output_name+".svg","w")

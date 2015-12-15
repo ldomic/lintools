@@ -1,5 +1,4 @@
-#Module Visualisation
-#Can work on this only when Visualisation.Molecule is finished
+#sudo apt-get install -y python-qt4
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -13,8 +12,7 @@ class Plots(object):
     def __init__(self, topol_object):
         #Group amino acids by charge and structure
         self.amino_acids = {"acidic":["ASP","GLU"], "basic":["LYS","ARG"], "aromatic":["PHE","TYR","TRP"],"polar":["SER","THR","ASN","GLN","CYS","HIS"],"hydrophobic":["ALA","VAL","ILE","LEU","MET","GLY"]}
-        #Color scheme - need to change to make more chemical
-        self.colors_amino_acids = {"acidic":"#889DCC", "basic":"#D06AC1", "aromatic":"#9FC74A", "polar":"#D9774B","hydrophobic":"#6AC297"}
+        self.colors_amino_acids = {"acidic":"#D9774B", "basic":"#889DCC", "aromatic":"#9FC74A", "polar":"#D06AC1","hydrophobic":"#6AC297"}
         self.amino_acid_type={}
         self.colors_helices ={1:(0.5490,0.7961, 0.8),2:(0.7961, 0.3921568, 0.1843),3:(0.70588,0.36078, 0.82745),4:(0.52941, 0.831373, 0.262745),5:(0.337254, 0.21176, 0.37647),6:(0.34902, 0.45098, 0.20392),7:(0.32941, 0.21176, 0.145098),8:(0.796078, 0.647059, 0.58431),9:(0.53333, 0.545098, 0.8),10:(0.4941176, 0.82353, 0.545098),11:(0.784314, 0.32941,0.58431),12:(0.3098, 0.415686, 0.41961), 13:(0.6, 0.6, 0.6)}
         self.residues_within_helix={}
