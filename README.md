@@ -15,14 +15,13 @@ You will need at least a topology file and a mol2 file of your ligand.
 Usage:
 For a topology file (no trajectory data):
 ```
-python lintools.py -t my_top_file.pdb -o my_output 
-(Optional: --cutoff [a number] --residueoffset [a number] --diagram_type "amino" or "helices" --helix_file .txt file)
+python lintools.py -t my_top_file.pdb -o my_output -m ligand.mol2
+(Optional: --cutoff [a number] --residueoffset [a number] --diagram_type "amino" )
 ```
 
 For trajectory data:
 ```
-python lintools.py -t my_top_file.pdb -x my_traj.xtc -o my_output 
+python lintools.py -t my_top_file.pdb -x my_traj.xtc -o my_output -m ligand.mol2
 (Optional: same as above + --analysis "occurance"or  "rmsf" and for occurance analysis it is possible to choose up to three trajectories
 which are displayed as clock diagrams. --diagram_type "clock" must be specified)
 ```
-
