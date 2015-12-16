@@ -77,8 +77,7 @@ if __name__ == '__main__':
 	molecule.make_new_projection_values()
 
 
-	figure=Figure(molecule, args.diagram_type,hbonds)
-	figure.add_bigger_box()
+	figure=Figure(molecule, args.diagram_type,hbonds,plots)
 	figure.manage_the_plots()
 	figure.draw_hbonds_in_graph()
 	figure.put_everything_together()
