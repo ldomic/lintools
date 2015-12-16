@@ -160,6 +160,11 @@ class Molecule(object):
             values = [v for v in self.nearest_points_projection.values()]
         self.x_dim  = max(x[0] for i,x in enumerate(xy_values))-min(x[0] for i,x in enumerate(xy_values))+216.00
         self.y_dim = max(x[1] for i,x in enumerate(xy_values))-min(x[1] for i,x in enumerate(xy_values))+216.00
+        if self.x_dim<600:
+            self.x_dim=600+216
+        if self.y_dim<300:
+            self.y_dim=300+216
+
     def make_multiple_hulls(self):
         for residue in self.atom_coords_from_diagramm:
             b = self.a.boundary.parallel_offset(self.universe.closest_atoms[residue][2]*32.0+24,"left",join_style=2).convex_hull
