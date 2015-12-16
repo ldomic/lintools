@@ -13,6 +13,7 @@ If this is a problem for your computer's architecture, a Dockerfile has also bee
 You will need at least a topology file and a mol2 file of your ligand.
 
 Usage:
+At the moment it is best to run the script in the lintools folder where lintools.py is available.
 For a topology file (no trajectory data):
 ```
 python lintools.py -t my_top_file.pdb -o my_output -m ligand.mol2
