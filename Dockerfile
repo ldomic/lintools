@@ -6,10 +6,11 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 RUN apt-get update
 
 RUN apt-get install -y gfortran build-essential make gcc build-essential cmake libboost-all-dev
-RUN apt-get install -y libatlas-dev liblapack-dev libgeos-dev
+RUN apt-get install -y libatlas-dev liblapack-dev libgeos-dev libstdc++6 libopenbabel4
 RUN apt-get install -y git-core curl wget nano unzip
-RUN apt-get install -y python-matplotlib python-qt4
-RUN apt-get install -y openbabel python-chemfp python-openbabel libopenbabel-dev libchemistry-openbabel-perl 
+RUN apt-get install -y python-matplotlib python-qt4 
+
+
 
 RUN wget --quiet \
     https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh && \
@@ -26,8 +27,7 @@ RUN conda install -y -n my-rdkit-env pip matplotlib jupyter ipython notebook ipy
 
 RUN conda clean -y -t
 
-RUN source activate my-rdkit-env && pip install MDAnalysis
-
+RUN source activate my-rdkit-env && pip install MDAnalysis && conda install -c https://conda.anaconda.org/clyde_fare openbabel
 
 WORKDIR /data
 
