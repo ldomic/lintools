@@ -14,28 +14,44 @@ class Figure(object):
         self.legend = None
         self.make_legends(diagram_type)
         self.add_bigger_box(diagram_type)
+        self.manage_the_plots(diagram_type)
     def change_lines_in_svg(self,filename, string1,string2):
         for i,line in enumerate(fileinput.input(filename, inplace=1)):
             sys.stdout.write(line.replace(str(string1),str(string2)))
-    def manage_the_plots(self):
+    def manage_the_plots(self, diagram_type):
         diagram=""
-        for residue in self.molecule.nearest_points_coords.keys():
-            for i, line in enumerate(fileinput.input(str(residue[3:])+".svg", inplace=1)):
-                if i <= 8:
-                    continue
-                else:
-                    sys.stdout.write(line.replace ("</svg>","</g>"))
-            input1 = "</defs>"
-            output1 = "<g transform='translate("+str(int(self.molecule.nearest_points_coords[residue][0]+(self.molecule.x_dim-600)/2)-54)+","+str(int(self.molecule.nearest_points_coords[residue][1]+(self.molecule.y_dim-300)/2)-54)+")'>"
-            self.change_lines_in_svg(str(residue[3:])+'.svg', input1, output1)
-            input2 = "font-style:normal;"
-            output2 = "font-style:normal;font-weight:bold;"
-            self.change_lines_in_svg(str(residue[3:])+'.svg', input2, output2)
-            with open(str(residue[3:])+".svg", "r") as f:
-                lines = f.readlines()
-                diagram = diagram +"".join(map(str,lines))
-                f.close()
-        self.draw_plots = diagram
+        if diagram_type!="domains":
+            for residue in self.molecule.nearest_points_coords.keys():
+                for i, line in enumerate(fileinput.input(str(residue[3:])+".svg", inplace=1)):
+                    if i <= 8:
+                        continue
+                    else:
+                        sys.stdout.write(line.replace ("</svg>","</g>"))
+                input1 = "</defs>"
+                output1 = "<g transform='translate("+str(int(self.molecule.nearest_points_coords[residue][0]+(self.molecule.x_dim-600)/2)-54)+","+str(int(self.molecule.nearest_points_coords[residue][1]+(self.molecule.y_dim-300)/2)-54)+")'>"
+                self.change_lines_in_svg(str(residue[3:])+'.svg', input1, output1)
+                input2 = "font-style:normal;"
+                output2 = "font-style:normal;font-weight:bold;"
+                self.change_lines_in_svg(str(residue[3:])+'.svg', input2, output2)
+                with open(str(residue[3:])+".svg", "r") as f:
+                    lines = f.readlines()
+                    diagram = diagram +"".join(map(str,lines))
+                    f.close()
+            self.draw_plots = diagram
+        else:
+            self.draw_plots=""
+            for residue in self.plots.residues_within_domain:
+                transform = "<g transform='translate("+str(int(self.molecule.nearest_points_coords[residue][0]+(self.molecule.x_dim-600)/2)-54)+","+str(int(self.molecule.nearest_points_coords[residue][1]+(self.molecule.y_dim-300)/2)-54)+")'>"
+                path = "<rect style='fill:none' width='108' height='108' x='0' y='0' />"
+                circle = "<circle cx='54' cy='54' r='38' stroke='"+str(self.plots.residues_within_domain[residue][2])+"' stroke-width='10' fill='white' />"
+                dashed_circle =  "<circle cx='54' cy='54' r='38' stroke='"+str(self.plots.residues_within_domain[residue][2])+"' stroke-width='10' fill='white' stroke-dasharray='10,5'" 
+                self.draw_plots = self.draw_plots+transform+path+dashed_circle
+                with open(str(residue[3:])+".svg", "r") as f:
+                    lines=f.readlines()
+                    for line in lines:
+                        if line.startswith("    <text"):
+                            self.draw_plots=self.draw_plots+line
+                self.draw_plots=self.draw_plots+"</g>"
     def add_bigger_box(self, diagram_type):
         """Rewrite the molecule.svg file line by line, otherwise it fails."""
         start1 = "width='600px' height='300px' >"

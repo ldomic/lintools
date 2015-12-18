@@ -78,7 +78,6 @@ if __name__ == '__main__':
 
 
 	figure=Figure(molecule, args.diagram_type,hbonds,plots)
-	figure.manage_the_plots()
 	figure.draw_hbonds_in_graph()
 	figure.put_everything_together()
 	figure.write_final_draw_file(args.output_name)
@@ -86,8 +85,8 @@ if __name__ == '__main__':
 	file_list=["molecule.svg"]
 	for residue in md_sim.dict_of_plotted_res.keys():
 		file_list.append(str(residue[3:])+".svg")
-	for f in file_list:
-		os.remove(f)
+	#for f in file_list:
+	#	os.remove(f)
 
 	print "Ready!"
 
