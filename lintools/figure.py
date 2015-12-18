@@ -87,7 +87,6 @@ class Figure(object):
                 f.close()
             self.legend = self.legend+legend
         if diagram_type=="domains":
-            print "In progress"
             sorted_dom = sorted(self.plots.plotted_domains)
             #continue here... The code does not work - try HSG for colors
             #self.legend="<g>"

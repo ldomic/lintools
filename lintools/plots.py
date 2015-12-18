@@ -51,7 +51,6 @@ class Plots(object):
                 if int(res[3::]) in domains[domain][0] and len(domains[domain])==4:
                     #extra checks for dashes
                     if str(domains[domain][2])=="None":
-                        print "reached none", domain
                         self.residues_within_domain[res][3]=[domains[domain][3]]
                         domain_description=[domain, domains[domain][1],"#A9A9A9",domains[domain][3]]
                         if domain_description not in self.plotted_domains:
@@ -59,7 +58,7 @@ class Plots(object):
                             self.plotted_domains.append(domain_description)
                     else:
                         self.residues_within_domain[res]=[domain,domains[domain][1],domains[domain][2], domains[domain][3]]
-        print self.residues_within_domain
+
 
         for res in self.universe.dict_of_plotted_res:
             if res not in self.residues_within_domain.keys():

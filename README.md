@@ -28,13 +28,17 @@ which are displayed as clock diagrams. --diagram_type "clock" must be specified)
 ```
 Domain representation
 
-The domains can be represented as circles of particular color. The domain can be anything you define as a non-overlapping range of residues - transmembrane helix, specific chain, known binding site. At the moment allows only to specify range (i.e. 40-100). 
-Domain text file should contain lines of your domains, containing ID - a number from 1 up to 12 (twelve different colors available at the moment), range of residues and text ID for your domain, all separated by commas.
+The domains can be represented as circles of particular color. The domain can be anything you define  - transmembrane helix, specific chain, known binding site. Any range can be specified - see example below.
+Domain text file should contain lines of your domains, containing ID - a number from 1 up to 12 (twelve different colors available at the moment), range of residues and text ID for your domain, all separated by semicolons. Optional: Add user-defined color to your domain in HEX, also, can specify whether the circles should be dashed or not by supplying a Y/N article after the color. Also, if you want to show something like a binding site that spans several domains, use color “None” and dashed “Y” to show dashed circles for your binding site. See the example how it could be done in new_domains.pdf)
 
-Example:
+Example domain file:
 ```
-1,30,60,TMH 3
-2,61,100,Drug binding site
-3,101,200,Chain B
+1; 1-20,24;TMH 1
+2; 26-35,40-56; TMH 2; #D9774B 
+3; 61-100;TMH 3; Y # Not allowed
+3; 61-100;Chain B; #889DCC; Y 
+4; 34,56,78; Binding site; None; Y #This will make a dashed circle regardless of the original assignment, always has to come last in the domain file.
 ```
+The test.pdf and new_domains.pdf files were produced using crystal structure with PDB ID 4XP1 and displays the LDP residue.
+
 Please post an issue if you have suggestions for improvements.
