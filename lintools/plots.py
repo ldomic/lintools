@@ -30,19 +30,23 @@ class Plots(object):
         with open (domain_file, "r") as h:
             lines = h.readlines()
             for line in lines:
-                domains[int(line.rsplit(",",4)[0])]=[int(line.rsplit(",",4)[1]),int(line.rsplit(",",4)[2]),line.rsplit(",",4)[3]]
-
-        i=0
-        for res in domains:
-            i+=1
-            while i< len(domains):
-                assert domains[res+1][0]-domains[res][1] > 0, "domains are overlapping in your input file "+domain_file+". Please check!"
-                break
+                domains[int(line.rsplit(";",4)[0])]=([],line.rsplit(";",4)[2])
+                for i in range(len(line.rsplit(";",4)[1].rsplit(",",20))):
+                    if len(line.rsplit(";",4)[1].rsplit(",",20)[i].rsplit("-",2))>1:
+                        print int(line.rsplit(";",4)[1].rsplit(",",20)[i].rsplit("-",2)[0]),int(line.rsplit(";",4)[1].rsplit(",",20)[i].rsplit("-",2)[1])
+                        for num in range(int(line.rsplit(";",4)[1].rsplit(",",20)[i].rsplit("-",2)[0]),int(line.rsplit(";",4)[1].rsplit(",",20)[i].rsplit("-",2)[1])+1):
+                            domains[int(line.rsplit(";",4)[0])][0].append(num)
+                    else:
+                        domains[int(line.rsplit(";",4)[0])][0].append(int(line.rsplit(";",4)[1].rsplit(",",20)[i]))
+        print domains
     
         for domain in domains:
             for res in self.universe.dict_of_plotted_res:
-                if int(res[3::])-int(offset)>=domains[domain][0] and int(res[3::])-int(offset)<=domains[domain][1]:
-                    self.residues_within_domain[res]=[domain,domains[domain][2],self.colors_domains[domain]]
+                if int(res[3::]) in domains[domain][0]:
+                    self.residues_within_domain[res]=[domain,domains[domain][1],self.colors_domains[domain]]
+        for res in self.universe.dict_of_plotted_res:
+            if res not in self.residues_within_domain.keys():
+                self.residues_within_domain[res]=[0,"No specified domain", "#A9A9A9"]
         for res in self.residues_within_domain:
             if self.residues_within_domain[res] not in self.plotted_domains:
                 self.plotted_domains.append(self.residues_within_domain[res])

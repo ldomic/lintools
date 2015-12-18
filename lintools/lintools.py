@@ -85,8 +85,8 @@ if __name__ == '__main__':
 	file_list=["molecule.svg"]
 	for residue in md_sim.dict_of_plotted_res.keys():
 		file_list.append(str(residue[3:])+".svg")
-	#for f in file_list:
-	#	os.remove(f)
+	for f in file_list:
+		os.remove(f)
 
 	print "Ready!"
 
