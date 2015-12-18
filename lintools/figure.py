@@ -45,7 +45,10 @@ class Figure(object):
                 path = "<rect style='fill:none' width='108' height='108' x='0' y='0' />"
                 circle = "<circle cx='54' cy='54' r='38' stroke='"+str(self.plots.residues_within_domain[residue][2])+"' stroke-width='10' fill='white' />"
                 dashed_circle =  "<circle cx='54' cy='54' r='38' stroke='"+str(self.plots.residues_within_domain[residue][2])+"' stroke-width='10' fill='white' stroke-dasharray='10,5'" 
-                self.draw_plots = self.draw_plots+transform+path+dashed_circle
+                if str(self.plots.residues_within_domain[residue][3][0][0])=="Y":
+                    self.draw_plots = self.draw_plots+transform+path+dashed_circle
+                else:
+                    self.draw_plots = self.draw_plots+transform+path+circle
                 with open(str(residue[3:])+".svg", "r") as f:
                     lines=f.readlines()
                     for line in lines:
@@ -91,7 +94,10 @@ class Figure(object):
             self.legend="<g transform='translate("+str(self.molecule.x_dim)+",0)'>"
             y=50
             for dom in sorted_dom:
-                self.legend=self.legend+"<circle cx='25' cy='"+str(y)+"' r='20' stroke='"+str(dom[2])+"' stroke-width='5' fill='none' />"+"  <text x='50' y='"+str(y+5)+"' style='font-size:20px;fill:#000000;font-family:Verdana'>"+str(dom[1])+"</text>"
+                if dom[3][0][0]=="Y":
+                    self.legend=self.legend+"<circle cx='25' cy='"+str(y)+"' r='20' stroke='"+str(dom[2])+"' stroke-width='5' stroke-dasharray='10,5' fill='none' />"+"  <text x='50' y='"+str(y+5)+"' style='font-size:20px;fill:#000000;font-family:Verdana'>"+str(dom[1])+"</text>"
+                else:
+                    self.legend=self.legend+"<circle cx='25' cy='"+str(y)+"' r='20' stroke='"+str(dom[2])+"' stroke-width='5' fill='none' />"+"  <text x='50' y='"+str(y+5)+"' style='font-size:20px;fill:#000000;font-family:Verdana'>"+str(dom[1])+"</text>"
                 y+=50
             self.legend=self.legend+"</g>"
     def draw_lines_in_graph(self):
