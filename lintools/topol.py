@@ -4,6 +4,8 @@ Domicevica,Paramo and Newport, 2015."""
 
 import MDAnalysis
 from MDAnalysis.analysis import distances
+import time
+
 
 
 class Topol_Data(object):
@@ -48,3 +50,30 @@ class Topol_Data(object):
                 i+=1
                 if dist_array[atom.id].min()== dist_array.min():
                     self.closest_atoms[residue]=atom.name,i, dist_array[atom.id].min()
+
+class Config(object):
+    def __init__(self, topol_object,outname, topology,trajectory, res_offset, molecule_file, diagram_type, cutoff_distance, analysis_type, domain_file):
+        self.topol_obj=topol_object
+        self.write_config_file(outname,topology,trajectory, res_offset, molecule_file, diagram_type, cutoff_distance, analysis_type, domain_file)
+    def write_config_file(self, outname, topology, trajectory, res_offset, molecule_file, diagram_type, cutoff_distance, analysis_type, domain_file):
+        config_file=open(outname+"_config.txt", "w")
+        #Greetings, command information, etc
+        config_file.write("This log file was created at "+time.strftime("%c")+" and saved as "+outname+"_config.txt. \n \n \n")
+        config_file.write("Topology input file:  "+topology+"\n \n")
+        config_file.write("Trajectory input file(s):  "+str(trajectory)+"\n \n")
+        config_file.write("Residue offset: "+str(res_offset)+" \n \n")
+        config_file.write("Molecule input file:  "+molecule_file+"\n \n")
+        config_file.write("Selected ligand residue : "+str(self.topol_obj.ligand.resnames[0])+" "+str(self.topol_obj.ligand.resids[0])+" on chain "+str(self.topol_obj.ligand.segids[0])+"\n \n")
+        config_file.write("Diagram type: "+diagram_type+"\n \n")
+        config_file.write("Cutoff distance: "+str(cutoff_distance)+" Angstrom \n \n")
+        config_file.write("Type of analysis used: "+str(analysis_type)+" \n \n")
+        config_file.write("Domain file: "+str(domain_file)+"\n \n")
+
+
+
+
+
+
+
+
+

@@ -9,13 +9,14 @@ if __name__ == '__main__':
 	from analysis.hbonds import HBonds
 	from analysis.rmsf import RMSF_measurements
 	from analysis.occurance import Occurance_analysis
+	from topol import Config
 
 	#################################################################################################################
 
 	parser = ArgumentParser(description='Analysis and visualisation tool for protein ligand interactions. Requires rdkit, shapely, MDAnalysis modules.')
 	parser.add_argument('-t', '--topology', dest = 'grofile', help='Input File name of topology file. Accepts gro, pdb files')
 	parser.add_argument('-x', '--trajectory', dest = "xtcfile", nargs="*", default=None, help='Input File name of trajectory file(s). Accepts up to 3 xtc files (Optional. Default: None)')
-	parser.add_argument('-o', '--outname', dest = "output_name", help='Name of the output svg file.')
+	parser.add_argument('-o', '--outname', dest = "output_name", help='Name of the output files.')
 	parser.add_argument('-a', '--analysis', dest = "analysis_type", default = None, help='Select type of analysis for plotting. Available types - RMSF of ligand, occurance_analysis. (Optional, default is None.)')
 	parser.add_argument('-c', '--cutoff', dest = "cutoff", default = 3.5, help='Input cutoff distance from the ligand that is taken into account in angstroms (Example: 3.5).')
 	parser.add_argument('-ro', '--residueoffset', dest = "offset", default = 0, help='Input the number of offset residues for the protein. (Optional, default is 0)')
@@ -40,6 +41,18 @@ if __name__ == '__main__':
 	    print lig, potential_ligands[lig].resnames[0], potential_ligands[lig].resids[0], potential_ligands[lig].segids[0]
 	ligand_name=potential_ligands[int(raw_input( "Choose a ligand to analyse:"))]
 
+	topology = os.path.abspath(args.grofile)
+	if args.xtcfile!=None:
+		trajectory = os.path.abspath(args.xtcfile)
+	else:
+		trajectory= None
+	molecule_file = os.path.abspath(args.mol2_file)
+
+	if args.domain_file!=None:
+		domain_file=os.path.abspath(args.domain_file)
+	else:
+		domain_file=None
+
 	if args.analysis_type=="occurance":
 		md_sim = Topol_Data(args.grofile, None, ligand_name, args.offset)
 		occurance = Occurance_analysis(args.grofile, args.xtcfile, ligand_name, args.cutoff, args.offset, md_sim)
@@ -54,7 +67,6 @@ if __name__ == '__main__':
 	md_sim.get_closest_ligand_atoms()
 
 	hbonds = HBonds(md_sim, args.mol2_file)
-
 
 	plots = Plots(md_sim)
 	if args.diagram_type=="amino":
@@ -88,6 +100,7 @@ if __name__ == '__main__':
 	for f in file_list:
 		os.remove(f)
 
+	config = Config(md_sim, args.output_name, topology, trajectory, args.offset, molecule_file, args.diagram_type, args.cutoff, args.analysis_type, domain_file)
 	print "Ready!"
 
 	print "The figure you created has been saved under filename "+args.output_name+".svg"

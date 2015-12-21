@@ -88,8 +88,7 @@ class Figure(object):
             self.legend = self.legend+legend
         if diagram_type=="domains":
             sorted_dom = sorted(self.plots.plotted_domains)
-            #continue here... The code does not work - try HSG for colors
-            #self.legend="<g>"
+ 
             self.legend="<g transform='translate("+str(self.molecule.x_dim)+",0)'>"
             y=50
             for dom in sorted_dom:
