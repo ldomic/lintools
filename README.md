@@ -26,6 +26,13 @@ python lintools.py -t my_top_file.pdb -x my_traj.xtc -o my_output -m ligand.mol2
 (Optional: same as above + --analysis "occurance"or  "rmsf" and for occurance analysis it is possible to choose up to three trajectories
 which are displayed as clock diagrams. --diagram_type "clock" must be specified)
 ```
+
+With configuration file (written after every run):
+```
+python lintools.py -conf file_config.txt -o outname 
+(Optional: if you want a repeat of the same graph you produced, use just -conf flag, but if you want to change something e.g. cutoff or diagram type, use the respective flag with new value).
+```
+
 Domain representation
 
 The domains can be represented as circles of particular color. The domain can be anything you define  - transmembrane helix, specific chain, known binding site. Any range can be specified - see example below.
