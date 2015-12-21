@@ -1,0 +1,21 @@
+This log file was created at Mon Dec 21 18:10:03 2015 and saved as traj_test_config.txt. 
+ 
+ 
+Topology input file:  /data/Documents/HackDay_problem_set/docked_ami_100ns_nowater.gro
+ 
+Trajectory input file(s):  ['/data/Documents/HackDay_problem_set/docked_ami_50ns_1_100_whole_no_water_skip100.xtc', '/data/Documents/HackDay_problem_set/docked_ami_50ns_2_no_water_lipids_skip100_whole.xtc']
+ 
+Residue offset:  0 
+
+Molecule input file:  /data/Documents/HackDay_problem_set/ami.mol2
+ 
+Selected ligand residue:  UNK 1683 on chain SYSTEM
+ 
+Diagram type:  clock
+ 
+Cutoff distance:  3.5 Angstrom 
+ 
+Type of analysis used:  occurance
+
+Domain file:  None
+ 

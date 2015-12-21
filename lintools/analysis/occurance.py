@@ -38,7 +38,7 @@ class Occurance_analysis(object):
            
             for frame in md_sim.trajectory:
                 if ligand_name!="not protein":
-                    selection = md_sim.select_atoms('protein and around '+str(cutoff)+' resname '+ligand_name)
+                    selection = md_sim.select_atoms('protein and around '+str(cutoff)+' (segid '+str(self.grofile.ligand.segids[0])+' and resid '+str(self.grofile.ligand.resids[0])+')')               
                 else:
                     selection = md_sim.select_atoms('protein and around '+str(cutoff)+' '+ligand_name)
                 residue_list = [atom.resname+str(atom.resid) for atom in selection]

@@ -52,22 +52,54 @@ class Topol_Data(object):
                     self.closest_atoms[residue]=atom.name,i, dist_array[atom.id].min()
 
 class Config(object):
-    def __init__(self, topol_object,outname, topology,trajectory, res_offset, molecule_file, diagram_type, cutoff_distance, analysis_type, domain_file):
+    def __init__(self, topol_object=None):
         self.topol_obj=topol_object
-        self.write_config_file(outname,topology,trajectory, res_offset, molecule_file, diagram_type, cutoff_distance, analysis_type, domain_file)
+        self.topology=None
+        self.trajectory=[]
+        #self.write_config_file(outname,topology,trajectory, res_offset, molecule_file, diagram_type, cutoff_distance, analysis_type, domain_file)
     def write_config_file(self, outname, topology, trajectory, res_offset, molecule_file, diagram_type, cutoff_distance, analysis_type, domain_file):
         config_file=open(outname+"_config.txt", "w")
-        #Greetings, command information, etc
         config_file.write("This log file was created at "+time.strftime("%c")+" and saved as "+outname+"_config.txt. \n \n \n")
         config_file.write("Topology input file:  "+topology+"\n \n")
         config_file.write("Trajectory input file(s):  "+str(trajectory)+"\n \n")
-        config_file.write("Residue offset: "+str(res_offset)+" \n \n")
+        config_file.write("Residue offset:  "+str(res_offset)+" \n\n")
         config_file.write("Molecule input file:  "+molecule_file+"\n \n")
-        config_file.write("Selected ligand residue : "+str(self.topol_obj.ligand.resnames[0])+" "+str(self.topol_obj.ligand.resids[0])+" on chain "+str(self.topol_obj.ligand.segids[0])+"\n \n")
-        config_file.write("Diagram type: "+diagram_type+"\n \n")
-        config_file.write("Cutoff distance: "+str(cutoff_distance)+" Angstrom \n \n")
-        config_file.write("Type of analysis used: "+str(analysis_type)+" \n \n")
-        config_file.write("Domain file: "+str(domain_file)+"\n \n")
+        config_file.write("Selected ligand residue:  "+str(self.topol_obj.ligand.resnames[0])+" "+str(self.topol_obj.ligand.resids[0])+" on chain "+str(self.topol_obj.ligand.segids[0])+"\n \n")
+        config_file.write("Diagram type:  "+diagram_type+"\n \n")
+        config_file.write("Cutoff distance:  "+str(cutoff_distance)+" Angstrom \n \n")
+        config_file.write("Type of analysis used:  "+str(analysis_type)+"\n\n")
+        config_file.write("Domain file:  "+str(domain_file)+"\n \n")
+        config_file.close()
+    def read_config_file(self, config_file):
+        with open(config_file,"r") as f:
+            lines = f.readlines()
+            for line in lines:
+                if line.startswith("Topology input file:"):
+                    self.topology = line.rsplit(":",2)[1][2:-1]
+                if line.startswith("Trajectory input file(s):  "):
+                    my_line= line.rsplit(":",2)[1][3:-2]
+                    for i in range(len(my_line.rsplit(", ",3))):
+                        if i==0:
+                            self.trajectory.append(my_line.rsplit(",",3)[i][1:-1])
+                        else:
+                            self.trajectory.append(my_line.rsplit(",",3)[i][2:-1])
+                if line.startswith("Residue offset:"):
+                    self.res_offset=line.rsplit(":",2)[1][2:-1]
+                if line.startswith("Molecule input file:"):
+                    self.mol2_file=line.rsplit(":",2)[1][2:-1]
+                if line.startswith("Diagram type:"):
+                    self.diagram_type=line.rsplit(":",2)[1][2:-1]
+                if line.startswith("Cutoff distance:"):
+                    self.cutoff=line.rsplit(":",2)[1][2:-11]
+                if line.startswith("Type of analysis used:"):
+                    self.analysis_type=line.rsplit(":",2)[1][2:-1]
+                if line.startswith("Domain file:"):
+                    self.domain_file=line.rsplit(":",2)[1][2:-1]
+                if line.startswith("Selected ligand residue"):
+                    self.ligand_name=[line.rsplit(":",2)[1][1:].rsplit(" ",5)[1], line.rsplit(":",2)[1][1:].rsplit(" ",5)[2], line.rsplit(":",2)[1][1:-1].rsplit(" ",5)[5]]
+                    
+
+                            
 
 
 
