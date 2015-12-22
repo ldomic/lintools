@@ -20,7 +20,7 @@ if __name__ == '__main__':
 	parser.add_argument('-a', '--analysis', dest = "analysis_type", default = None, help='Select type of analysis for plotting. Available types - RMSF of ligand, occurance_analysis. (Optional, default is None.)')
 	parser.add_argument('-c', '--cutoff', dest = "cutoff", default = 3.5, help='Input cutoff distance from the ligand that is taken into account in angstroms (Example: 3.5).')
 	parser.add_argument('-ro', '--residueoffset', dest = "offset", default = 0, help='Input the number of offset residues for the protein. (Optional, default is 0)')
-	parser.add_argument('-d', '--diagram_type', dest = "diagram_type", default=None, help='Input type of diagramm required. Options: "clock" for clock diagrams (Only available with trajectory present), "domains" for diagrams representing residue membership to certain domains (requires user input to determine domains), "amino" showing the amino acid type')
+	#parser.add_argument('-d', '--diagram_type', dest = "diagram_type", default=None, help='Input type of diagramm required. Options: "clock" for clock diagrams (Only available with trajectory present), "domains" for diagrams representing residue membership to certain domains (requires user input to determine domains), "amino" showing the amino acid type')
 	parser.add_argument('-df', '--domain_file', dest = "domain_file", default=None, help='Input file for domains of your protein. To see the required format, check README or our GitHub page')
 	parser.add_argument('-m', '--mol2_file', dest = "mol2_file", default=None, help="Input the name of the mol2 file.")
 	parser.add_argument('-conf', '--config_file', dest = "config_file", default=None, help="Input the name of the config file.")
@@ -71,10 +71,10 @@ if __name__ == '__main__':
 		else:
 			domain_file=config_read.domain_file
 		# Diagram type
-		if args.diagram_type!=None:
-			diagram_type=args.diagram_type
-		else:
-			diagram_type=config_read.diagram_type
+		#if args.diagram_type!=None:
+		#	diagram_type=args.diagram_type
+		#else:
+		#	diagram_type=config_read.diagram_type
 		# Analysis type
 		if args.analysis_type!=None:
 			analysis_type= args.analysis_type
@@ -137,6 +137,16 @@ if __name__ == '__main__':
 			for ligand in potential_ligands.keys()[1:]:
 				if potential_ligands[ligand].resnames[0]==config_read.ligand_name[0] and potential_ligands[ligand].resids[0]==int(config_read.ligand_name[1]) and potential_ligands[ligand].segids[0]==config_read.ligand_name[2]:
 					ligand_name=potential_ligands[ligand]
+
+	if args.config_file!=None:
+		available_diagrams={0:"From config file", 1:"amino", 2:"domains",3:"clock"}
+		diagram_type=available_diagrams[int(raw_input("Choose diagram type:"))]
+		if diagram_type=="From config file":
+			diagram_type=config_read.diagram_type
+	else:
+		available_diagrams={1:"amino", 2:"domains",3:"clock"}
+		diagram_type=available_diagrams[int(raw_input("Choose diagram type:"))]
+
 
 	#############################################################################################################
 
