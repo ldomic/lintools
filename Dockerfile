@@ -28,6 +28,9 @@ RUN conda install -y -n my-rdkit-env pip matplotlib jupyter ipython notebook ipy
 RUN conda clean -y -t
 
 RUN source activate my-rdkit-env && pip install MDAnalysis && conda install -c https://conda.anaconda.org/clyde_fare openbabel
+WORKDIR /my_software
+RUN git clone https://github.com/ldomic/lintools.git
+ENV PYTHONPATH $PYTHONPATH:/my_software/lintools/lintools
 
 WORKDIR /data
 

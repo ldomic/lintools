@@ -1,9 +1,14 @@
 
 import fileinput
 import sys
+import matplotlib
+import matplotlib.pyplot as plt
+import matplotlib.colors as colors
+from matplotlib import pylab
+import numpy as np
 
 class Figure(object):
-    def __init__(self, molecule_object, diagram_type, hbonds_object=None, plot_object=None):
+    def __init__(self, molecule_object, diagram_type, hbonds_object=None, plot_object=None, rmsf_object=None):
         self.draw_plots = None
         self.draw_molecule =None
         self.draw_lines=" "
@@ -11,6 +16,7 @@ class Figure(object):
         self.molecule = molecule_object
         self.hbonds = hbonds_object
         self.plots = plot_object
+        self.rmsf = rmsf_object
         self.legend = None
         self.make_legends(diagram_type)
         self.add_bigger_box(diagram_type)
@@ -81,7 +87,7 @@ class Figure(object):
     def make_legends(self, diagram_type,domain_file=None):
         if diagram_type=="amino":
             self.legend = "<g transform='translate(0,"+str(self.molecule.y_dim+20)+")'>"
-            with open("legends/amino_legend.svg","r") as f:
+            with open(sys.argv[0][0:-11]+"legends/amino_legend.svg","r") as f:
                 lines = f.readlines()
                 legend ="".join(map(str,lines))
                 f.close()
@@ -98,6 +104,36 @@ class Figure(object):
                     self.legend=self.legend+"<circle cx='25' cy='"+str(y)+"' r='20' stroke='"+str(dom[2])+"' stroke-width='5' fill='none' />"+"  <text x='50' y='"+str(y+5)+"' style='font-size:20px;fill:#000000;font-family:Verdana'>"+str(dom[1])+"</text>"
                 y+=50
             self.legend=self.legend+"</g>"
+        if self.rmsf!=None:
+            fig = plt.figure(figsize=(3, 8))
+            ax1 = fig.add_axes([0.1, 0, 0.5, 0.9])
+            cmap = plt.get_cmap("hsv")
+            new_cmap = self.truncate_colormap(cmap,0.0,0.33)
+            norm = matplotlib.colors.Normalize(vmin=self.rmsf.min_value, vmax=self.rmsf.max_value)
+            print "The minimal value is "+str(self.rmsf.min_value)
+            cb1 = matplotlib.colorbar.ColorbarBase(ax1, cmap=new_cmap,
+                                            norm=norm,
+                                            orientation='vertical')
+            cb1.set_label('Angstroms')
+            pylab.savefig("rmsf_colorbar.svg", dpi=100, transparent=True)
+            self.legend=self.legend+self.manage_the_rmsf_colorbar()
+
+    def truncate_colormap(self, cmap, minval=0.0, maxval=1.0, n=100):
+        new_cmap = colors.LinearSegmentedColormap.from_list(
+            'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval),
+            cmap(np.linspace(minval, maxval, n)))
+        return new_cmap
+    def manage_the_rmsf_colorbar(self):
+        for i, line in enumerate(fileinput.input("rmsf_colorbar.svg", inplace=1)):
+            if i <= 11:
+                continue
+            else:
+                sys.stdout.write(line.replace ("</svg>","</g>"))
+            with open("rmsf_colorbar.svg", "r") as f:
+                lines = f.readlines()
+                colorbar = "<g transform='translate("+str(self.molecule.x_dim)+",0)'>"+"".join(map(str,lines))
+                f.close()
+        return colorbar
     def draw_lines_in_graph(self):
         for residue in self.molecule.nearest_points_coords:
             self.draw_lines=self.draw_lines+"<line x1='"+str(int(self.molecule.nearest_points_coords[residue][0])+(self.molecule.x_dim-600)/2)+"' y1='"+str(int(self.molecule.nearest_points_coords[residue][1])+(self.molecule.y_dim-300)/2)+"' x2='"+str(float(self.molecule.atom_coords_from_diagramm[residue][0])+(self.molecule.x_dim-600)/2)+"' y2='"+str(float(self.molecule.atom_coords_from_diagramm[residue][1])+(self.molecule.y_dim-300)/2)+"' style='stroke:'red';stroke-width:2' />"

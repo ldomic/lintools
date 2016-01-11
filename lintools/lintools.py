@@ -1,6 +1,7 @@
 if __name__ == '__main__': 
 	from argparse import ArgumentParser
 	import os
+	import sys
 	import MDAnalysis
 	from topol import Topol_Data
 	from plots import Plots
@@ -34,7 +35,6 @@ if __name__ == '__main__':
 
 	assert len(args.output_name)>0, "Provide a name for output file"
 	####################################################################################################################
-
 	###  Define input specifications:
 	if args.config_file!=None:
 		config_read=Config()
@@ -102,10 +102,11 @@ if __name__ == '__main__':
 			domain_file=os.path.abspath(args.domain_file)
 		else:
 			domain_file=None
-		diagram_type=args.diagram_type
+		#diagram_type=args.diagram_type
 		analysis_type=args.analysis_type
 		cutoff=args.cutoff
  	
+
  	#######################################################################################################################
 
 	gro = MDAnalysis.Universe(topology)
@@ -145,6 +146,8 @@ if __name__ == '__main__':
 			diagram_type=config_read.diagram_type
 	else:
 		available_diagrams={1:"amino", 2:"domains",3:"clock"}
+		for diagram in available_diagrams:
+			print diagram, " : ", available_diagrams[diagram]
 		diagram_type=available_diagrams[int(raw_input("Choose diagram type:"))]
 
 
@@ -186,7 +189,10 @@ if __name__ == '__main__':
 	molecule.make_new_projection_values()
 
 
-	figure=Figure(molecule, diagram_type,hbonds,plots)
+	if analysis_type=="RMSF" or analysis_type=="rmsf":
+		figure=Figure(molecule, diagram_type,hbonds,plots,rmsf)
+	else:
+		figure=Figure(molecule, diagram_type,hbonds,plots)
 	figure.draw_hbonds_in_graph()
 	figure.put_everything_together()
 	figure.write_final_draw_file(args.output_name)
