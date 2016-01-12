@@ -117,7 +117,7 @@ class Molecule(object):
         for (index1, value1), (index2,value2) in combinations(enumerate(xy_values),2):
             f = self.calc_2d_forces(value1[0],value1[1],value2[0],value2[1],width)
             if coeff[index1] <= coeff[index2]:
-                if self.b_lenght-coeff[index2]<self.b_lenght/5: #a quick and dirty solution, but works
+                if self.b_lenght-coeff[index2]<self.b_lenght/10: #a quick and dirty solution, but works
                     forces[index1].append(f[1]) # push to left (smaller projection value) 
                     forces[index2].append(f[0])
                 else:
@@ -125,7 +125,7 @@ class Molecule(object):
                     forces[index1].append(f[0]) # push to left (smaller projection value) 
                     forces[index2].append(f[1])
             else:
-                if self.b_lenght-coeff[index1]<self.b_lenght/5: #a quick and dirty solution, but works
+                if self.b_lenght-coeff[index1]<self.b_lenght/10: #a quick and dirty solution, but works
                     forces[index1].append(f[0]) # push to left (smaller projection value) 
                     forces[index2].append(f[1])
                 else:

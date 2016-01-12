@@ -110,7 +110,7 @@ if __name__ == '__main__':
  	#######################################################################################################################
 
 	gro = MDAnalysis.Universe(topology)
-	list_of_non_ligands=["HOH","ARG","LYS","HIS","ASP","GLU","SER","THR", "ASN","GLN","PHE","TYR","TRP","CYS","GLY","PRO","ALA","VAL","ILE","LEU","MET"]
+	list_of_non_ligands=["SOL","NA","CL","HOH","ARG","LYS","HIS","ASP","GLU","SER","THR", "ASN","GLN","PHE","TYR","TRP","CYS","GLY","PRO","ALA","VAL","ILE","LEU","MET"]
 	if args.config_file!=None:
 		potential_ligands={0:"Ligand molecule from config file"}
 		i=1
@@ -193,13 +193,16 @@ if __name__ == '__main__':
 		figure=Figure(molecule, diagram_type,hbonds,plots,rmsf)
 	else:
 		figure=Figure(molecule, diagram_type,hbonds,plots)
+		#figure=Figure(molecule, diagram_type,plots)
 	figure.draw_hbonds_in_graph()
+	#figure.draw_lines_in_graph()
 	figure.put_everything_together()
 	figure.write_final_draw_file(args.output_name)
 
 	file_list=["molecule.svg"]
 	for residue in md_sim.dict_of_plotted_res.keys():
 		file_list.append(str(residue[3:])+".svg")
+
 	for f in file_list:
 		os.remove(f)
 

@@ -14,6 +14,7 @@ class Topol_Data(object):
         self.protein = None
         self.ligand = None
         self.ligand_no_H =None
+        self.protein_selection =None
         self.closest_atoms={}
         self.dict_of_plotted_res={}
         self.load_system(topology, trajectory)
@@ -30,8 +31,8 @@ class Topol_Data(object):
         self.protein = self.universe.select_atoms("protein")
         self.protein.set_resids(self.protein.resids+int(offset))
     def find_res_to_plot(self, cutoff=3.5):
-        selection = self.universe.select_atoms('protein and around '+str(cutoff)+' (segid '+str(self.ligand.segids[0])+' and resid '+str(self.ligand.resids[0])+')')
-        for atom in selection:
+        self.protein_selection = self.universe.select_atoms('protein and around '+str(cutoff)+' (segid '+str(self.ligand.segids[0])+' and resid '+str(self.ligand.resids[0])+')')
+        for atom in self.protein_selection:
             if atom.resid not in self.dict_of_plotted_res.keys():
                 #for non-analysis plots
                 self.dict_of_plotted_res[atom.resname+str(atom.resid)]=[atom.resid, 1]
@@ -48,8 +49,8 @@ class Topol_Data(object):
             i=-1
             for atom in self.ligand_no_H:
                 i+=1
-                if dist_array[atom.id].min()== dist_array.min():
-                    self.closest_atoms[residue]=atom.name,i, dist_array[atom.id].min()
+                if dist_array[i].min()== dist_array.min():
+                    self.closest_atoms[residue]=atom.name,i, dist_array[i].min()
 
 class Config(object):
     def __init__(self, topol_object=None):

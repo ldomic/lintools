@@ -11,7 +11,7 @@ class Plots(object):
     matplotlib.rcParams['patch.linewidth'] = 0  
     def __init__(self, topol_object):
         #Group amino acids by charge and structure
-        self.amino_acids = {"acidic":["ASP","GLU"], "basic":["LYS","ARG"], "aromatic":["PHE","TYR","TRP"],"polar":["SER","THR","ASN","GLN","CYS","HIS"],"hydrophobic":["ALA","VAL","ILE","LEU","MET","GLY"]}
+        self.amino_acids = {"acidic":["ASP","GLU"], "basic":["LYS","ARG"], "aromatic":["PHE","TYR","TRP"],"polar":["SER","THR","ASN","GLN","CYS","HIS","PRO"],"hydrophobic":["ALA","VAL","ILE","LEU","MET","GLY"]}
         self.colors_amino_acids = {"acidic":"#D9774B", "basic":"#889DCC", "aromatic":"#9FC74A", "polar":"#D06AC1","hydrophobic":"#6AC297"}
         self.amino_acid_type={}
         self.colors_domains ={1:"#78D035",2:"#BE4F24",3:"#7676C2",4:"#7CC2C0",5:"#42291B",6:"#BB3B83",7:"#486128",8:"#6FCD7A",9:"#A43FC8",10:"#C09584",11:"#C5AD3D",12:"#43264D", 13:"#A9A9A9"}
@@ -79,7 +79,7 @@ class Plots(object):
             plt.setp(ring1, width=1, edgecolor=self.colors_amino_acids[self.amino_acid_type[res]])
             plt.text(0,-0.55,res[0:3]+"\n"+res[3::],ha='center',size=24, fontweight="bold")
             pylab.savefig(str(res[3::])+".svg", dpi=100, transparent=True)
-        
+            
         print "Plotting..."
         
     def plot_domains_diagramms(self):

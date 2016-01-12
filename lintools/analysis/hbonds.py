@@ -26,16 +26,27 @@ class HBonds(object):
         for atom in ligand.GetSubstructMatches(self.HAcceptorSmarts, uniquify=1):
              self.acceptors.append(atom_names[atom[0]])
     def analyse_hbonds(self):
-        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe.universe,"protein",'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
+        ## Requires pdb with conect fecords
+        prot_sel = "protein and "
+        for res in self.universe.protein_selection.residues:
+            prot_sel=prot_sel+"resid "+str(res.resids[0])+" and segid "+str(res.segids[0])+" or "
+        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe.universe,prot_sel[:-3],'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
         h.run()
         h.generate_table()
         self.h_bonds = h.table
+        ligand_from_mol2 = MDAnalysis.Universe(self.mol2_file)
         for i in range(np.prod(self.h_bonds.shape)):
-            atomname = self.h_bonds[i][5]
-            for x in range(len(self.universe.ligand.atoms.bonds.bondlist)):
-                if atomname==self.universe.ligand.atoms.bonds.bondlist[x][0].name:
-                    lig_atom =  self.universe.ligand.atoms.bonds.bondlist[x][1].name
-                if atomname==self.universe.ligand.atoms.bonds.bondlist[x][1].name:
-                    lig_atom = self.universe.ligand.atoms.bonds.bondlist[x][0].name
-            results_tuple = lig_atom,self.h_bonds[i][6]+str(self.h_bonds[i][7])
+            if self.h_bonds[i][3]==self.universe.ligand.resnames[0]:
+                atomname = self.h_bonds[i][5]
+            else:
+                atomname = self.h_bonds[i][8]
+            for x in range(len(ligand_from_mol2.atoms.bonds.bondlist)):
+                if atomname==ligand_from_mol2.atoms.bonds.bondlist[x][0].name:
+                    lig_atom =  ligand_from_mol2.atoms.bonds.bondlist[x][1].name
+                if atomname==ligand_from_mol2.atoms.bonds.bondlist[x][1].name:
+                    lig_atom = ligand_from_mol2.atoms.bonds.bondlist[x][0].name
+            if self.h_bonds[i][3]==self.universe.ligand.resnames[0]:
+                results_tuple = lig_atom,self.h_bonds[i][6]+str(self.h_bonds[i][7])
+            else:
+                results_tuple = lig_atom,self.h_bonds[i][3]+str(self.h_bonds[i][4])
             self.hbonds_for_drawing.append(results_tuple)
