@@ -195,11 +195,13 @@ if __name__ == '__main__':
 		figure=Figure(molecule, diagram_type,hbonds,plots)
 		#figure=Figure(molecule, diagram_type,plots)
 	figure.draw_hbonds_in_graph()
+	figure.draw_white_circles_at_atoms()
 	#figure.draw_lines_in_graph()
 	figure.put_everything_together()
 	figure.write_final_draw_file(args.output_name)
 
-	file_list=["molecule.svg"]
+	file_list=[]
+	#file_list=["molecule.svg"]
 	for residue in md_sim.dict_of_plotted_res.keys():
 		file_list.append(str(residue[3:])+".svg")
 

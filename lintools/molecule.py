@@ -151,7 +151,7 @@ class Molecule(object):
             i=0
             xy_values =[]
             for residue in  self.nearest_points_coords:
-                b = self.a.boundary.parallel_offset(self.universe.closest_atoms[residue][2]*32.0+24,"left",join_style=2).convex_hull
+                b = self.a.boundary.parallel_offset(self.universe.closest_atoms[residue][2]*32.0+36,"left",join_style=2).convex_hull
                 self.nearest_points_projection[residue] = values[i]
                 self.nearest_points[residue] = b.boundary.interpolate(self.nearest_points_projection[residue] % b.boundary.length)
                 self.nearest_points_coords[residue] = self.nearest_points[residue].x, self.nearest_points[residue].y
