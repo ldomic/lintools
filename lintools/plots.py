@@ -106,7 +106,8 @@ class Plots(object):
     def plot_clock_diagramms(self):
         """Uses matplotlib to plot clock diagramms used for data analysis of trajectories, for example, occurance time  over timecourse of simulation"""
         #Plot the residues in clock diagramm fashion
-        colors_1=['#1f78b4','white']
+        #colors_1=['#1f78b4','white']
+        colors_1=['#5C0016','white']
         colors_2=['#33a02c','white']
         colors_3=['#6a3d9a','white']
 
@@ -117,16 +118,16 @@ class Plots(object):
                 plt.figure(figsize=(1.5, 1.5))
             if [sum(1 for x in v if x) for k,v in self.universe.dict_of_plotted_res.items()][0]==2:
                 width=0.25
-                ring1,_=plt.pie([self.universe.dict_of_plotted_res[res][1],100-self.universe.dict_of_plotted_res[res][1]],  radius=1-width, startangle=90, colors=colors_1, counterclock=False)
+                ring1,_=plt.pie([self.universe.dict_of_plotted_res[res][1],self.universe.frame_count-self.universe.dict_of_plotted_res[res][1]],  radius=1-width, startangle=90, colors=colors_1, counterclock=False)
             elif [sum(1 for x in v if x) for k,v in self.universe.dict_of_plotted_res.items()][0]==3:
                 width=0.25
-                ring1,_=plt.pie([self.universe.dict_of_plotted_res[res][1],100-self.universe.dict_of_plotted_res[res][1]],  radius=1-width, startangle=90, colors=colors_1, counterclock=False)
-                ring2,_=plt.pie([self.universe.dict_of_plotted_res[res][2],100-self.universe.dict_of_plotted_res[res][2]],  radius=1, startangle=90, colors=colors_2, counterclock=False)
+                ring1,_=plt.pie([self.universe.dict_of_plotted_res[res][1],self.universe.frame_count-self.universe.dict_of_plotted_res[res][1]],  radius=1-width, startangle=90, colors=colors_1, counterclock=False)
+                ring2,_=plt.pie([self.universe.dict_of_plotted_res[res][2],self.universe.frame_count-self.universe.dict_of_plotted_res[res][2]],  radius=1, startangle=90, colors=colors_2, counterclock=False)
             elif [sum(1 for x in v if x) for k,v in self.universe.dict_of_plotted_res.items()][0]==4:
                 width=0.25
-                ring1,_=plt.pie([self.universe.dict_of_plotted_res[res][1],100-self.universe.dict_of_plotted_res[res][1]],  radius=1-width, startangle=90, colors=colors_1, counterclock=False)
-                ring2,_=plt.pie([self.universe.dict_of_plotted_res[res][2],100-self.universe.dict_of_plotted_res[res][2]],  radius=1, startangle=90, colors=colors_2, counterclock=False)
-                ring3,_=plt.pie([self.universe.dict_of_plotted_res[res][3],100-self.universe.dict_of_plotted_res[res][3]],  radius=1+width, startangle=90, colors=colors_3, counterclock=False)
+                ring1,_=plt.pie([self.universe.dict_of_plotted_res[res][1],self.universe.frame_count-self.universe.dict_of_plotted_res[res][1]],  radius=1-width, startangle=90, colors=colors_1, counterclock=False)
+                ring2,_=plt.pie([self.universe.dict_of_plotted_res[res][2],self.universe.frame_count-self.universe.dict_of_plotted_res[res][2]],  radius=1, startangle=90, colors=colors_2, counterclock=False)
+                ring3,_=plt.pie([self.universe.dict_of_plotted_res[res][3],self.universe.frame_count-self.universe.dict_of_plotted_res[res][3]],  radius=1+width, startangle=90, colors=colors_3, counterclock=False)
             plt.axis('equal')
             if len(self.universe.dict_of_plotted_res[res])==2:
                 plt.setp(ring1, width=width)

@@ -8,9 +8,8 @@ from itertools import combinations
 class Occurance_analysis(object): 
     def __init__(self, topology, trajectory, ligand_name, cutoff, offset, topol_object):
         self.residue_counts = {}
-        self.grofile = topol_object
+        self.universe = topol_object
         self.occurance_count(topology,trajectory,ligand_name, cutoff, offset)
-        self.get_closest_residues()
     def occurance_count(self, topology, trajectory, ligand_name, cutoff, offset):
         """Counts the occurance of protein residues within a specified cutoff from a ligand and calculates which residues have been within cutoff for more than 50 ns (by default).
             :Arguments:
@@ -38,7 +37,7 @@ class Occurance_analysis(object):
            
             for frame in md_sim.trajectory:
                 if ligand_name!="not protein":
-                    selection = md_sim.select_atoms('protein and around '+str(cutoff)+' (segid '+str(self.grofile.ligand.segids[0])+' and resid '+str(self.grofile.ligand.resids[0])+')')               
+                    selection = md_sim.select_atoms('protein and around '+str(cutoff)+' (segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')               
                 else:
                     selection = md_sim.select_atoms('protein and around '+str(cutoff)+' '+ligand_name)
                 residue_list = [atom.resname+str(atom.resid) for atom in selection]
@@ -48,21 +47,20 @@ class Occurance_analysis(object):
                 if firstframe_ps == None:
                     firstframe_ps = frame.time
             
-            #Calculate the cutoff time in ns - at the moment half of the simulation time
+
             lastframe_time = max([f for f in frame_dict.keys()])
-            lastframe_time_ns = lastframe_time/1000
-            self.cutoff_time_ns = int(lastframe_time_ns/2)
+            self.universe.frame_count = len(frame_dict)
 
             self.residue_counts[i] = Counter([item for sublist in frame_dict.values() for item in sublist])
        
-
-    def get_closest_residues(self):
+    def get_closest_residues(self,input_frame_cutoff):
         """Find the list of residues to be plotted using cutoff"""
-        self.grofile.dict_of_plotted_res={}
+        frame_cutoff=int(self.universe.frame_count)*int(input_frame_cutoff)/100
+        self.universe.dict_of_plotted_res={}
         if len(self.residue_counts)==1:
             for res in self.residue_counts[1].keys():
-                if self.residue_counts[1][res]>self.cutoff_time_ns:
-                    self.grofile.dict_of_plotted_res[res]=res[3:],self.residue_counts[1][res]
+                if self.residue_counts[1][res]>frame_cutoff:
+                    self.universe.dict_of_plotted_res[res]=res[3:],self.residue_counts[1][res]
         else :
             list_of_plotted_res=[]
             new_res_list={}
@@ -77,12 +75,12 @@ class Occurance_analysis(object):
                         new_res_list[res].append(0)
             for res in new_res_list:
                 for (index1, value1),(index2, value2) in combinations(enumerate(new_res_list[res]),2):
-                    if value1>self.cutoff_time_ns and value2>self.cutoff_time_ns:
+                    if value1>frame_cutoff and value2>frame_cutoff:
                         if res not in list_of_plotted_res:
                             list_of_plotted_res.append(res)
         if len(self.residue_counts)==2:
             for residue in list_of_plotted_res:
-                self.grofile.dict_of_plotted_res[residue]=residue[3:], self.residue_counts[1][residue], self.residue_counts[2][residue]
+                self.universe.dict_of_plotted_res[residue]=residue[3:], self.residue_counts[1][residue], self.residue_counts[2][residue]
         if len(self.residue_counts)==3:
             for residue in list_of_plotted_res:
-                self.grofile.dict_of_plotted_res[residue]=residue[3:], self.residue_counts[1][residue], self.residue_counts[2][residue], self.residue_counts[3][residue]
+                self.universe.dict_of_plotted_res[residue]=residue[3:], self.residue_counts[1][residue], self.residue_counts[2][residue], self.residue_counts[3][residue]

@@ -15,6 +15,7 @@ class Topol_Data(object):
         self.ligand = None
         self.ligand_no_H =None
         self.protein_selection =None
+        self.frame_count=None
         self.closest_atoms={}
         self.dict_of_plotted_res={}
         self.load_system(topology, trajectory)
@@ -25,6 +26,7 @@ class Topol_Data(object):
             self.universe = MDAnalysis.Universe(topology)
         else:
             self.universe = MDAnalysis.Universe(topology, trajectory)
+            self.frame_count = self.universe.trajectory.n_frames
     def define_ligand(self,ligand_name):
         self.ligand = ligand_name
     def renumber_system(self, offset=0):
@@ -33,7 +35,7 @@ class Topol_Data(object):
     def find_res_to_plot(self, cutoff=3.5):
         self.protein_selection = self.universe.select_atoms('protein and around '+str(cutoff)+' (segid '+str(self.ligand.segids[0])+' and resid '+str(self.ligand.resids[0])+')')
         for atom in self.protein_selection:
-            if atom.resid not in self.dict_of_plotted_res.keys():
+            if atom.resid  not in self.dict_of_plotted_res.keys():
                 #for non-analysis plots
                 self.dict_of_plotted_res[atom.resname+str(atom.resid)]=[atom.resid, 1]
             
@@ -45,12 +47,12 @@ class Topol_Data(object):
         for residue in self.dict_of_plotted_res:
             residue_select= self.universe.select_atoms("resid "+str(self.dict_of_plotted_res[residue][0]))
             res_pos = residue_select.positions
-            dist_array = MDAnalysis.analysis.distances.distance_array(lig_pos, res_pos)
+            self.dist_array = MDAnalysis.analysis.distances.distance_array(lig_pos, res_pos)
             i=-1
             for atom in self.ligand_no_H:
                 i+=1
-                if dist_array[i].min()== dist_array.min():
-                    self.closest_atoms[residue]=atom.name,i, dist_array[i].min()
+                if self.dist_array[i].min()== self.dist_array.min():
+                    self.closest_atoms[residue]=atom.name,i, self.dist_array[i].min()
 
 class Config(object):
     def __init__(self, topol_object=None):
@@ -58,7 +60,7 @@ class Config(object):
         self.topology=None
         self.trajectory=[]
         #self.write_config_file(outname,topology,trajectory, res_offset, molecule_file, diagram_type, cutoff_distance, analysis_type, domain_file)
-    def write_config_file(self, outname, topology, trajectory, res_offset, molecule_file, diagram_type, cutoff_distance, analysis_type, domain_file):
+    def write_config_file(self, outname, topology, trajectory, res_offset, molecule_file, diagram_type, cutoff_distance, analysis_type, domain_file,analysis_cutoff):
         config_file=open(outname+"_config.txt", "w")
         config_file.write("This log file was created at "+time.strftime("%c")+" and saved as "+outname+"_config.txt. \n \n \n")
         config_file.write("Topology input file:  "+topology+"\n \n")
@@ -70,6 +72,7 @@ class Config(object):
         config_file.write("Cutoff distance:  "+str(cutoff_distance)+" Angstrom \n \n")
         config_file.write("Type of analysis used:  "+str(analysis_type)+"\n\n")
         config_file.write("Domain file:  "+str(domain_file)+"\n \n")
+        config_file.write("Analysis cutoff:  "+str(analysis_cutoff)+"\n \n")
         config_file.close()
     def read_config_file(self, config_file):
         with open(config_file,"r") as f:
@@ -95,6 +98,8 @@ class Config(object):
                 if line.startswith("Type of analysis used:"):
                     self.analysis_type=line.rsplit(":",2)[1][2:-1]
                 if line.startswith("Domain file:"):
+                    self.domain_file=line.rsplit(":",2)[1][2:-1]
+                if line.startswith("Analysis cutoff:"):
                     self.domain_file=line.rsplit(":",2)[1][2:-1]
                 if line.startswith("Selected ligand residue"):
                     self.ligand_name=[line.rsplit(":",2)[1][1:].rsplit(" ",5)[1], line.rsplit(":",2)[1][1:].rsplit(" ",5)[2], line.rsplit(":",2)[1][1:-1].rsplit(" ",5)[5]]

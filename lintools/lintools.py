@@ -21,7 +21,7 @@ if __name__ == '__main__':
 	parser.add_argument('-a', '--analysis', dest = "analysis_type", default = None, help='Select type of analysis for plotting. Available types - RMSF of ligand, occurance_analysis. (Optional, default is None.)')
 	parser.add_argument('-c', '--cutoff', dest = "cutoff", default = 3.5, help='Input cutoff distance from the ligand that is taken into account in angstroms (Example: 3.5).')
 	parser.add_argument('-ro', '--residueoffset', dest = "offset", default = 0, help='Input the number of offset residues for the protein. (Optional, default is 0)')
-	#parser.add_argument('-d', '--diagram_type', dest = "diagram_type", default=None, help='Input type of diagramm required. Options: "clock" for clock diagrams (Only available with trajectory present), "domains" for diagrams representing residue membership to certain domains (requires user input to determine domains), "amino" showing the amino acid type')
+	parser.add_argument('-ac', '--analysis_cutoff', dest = "analysis_cutoff", default=30, help='Analysis cutoff - a feature has to appear for at least a third of the simulation to be counted. Default: 30')
 	parser.add_argument('-df', '--domain_file', dest = "domain_file", default=None, help='Input file for domains of your protein. To see the required format, check README or our GitHub page')
 	parser.add_argument('-m', '--mol2_file', dest = "mol2_file", default=None, help="Input the name of the mol2 file.")
 	parser.add_argument('-conf', '--config_file', dest = "config_file", default=None, help="Input the name of the config file.")
@@ -85,6 +85,11 @@ if __name__ == '__main__':
 			cutoff=args.cutoff
 		else:
 			cutoff=config_read.cutoff
+		#Analysis cutoff
+		if args.analysis_cutoff!=30:
+			analysis_cutoff=args.analysis_cutoff
+		else:
+			analysis_cutoff=config_read.analysis_cutoff
 	else:
 		assert len(args.grofile)>0, "Provide an input topology file"
 		topology=os.path.abspath(args.grofile)
@@ -105,6 +110,7 @@ if __name__ == '__main__':
 		#diagram_type=args.diagram_type
 		analysis_type=args.analysis_type
 		cutoff=args.cutoff
+		analysis_cutoff=args.analysis_cutoff
  	
 
  	#######################################################################################################################
@@ -140,12 +146,32 @@ if __name__ == '__main__':
 					ligand_name=potential_ligands[ligand]
 
 	if args.config_file!=None:
-		available_diagrams={0:"From config file", 1:"amino", 2:"domains",3:"clock"}
+		if args.domain_file!=None:
+			if args.analysis_type=="occurance":
+				available_diagrams={0:"From config file",1:"amino", 2:"domains",3:"clock"}
+			else:
+				available_diagrams={0:"From config file", 1:"amino", 2:"domains"}
+		else:
+			if args.analysis_type=="occurance":
+				available_diagrams={0:"From config file",1:"amino", 2:"clock"}
+			else:
+				available_diagrams={0:"From config file",1:"amino", 2:"clock"}
+		for diagram in available_diagrams:
+			print diagram, " : ", available_diagrams[diagram]
 		diagram_type=available_diagrams[int(raw_input("Choose diagram type:"))]
 		if diagram_type=="From config file":
 			diagram_type=config_read.diagram_type
 	else:
-		available_diagrams={1:"amino", 2:"domains",3:"clock"}
+		if args.domain_file!=None:
+			if args.analysis_type=="occurance":
+				available_diagrams={1:"amino", 2:"domains",3:"clock"}
+			else:
+				available_diagrams={1:"amino", 2:"domains"}
+		else:
+			if args.analysis_type=="occurance":
+				available_diagrams={1:"amino", 2:"clock"}
+			else:
+				available_diagrams={1:"amino"}
 		for diagram in available_diagrams:
 			print diagram, " : ", available_diagrams[diagram]
 		diagram_type=available_diagrams[int(raw_input("Choose diagram type:"))]
@@ -156,7 +182,10 @@ if __name__ == '__main__':
 	if analysis_type=="occurance":
 		md_sim = Topol_Data(topology, None, ligand_name, offset)
 		occurance = Occurance_analysis(topology, trajectory, ligand_name, cutoff, offset, md_sim)
-	else: #if analysis type is anything different only one traj at time is going to be analysed
+		occurance.get_closest_residues(analysis_cutoff)
+		hbonds = HBonds(md_sim, molecule_file, analysis_cutoff,topology,trajectory)
+	else: 
+	#if analysis type is anything different only one traj at time is going to be analysed
 		assert trajectory is None or len(trajectory)<=1, "Only one trajectory at the time can be analysed."
 		if trajectory	is None:
 			md_sim = Topol_Data(topology, trajectory, ligand_name, offset)
@@ -164,9 +193,9 @@ if __name__ == '__main__':
 			md_sim = Topol_Data(topology, trajectory[0], ligand_name, offset)
 
 		md_sim.find_res_to_plot(cutoff)
+		hbonds = HBonds(md_sim, molecule_file,analysis_cutoff)
 	md_sim.get_closest_ligand_atoms()
 
-	hbonds = HBonds(md_sim, molecule_file)
 
 	plots = Plots(md_sim)
 	if diagram_type=="amino":
@@ -185,8 +214,7 @@ if __name__ == '__main__':
 	if analysis_type=="RMSF" or analysis_type=="rmsf":
 		rmsf = RMSF_measurements(md_sim)
 		molecule = Molecule(molecule_file, md_sim, rmsf)
-	molecule.convex_hull()
-	molecule.make_new_projection_values()
+
 
 
 	if analysis_type=="RMSF" or analysis_type=="rmsf":
@@ -196,12 +224,13 @@ if __name__ == '__main__':
 		#figure=Figure(molecule, diagram_type,plots)
 	figure.draw_hbonds_in_graph()
 	figure.draw_white_circles_at_atoms()
-	#figure.draw_lines_in_graph()
+	
+	figure.draw_lines_in_graph() #a function for debugging purposes
 	figure.put_everything_together()
 	figure.write_final_draw_file(args.output_name)
 
 	file_list=[]
-	#file_list=["molecule.svg"]
+	file_list=["molecule.svg"]
 	for residue in md_sim.dict_of_plotted_res.keys():
 		file_list.append(str(residue[3:])+".svg")
 
@@ -209,7 +238,7 @@ if __name__ == '__main__':
 		os.remove(f)
 
 	config_write = Config(md_sim)
-	config_write.write_config_file(args.output_name, topology, trajectory, offset, molecule_file, diagram_type, cutoff, analysis_type, domain_file)
+	config_write.write_config_file(args.output_name, topology, trajectory, offset, molecule_file, diagram_type, cutoff, analysis_type, domain_file,analysis_cutoff)
 	print "Ready!"
 
 	print "The figure you created has been saved under filename "+args.output_name+".svg"
