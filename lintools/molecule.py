@@ -132,13 +132,13 @@ class Molecule(object):
                 forces[index1].append(f[0])
                 forces[index2].append(f[1])
             else:
-                if coeff[index1] <= coeff[index2]:
+                if coeff[index1] < coeff[index2]: #tere: changed <=
                     if self.b_lenght-coeff[index2]<self.b_lenght/10: #a quick and dirty solution, but works
                         forces[index1].append(f[1]) # push to left (smaller projection value) 
                         forces[index2].append(f[0])
                     else:
                         #all is normal
-                        forces[index1].append(f[0]) # push to left (smaller projection value) 
+                        forces[index1].append(f[0]) # push to right (smaller projection value)
                         forces[index2].append(f[1])
                 else:
                     if self.b_lenght-coeff[index1]<self.b_lenght/10: #a quick and dirty solution, but works
@@ -148,6 +148,7 @@ class Molecule(object):
                     #if all is normal
                         forces[index1].append(f[1]) # push to left (smaller projection value) 
                         forces[index2].append(f[0])
+
         forces = {k:sum(v) for k,v in forces.items()}
         
         energy = sum([abs(x) for x in forces.values()])
@@ -168,7 +169,7 @@ class Molecule(object):
             values, energy = self.do_step(values,xy_values,coeff_value, width=100)
             i=0
             xy_values =[]
-            for residue in  self.nearest_points_coords:
+            for residue in self.nearest_points_coords:
                 b = self.a.boundary.parallel_offset(self.universe.closest_atoms[residue][1]*32.0+36,"left",join_style=2).convex_hull
                 self.nearest_points_projection[residue] = values[i]
                 self.nearest_points[residue] = b.boundary.interpolate(self.nearest_points_projection[residue] % b.boundary.length)
@@ -188,7 +189,7 @@ class Molecule(object):
 
     def make_multiple_hulls(self):
         for residue in self.atom_coords_from_diagramm:
-            b = self.a.boundary.parallel_offset(self.universe.closest_atoms[residue][1]*32.0+36,"left",join_style=2).convex_hull
+            b = self.a.boundary.parallel_offset(self.universe.closest_atoms[residue][1]*32.0+25,"left",join_style=2).convex_hull
             point =geometry.Point((self.atom_coords_from_diagramm[residue][0],self.atom_coords_from_diagramm[residue][1]))
             self.nearest_points_projection[residue] = (b.boundary.project(point) % b.boundary.length)
             self.nearest_points[residue] = b.boundary.interpolate(self.nearest_points_projection[residue] % b.boundary.length)
