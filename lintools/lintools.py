@@ -152,7 +152,7 @@ if __name__ == '__main__':
 			else:
 				available_diagrams={0:"From config file", 1:"amino", 2:"domains"}
 		else:
-			if args.analysis_type=="occurance":
+			if args.analysis_type=="occurance" or len(trajectory)>0:
 				available_diagrams={0:"From config file",1:"amino", 2:"clock"}
 			else:
 				available_diagrams={0:"From config file",1:"amino", 2:"clock"}
@@ -168,7 +168,8 @@ if __name__ == '__main__':
 			else:
 				available_diagrams={1:"amino", 2:"domains"}
 		else:
-			if args.analysis_type=="occurance":
+			if args.analysis_type=="occurance" or trajectory!=None:
+			#if args.analysis_type=="occurance":
 				available_diagrams={1:"amino", 2:"clock"}
 			else:
 				available_diagrams={1:"amino"}
@@ -189,12 +190,15 @@ if __name__ == '__main__':
 		assert trajectory is None or len(trajectory)<=1, "Only one trajectory at the time can be analysed."
 		if trajectory	is None:
 			md_sim = Topol_Data(topology, trajectory, ligand_name, offset)
+			md_sim.find_res_to_plot(cutoff)
+			hbonds = HBonds(md_sim, molecule_file,analysis_cutoff)
 		else:
 			md_sim = Topol_Data(topology, trajectory[0], ligand_name, offset)
+			occurance = Occurance_analysis(topology, trajectory, ligand_name, cutoff, offset, md_sim)
+			occurance.get_closest_residues(analysis_cutoff)
+			hbonds = HBonds(md_sim, molecule_file,analysis_cutoff,topology,trajectory)
 
-		md_sim.find_res_to_plot(cutoff)
-		hbonds = HBonds(md_sim, molecule_file,analysis_cutoff)
-	md_sim.get_closest_ligand_atoms()
+	md_sim.get_closest_ligand_atoms(hbonds)
 
 
 	plots = Plots(md_sim)
@@ -206,7 +210,6 @@ if __name__ == '__main__':
 		plots.define_domains(domain_file, offset)
 		plots.plot_domains_diagramms()
 	if diagram_type=="clock":
-		assert analysis_type=="occurance", "Only occurance can be plotted with clock diagrams"
 		plots.plot_clock_diagramms()
 
 

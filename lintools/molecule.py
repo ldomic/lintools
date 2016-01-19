@@ -67,10 +67,10 @@ class Molecule(object):
                 if line.startswith("<ellipse"): 
                     ligand_atom_coords.append([float(line.rsplit("'",10)[1]), float(line.rsplit("'",10)[3])]) 
                     self.ligand_atom_coords_from_diagr[ligand_atoms[i]]=[float(line.rsplit("'",10)[1]), float(line.rsplit("'",10)[3])]
-                    for atom in range(len(self.universe.closest_atoms.keys())):
-                        if self.universe.closest_atoms.values()[atom][1]==i:
-                            self.atom_coords_from_diagramm[self.universe.closest_atoms.keys()[atom]] = [float(line.rsplit("'",10)[1]), float(line.rsplit("'",10)[3]),self.universe.closest_atoms.values()[atom][0]]
                     i+=1
+            for atom in self.universe.closest_atoms:
+                self.atom_coords_from_diagramm[atom] = [self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[atom][0]][0],self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[atom][0]][1],  self.universe.closest_atoms[atom][0]]
+                    
         ligand_atom_coords=np.array(ligand_atom_coords)  
         # Get the convex hull around ligand atoms 
         self.a = geometry.MultiPoint(ligand_atom_coords).convex_hull
@@ -84,6 +84,8 @@ class Molecule(object):
             self.b_lenght = b.boundary.length
         sorted_projections=sorted(self.b_for_all.items(), key=operator.itemgetter(1))
         self.big_item=sorted_projections[-1]
+        self.big_item2=sorted_projections[-2]
+        self.small_item=sorted_projections[0]
         self.make_multiple_hulls()
         
         
@@ -123,9 +125,12 @@ class Molecule(object):
         for (index1, value1), (index2,value2) in combinations(enumerate(xy_values),2):
             f = self.calc_2d_forces(value1[0],value1[1],value2[0],value2[1],width)
             #start by dealing with the biggest value at all
-            if coeff[index1]==self.big_item[1]:
+            if coeff[index1]==self.big_item[1] and coeff[index2]!=self.big_item[1] :  
                 forces[index1].append(f[1])
                 forces[index2].append(f[0])
+            if coeff[index2]==self.big_item[1] and coeff[index1]!=self.big_item[1] :
+                forces[index1].append(f[0])
+                forces[index2].append(f[1])
             else:
                 if coeff[index1] <= coeff[index2]:
                     if self.b_lenght-coeff[index2]<self.b_lenght/10: #a quick and dirty solution, but works
@@ -164,14 +169,14 @@ class Molecule(object):
             i=0
             xy_values =[]
             for residue in  self.nearest_points_coords:
-                b = self.a.boundary.parallel_offset(self.universe.closest_atoms[residue][2]*32.0+36,"left",join_style=2).convex_hull
+                b = self.a.boundary.parallel_offset(self.universe.closest_atoms[residue][1]*32.0+36,"left",join_style=2).convex_hull
                 self.nearest_points_projection[residue] = values[i]
                 self.nearest_points[residue] = b.boundary.interpolate(self.nearest_points_projection[residue] % b.boundary.length)
                 self.nearest_points_coords[residue] = self.nearest_points[residue].x, self.nearest_points[residue].y
                 xy_values.append(self.nearest_points_coords[residue])
-                #if residue=="TYR953":
-                #    sorted_projections=sorted(self.nearest_points_projection.items(), key=operator.itemgetter(1))
-                #    print self.nearest_points_projection[residue], sorted_projections[-1]
+                if residue=="ALA987":
+                    sorted_projections=sorted(self.nearest_points_projection.items(), key=operator.itemgetter(1))
+                    print self.nearest_points_projection[residue], sorted_projections[1], sorted_projections[-1]
                 i+=1
             values = [v for v in self.nearest_points_projection.values()]
         self.x_dim  = max(x[0] for i,x in enumerate(xy_values))-min(x[0] for i,x in enumerate(xy_values))+250.00
@@ -183,7 +188,7 @@ class Molecule(object):
 
     def make_multiple_hulls(self):
         for residue in self.atom_coords_from_diagramm:
-            b = self.a.boundary.parallel_offset(self.universe.closest_atoms[residue][2]*32.0+36,"left",join_style=2).convex_hull
+            b = self.a.boundary.parallel_offset(self.universe.closest_atoms[residue][1]*32.0+36,"left",join_style=2).convex_hull
             point =geometry.Point((self.atom_coords_from_diagramm[residue][0],self.atom_coords_from_diagramm[residue][1]))
             self.nearest_points_projection[residue] = (b.boundary.project(point) % b.boundary.length)
             self.nearest_points[residue] = b.boundary.interpolate(self.nearest_points_projection[residue] % b.boundary.length)
