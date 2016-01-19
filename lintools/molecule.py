@@ -132,7 +132,7 @@ class Molecule(object):
                 forces[index1].append(f[0])
                 forces[index2].append(f[1])
             else:
-                if coeff[index1] < coeff[index2]: #tere: changed <=
+                if coeff[index1] < coeff[index2]:
                     if self.b_lenght-coeff[index2]<self.b_lenght/10: #a quick and dirty solution, but works
                         forces[index1].append(f[1]) # push to left (smaller projection value) 
                         forces[index2].append(f[0])
