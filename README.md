@@ -4,7 +4,7 @@ LINTools (or Ligand Interaction Network Tools) is an open source program fully w
 
 #Dependencies
 LINTools require these packages:
-* RDKit (instalation instructions with Anaconda available from RDKit GitHub account: https://github.com/rdkit/conda-rdkit)
+* RDKit (installation instructions with Anaconda available from RDKit GitHub account: https://github.com/rdkit/conda-rdkit)
 * Shapely (available on GitHub https://github.com/Toblerity/Shapely)
 * MDAnalysis (available on GitHub https://github.com/MDAnalysis/mdanalysis)
 
