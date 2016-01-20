@@ -25,7 +25,7 @@ if __name__ == '__main__':
 	parser.add_argument('-df', '--domain_file', dest = "domain_file", default=None, help='Input file for domains of your protein. To see the required format, check README or our GitHub page')
 	parser.add_argument('-m', '--mol2_file', dest = "mol2_file", default=None, help="Input the name of the mol2 file.")
 	parser.add_argument('-conf', '--config_file', dest = "config_file", default=None, help="Input the name of the config file.")
-
+	parser.add_argument('--no_hbonds', dest='hydr_bonds', action="store_true")
 
 	args = parser.parse_args()
 
@@ -179,21 +179,27 @@ if __name__ == '__main__':
 		md_sim = Topol_Data(topology, None, ligand_name, offset)
 		occurence = Occurence_analysis(topology, trajectory, ligand_name, cutoff, offset, md_sim)
 		occurence.get_closest_residues(analysis_cutoff)
-		hbonds = HBonds(md_sim, molecule_file,topology, trajectory, ligand_name, offset,analysis_cutoff)
+		if args.hydr_bonds!=True:
+			hbonds = HBonds(md_sim, molecule_file,topology, trajectory, ligand_name, offset,analysis_cutoff)
 	else: 
 	#if analysis type is anything different only one traj at time is going to be analysed
 		assert trajectory is None or len(trajectory)<=1, "Only one trajectory at the time can be analysed."
 		if trajectory	is None:
 			md_sim = Topol_Data(topology, trajectory, ligand_name, offset)
 			md_sim.find_res_to_plot(cutoff)
-			hbonds = HBonds(md_sim, molecule_file,topology, trajectory, ligand_name, offset,analysis_cutoff)
+			if args.hydr_bonds!=True:
+				hbonds = HBonds(md_sim, molecule_file,topology, trajectory, ligand_name, offset,analysis_cutoff)
 		else:
 			md_sim = Topol_Data(topology, None, ligand_name, offset)
 			occurence = Occurence_analysis(topology, trajectory, ligand_name, cutoff, offset, md_sim)
 			occurence.get_closest_residues(analysis_cutoff)
-			hbonds = HBonds(md_sim, molecule_file,topology, trajectory, ligand_name, offset,analysis_cutoff)
+			if args.hydr_bonds!=True:
+				hbonds = HBonds(md_sim, molecule_file,topology, trajectory, ligand_name, offset,analysis_cutoff)
 
-	md_sim.get_closest_ligand_atoms(hbonds)
+	if args.hydr_bonds!=True:
+		md_sim.get_closest_ligand_atoms(hbonds)
+	else:
+		md_sim.get_closest_ligand_atoms()
 
 
 	plots = Plots(md_sim)
@@ -216,11 +222,17 @@ if __name__ == '__main__':
 
 
 	if analysis_type=="RMSF" or analysis_type=="rmsf":
-		figure=Figure(molecule, diagram_type,hbonds,plots,rmsf)
+		if args.hydr_bonds!=True:
+			figure=Figure(molecule, diagram_type,hbonds,plots,rmsf)
+		else:
+			figure=Figure(molecule, diagram_type,plots,rmsf)
 	else:
-		figure=Figure(molecule, diagram_type,hbonds,plots)
-		#figure=Figure(molecule, diagram_type,plots)
-	figure.draw_hbonds_in_graph()
+		if args.hydr_bonds!=True:
+			figure=Figure(molecule, diagram_type,hbonds,plots)
+		else:
+			figure=Figure(molecule, diagram_type,plots)
+	if args.hydr_bonds!=True:
+		figure.draw_hbonds_in_graph()
 	figure.draw_white_circles_at_atoms()
 	
 	figure.draw_lines_in_graph() #a function for debugging purposes
