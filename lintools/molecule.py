@@ -132,7 +132,6 @@ class Molecule(object):
         forces = {k:[] for k,i in enumerate(xy_values)}
         for (index1, value1), (index2,value2) in combinations(enumerate(xy_values),2):
             f = self.calc_2d_forces(value1[0],value1[1],value2[0],value2[1],width)
-            #start by dealing with the biggest value at all
             if coeff[index1] < coeff[index2]:
                 if self.b_lenght-coeff[index2]<self.b_lenght/10: #a quick and dirty solution, but works
                     forces[index1].append(f[1]) # push to left (smaller projection value) 
@@ -142,7 +141,6 @@ class Molecule(object):
                     forces[index1].append(f[0]) # push to left (smaller projection value) 
                     forces[index2].append(f[1])
             else:
-<<<<<<< HEAD
                 if self.b_lenght-coeff[index1]<self.b_lenght/10: #a quick and dirty solution, but works
                     forces[index1].append(f[0]) # push to left (smaller projection value) 
                     forces[index2].append(f[1])
@@ -150,25 +148,6 @@ class Molecule(object):
                 #if all is normal
                     forces[index1].append(f[1]) # push to left (smaller projection value) 
                     forces[index2].append(f[0])
-=======
-                if coeff[index1] < coeff[index2]:
-                    if self.b_lenght-coeff[index2]<self.b_lenght/10: #a quick and dirty solution, but works
-                        forces[index1].append(f[1]) # push to left (smaller projection value) 
-                        forces[index2].append(f[0])
-                    else:
-                        #all is normal
-                        forces[index1].append(f[0]) # push to right (smaller projection value)
-                        forces[index2].append(f[1])
-                else:
-                    if self.b_lenght-coeff[index1]<self.b_lenght/10: #a quick and dirty solution, but works
-                        forces[index1].append(f[0]) # push to left (smaller projection value) 
-                        forces[index2].append(f[1])
-                    else:
-                    #if all is normal
-                        forces[index1].append(f[1]) # push to left (smaller projection value) 
-                        forces[index2].append(f[0])
-
->>>>>>> 04ec6acd67fe306900377c1df9ed6799a3a3f114
         forces = {k:sum(v) for k,v in forces.items()}
         
         energy = sum([abs(x) for x in forces.values()])
@@ -189,7 +168,7 @@ class Molecule(object):
             values, energy = self.do_step(values,xy_values,coeff_value, width=90)
             i=0
             xy_values =[]
-            for residue in self.nearest_points_coords:
+            for residue in  self.nearest_points_coords:
                 b = self.a.boundary.parallel_offset(self.universe.closest_atoms[residue][1]*32.0+36,"left",join_style=2).convex_hull
                 self.nearest_points_projection[residue] = values[i]
                 self.nearest_points[residue] = b.boundary.interpolate(self.nearest_points_projection[residue] % b.boundary.length)
@@ -207,7 +186,6 @@ class Molecule(object):
     def make_multiple_hulls(self):
         for residue in self.atom_coords_from_diagramm:
             b = self.a.boundary.parallel_offset(self.universe.closest_atoms[residue][1]*32.0+25,"left",join_style=2).convex_hull
-<<<<<<< HEAD
             if len(self.universe.closest_atoms[residue])==2:
                 point =geometry.Point((self.atom_coords_from_diagramm[residue][0],self.atom_coords_from_diagramm[residue][1]))
                 self.nearest_points_projection[residue] = (b.boundary.project(point) % b.boundary.length)
@@ -217,9 +195,5 @@ class Molecule(object):
                 proj1 =(b.boundary.project(point1) % b.boundary.length)
                 proj2=(b.boundary.project(point2) % b.boundary.length)
                 self.nearest_points_projection[residue] = (proj1+proj2)/2
-=======
-            point =geometry.Point((self.atom_coords_from_diagramm[residue][0],self.atom_coords_from_diagramm[residue][1]))
-            self.nearest_points_projection[residue] = (b.boundary.project(point) % b.boundary.length)
->>>>>>> 04ec6acd67fe306900377c1df9ed6799a3a3f114
             self.nearest_points[residue] = b.boundary.interpolate(self.nearest_points_projection[residue] % b.boundary.length)
             self.nearest_points_coords[residue]=self.nearest_points[residue].x,self.nearest_points[residue].y
