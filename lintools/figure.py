@@ -19,7 +19,7 @@ class Figure(object):
         self.hbonds = hbonds_object
         self.plots = plot_object
         self.rmsf = rmsf_object
-        self.legend = None
+        self.legend = ""
         self.make_legends(diagram_type)
         self.add_bigger_box(diagram_type)
         self.manage_the_plots(diagram_type)
@@ -66,6 +66,8 @@ class Figure(object):
                 self.draw_plots=self.draw_plots+"</g>"
     def add_bigger_box(self, diagram_type):
         """Rewrite the molecule.svg file line by line, otherwise it fails."""
+        if self.rmsf!=None:
+            self.molecule.x_dim=self.molecule.x_dim+150
         start1 = "width='600px' height='300px' >"
         start2 = "<rect style='opacity:1.0;fill:#FFFFFF;stroke:none' width='600' height='300' x='0' y='0'> </rect>"
         bigger_box ="width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim)+"px' > "
@@ -108,18 +110,19 @@ class Figure(object):
                 y+=50
             self.legend=self.legend+"</g>"
         if self.rmsf!=None:
+            print "Making colorbar"
             fig = plt.figure(figsize=(1, 8))
             ax1 = fig.add_axes([0, 0, 0.5, 0.9])
             cmap = plt.get_cmap("hsv")
             new_cmap = self.truncate_colormap(cmap,0.0,0.33)
-            norm = matplotlib.colors.Normalize(vmin=self.rmsf.min_value, vmax=self.rmsf.max_value)
-            print "The minimal value is "+str(self.rmsf.min_value)
+            norm = matplotlib.colors.Normalize(vmin=int(self.rmsf.min_value), vmax=int(self.rmsf.max_value))
             cb1 = matplotlib.colorbar.ColorbarBase(ax1, cmap=new_cmap,
                                             norm=norm,
                                             orientation='vertical')
-            cb1.set_label('Angstroms')
+            cb1.set_label('RMSF',size=19, fontweight='bold')
             pylab.savefig("rmsf_colorbar.svg", dpi=100, transparent=True)
             self.legend=self.legend+self.manage_the_rmsf_colorbar()
+
 
     def truncate_colormap(self, cmap, minval=0.0, maxval=1.0, n=100):
         new_cmap = colors.LinearSegmentedColormap.from_list(
@@ -132,9 +135,11 @@ class Figure(object):
                 continue
             else:
                 sys.stdout.write(line.replace ("</svg>","</g>"))
+        y_dim = (self.molecule.y_dim-519.12-56.88)/2
+        print y_dim
         with open("rmsf_colorbar.svg", "r") as f:
             lines = f.readlines()
-            colorbar = "<g transform='translate("+str(self.molecule.x_dim)+",0)'> "+"".join(map(str,lines))
+            colorbar = "<g transform='translate("+str(self.molecule.x_dim+50)+","+str(y_dim)+")'> "+"".join(map(str,lines))
             f.close()
         return colorbar
     def draw_white_circles_at_atoms(self):

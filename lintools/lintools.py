@@ -25,7 +25,9 @@ if __name__ == '__main__':
 	parser.add_argument('-df', '--domain_file', dest = "domain_file", default=None, help='Input file for domains of your protein. To see the required format, check README or our GitHub page')
 	parser.add_argument('-m', '--mol2_file', dest = "mol2_file", default=None, help="Input the name of the mol2 file.")
 	parser.add_argument('-conf', '--config_file', dest = "config_file", default=None, help="Input the name of the config file.")
-	parser.add_argument('--no_hbonds', dest='hydr_bonds', action="store_true")
+	parser.add_argument('--no_hbonds', dest='hydr_bonds', action="store_true", help="The hydrogen bonds will not be detected.")
+	parser.add_argument('--debug', dest='debug', action="store_true", help="Functions for debugging.")
+
 
 	args = parser.parse_args()
 
@@ -142,7 +144,7 @@ if __name__ == '__main__':
 
 	if args.config_file!=None:
 		if args.domain_file!=None:
-			if args.analysis_type=="occurence":
+			if args.analysis_type=="occurence" or len(trajectory)>0:
 				available_diagrams={0:"From config file",1:"amino", 2:"domains",3:"clock"}
 			else:
 				available_diagrams={0:"From config file", 1:"amino", 2:"domains"}
@@ -158,12 +160,12 @@ if __name__ == '__main__':
 			diagram_type=config_read.diagram_type
 	else:
 		if args.domain_file!=None:
-			if args.analysis_type=="occurence":
+			if args.analysis_type=="occurence" or len(trajectory)>0:
 				available_diagrams={1:"amino", 2:"domains",3:"clock"}
 			else:
 				available_diagrams={1:"amino", 2:"domains"}
 		else:
-			if args.analysis_type=="occurence":
+			if args.analysis_type=="occurence" or len(trajectory)>0:
 			#if args.analysis_type=="occurence":
 				available_diagrams={1:"amino", 2:"clock"}
 			else:
@@ -225,7 +227,7 @@ if __name__ == '__main__':
 		if args.hydr_bonds!=True:
 			figure=Figure(molecule, diagram_type,hbonds,plots,rmsf)
 		else:
-			figure=Figure(molecule, diagram_type,plots,rmsf)
+			figure=Figure(molecule, diagram_type,plot_object=plots,rmsf_object=rmsf)
 	else:
 		if args.hydr_bonds!=True:
 			figure=Figure(molecule, diagram_type,hbonds,plots)
@@ -234,8 +236,8 @@ if __name__ == '__main__':
 	if args.hydr_bonds!=True:
 		figure.draw_hbonds_in_graph()
 	figure.draw_white_circles_at_atoms()
-	
-	figure.draw_lines_in_graph() #a function for debugging purposes
+	if args.debug==True:
+		figure.draw_lines_in_graph() #a function for debugging purposes
 	figure.put_everything_together()
 	figure.write_final_draw_file(args.output_name)
 
