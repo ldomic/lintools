@@ -6,21 +6,18 @@ from MDAnalysis.analysis import hbonds
 import numpy as np
 
 class HBonds(object):
-    def __init__(self,topol_object, mol2_file, frame_cutoff,topology=None, trajectory=None):
+    def __init__(self,topol_object, mol2_file, topology, trajectory, ligand_name,offset,frame_cutoff):
         self.HDonorSmarts = Chem.MolFromSmarts('[$([N;!H0;v3]),$([N;!H0;+1;v4]),$([O,S;H1;+0]),$([n;H1;+0])]')
         haccep = "[$([O,S;H1;v2]-[!$(*=[O,N,P,S])]),$([O,S;H0;v2]),$([O,S;-]),$([N;v3;!$(N-*=!@[O,N,P,S])]),$([nH0,o,s;+0])]"
         self.HAcceptorSmarts = Chem.MolFromSmarts(haccep) 
         self.donors = []
         self.acceptors = []
+        self.universe=topol_object
         self.h_bonds = None
         self.hbonds_for_drawing = []
-        self.universe = topol_object
         self.mol2_file = mol2_file
-        self.topology=topology
-        self.trajectory=trajectory
         self.find_donors_and_acceptors_in_ligand()
-        #self.analyse_hbonds()
-        self.analyse_hbonds_new(frame_cutoff)
+        self.analyse_hbonds(topology, trajectory, ligand_name,offset,frame_cutoff)
     def find_donors_and_acceptors_in_ligand(self):
         atom_names=[x.name for x in self.universe.ligand]
         ligand = Chem.MolFromMol2File(self.mol2_file,removeHs=False)
@@ -28,50 +25,31 @@ class HBonds(object):
             self.donors.append(atom_names[atom[0]])
         for atom in ligand.GetSubstructMatches(self.HAcceptorSmarts, uniquify=1):
              self.acceptors.append(atom_names[atom[0]])
-    def analyse_hbonds_new(self,frame_cutoff):
+    def analyse_hbonds(self,topology, trajectory, ligand_name,offset,frame_cutoff):
         prot_sel = "protein and "
         for res in self.universe.dict_of_plotted_res.values():
             prot_sel=prot_sel+"resid "+str(res[0])+" or "
-        if self.topology is None:
-            h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe.universe,prot_sel[:-3],'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
+        if trajectory is None:
+            md_sim = Topol_Data(topology,None,ligand_name,offset)
+            h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(md_sim.ligand.segids[0])+' and resid '+str(md_sim.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
             h.run()
             h.generate_table()  
-            self.h_bonds=h.table     
+            self.h_bonds=h.table  
         else:
-            if len(self.trajectory)==1:
-                md_sim=MDAnalysis.Universe(self.topology,self.trajectory[0])
-                #h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe.universe,prot_sel[:-3],"resid 74745" ,acceptors=self.acceptors,donors=self.donors)
-                h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe, '(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',prot_sel[:-3] ,acceptors=self.acceptors,donors=self.donors)
+            md_sim = Topol_Data(topology,None,ligand_name,offset)
+            h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(md_sim.ligand.segids[0])+' and resid '+str(md_sim.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
+            h.run()
+            h.generate_table()  
+            self.h_bonds=h.table  
+            i=0
+            for traj in trajectory:
+                i+=1
+                md_sim = Topol_Data(topology,traj,ligand_name, offset)
+                h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(ligand_name.segids[0])+' and resid '+str(ligand_name.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
                 h.run()
                 h.generate_table()  
-                self.h_bonds=h.table  
-            if len(self.trajectory)==2:
-                md_sim=MDAnalysis.Universe(self.topology,self.trajectory[0])
-                h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
-                h.run()
-                h.generate_table()  
-                self.h_bonds=h.table
-                md_sim=MDAnalysis.Universe(self.topology,self.trajectory[1])
-                h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
-                h.run()
-                h.generate_table()  
-                np.vstack((self.h_bonds,h.table))
-            if len(self.trajectory)==3:   
-                md_sim=MDAnalysis.Universe(self.topology,self.trajectory[0])
-                h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
-                h.run()
-                h.generate_table()  
-                self.h_bonds=h.table  
-                md_sim=MDAnalysis.Universe(self.topology,self.trajectory[1])
-                h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
-                h.run()
-                h.generate_table()  
-                np.vstack((self.h_bonds,h.table))
-                md_sim=MDAnalysis.Universe(self.topology,self.trajectory[2])
-                h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
-                h.run()
-                h.generate_table()  
-                np.vstack((self.h_bonds,h.table))
+                print h.table.shape
+                self.h_bonds=np.hstack((self.h_bonds,h.table)) 
         self.distance = h.distance
         #h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe.universe,"protein",'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
         ligand_from_mol2 = MDAnalysis.Universe(self.mol2_file) 
@@ -98,5 +76,9 @@ class HBonds(object):
             else:
                 self.hbond_frequency[results_tuple]=int(self.hbond_frequency[results_tuple])+1
         for bond in self.hbond_frequency:
-            if self.hbond_frequency[bond]>self.universe.frame_count*frame_cutoff/100:
-                self.hbonds_for_drawing.append(bond)
+            if trajectory!=None:
+                if self.hbond_frequency[bond]>self.universe.frame_count*len(trajectory)*frame_cutoff/100:
+                    self.hbonds_for_drawing.append(bond)
+            else:
+                if self.hbond_frequency[bond]>self.universe.frame_count*frame_cutoff/100:
+                    self.hbonds_for_drawing.append(bond)

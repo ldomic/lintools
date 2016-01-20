@@ -98,7 +98,6 @@ class Figure(object):
             self.legend = self.legend+legend
         if diagram_type=="domains":
             sorted_dom = sorted(self.plots.plotted_domains)
- 
             self.legend="<g transform='translate("+str(self.molecule.x_dim)+",0)'>"
             y=50
             for dom in sorted_dom:
@@ -109,8 +108,8 @@ class Figure(object):
                 y+=50
             self.legend=self.legend+"</g>"
         if self.rmsf!=None:
-            fig = plt.figure(figsize=(3, 8))
-            ax1 = fig.add_axes([0.1, 0, 0.5, 0.9])
+            fig = plt.figure(figsize=(1, 8))
+            ax1 = fig.add_axes([0, 0, 0.5, 0.9])
             cmap = plt.get_cmap("hsv")
             new_cmap = self.truncate_colormap(cmap,0.0,0.33)
             norm = matplotlib.colors.Normalize(vmin=self.rmsf.min_value, vmax=self.rmsf.max_value)
@@ -129,14 +128,14 @@ class Figure(object):
         return new_cmap
     def manage_the_rmsf_colorbar(self):
         for i, line in enumerate(fileinput.input("rmsf_colorbar.svg", inplace=1)):
-            if i <= 11:
+            if i <= 19:
                 continue
             else:
                 sys.stdout.write(line.replace ("</svg>","</g>"))
-            with open("rmsf_colorbar.svg", "r") as f:
-                lines = f.readlines()
-                colorbar = "<g transform='translate("+str(self.molecule.x_dim)+",0)'>"+"".join(map(str,lines))
-                f.close()
+        with open("rmsf_colorbar.svg", "r") as f:
+            lines = f.readlines()
+            colorbar = "<g transform='translate("+str(self.molecule.x_dim)+",0)'> "+"".join(map(str,lines))
+            f.close()
         return colorbar
     def draw_white_circles_at_atoms(self):
         #for atom in self.molecule.atom_coords_from_diagramm:

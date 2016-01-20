@@ -9,7 +9,7 @@ if __name__ == '__main__':
 	from figure import Figure
 	from analysis.hbonds import HBonds
 	from analysis.rmsf import RMSF_measurements
-	from analysis.occurance import Occurance_analysis
+	from analysis.occurence import Occurence_analysis
 	from topol import Config
 
 	#################################################################################################################
@@ -18,7 +18,7 @@ if __name__ == '__main__':
 	parser.add_argument('-t', '--topology', dest = 'grofile', default=None, help='Input File name of topology file. Accepts gro, pdb files')
 	parser.add_argument('-x', '--trajectory', dest = "xtcfile", nargs="*", default=None, help='Input File name of trajectory file(s). Accepts up to 3 xtc files (Optional. Default: None)')
 	parser.add_argument('-o', '--outname', dest = "output_name", help='Name of the output files.')
-	parser.add_argument('-a', '--analysis', dest = "analysis_type", default = None, help='Select type of analysis for plotting. Available types - RMSF of ligand, occurance_analysis. (Optional, default is None.)')
+	parser.add_argument('-a', '--analysis', dest = "analysis_type", default = None, help='Select type of analysis for plotting. Available types - RMSF, occurence. (Optional, default is None.)')
 	parser.add_argument('-c', '--cutoff', dest = "cutoff", default = 3.5, help='Input cutoff distance from the ligand that is taken into account in angstroms (Example: 3.5).')
 	parser.add_argument('-ro', '--residueoffset', dest = "offset", default = 0, help='Input the number of offset residues for the protein. (Optional, default is 0)')
 	parser.add_argument('-ac', '--analysis_cutoff', dest = "analysis_cutoff", default=30, help='Analysis cutoff - a feature has to appear for at least a third of the simulation to be counted. Default: 30')
@@ -70,11 +70,6 @@ if __name__ == '__main__':
 			domain_file=os.path.abspath(args.domain_file)
 		else:
 			domain_file=config_read.domain_file
-		# Diagram type
-		#if args.diagram_type!=None:
-		#	diagram_type=args.diagram_type
-		#else:
-		#	diagram_type=config_read.diagram_type
 		# Analysis type
 		if args.analysis_type!=None:
 			analysis_type= args.analysis_type
@@ -147,12 +142,12 @@ if __name__ == '__main__':
 
 	if args.config_file!=None:
 		if args.domain_file!=None:
-			if args.analysis_type=="occurance":
+			if args.analysis_type=="occurence":
 				available_diagrams={0:"From config file",1:"amino", 2:"domains",3:"clock"}
 			else:
 				available_diagrams={0:"From config file", 1:"amino", 2:"domains"}
 		else:
-			if args.analysis_type=="occurance" or len(trajectory)>0:
+			if args.analysis_type=="occurence" or len(trajectory)>0:
 				available_diagrams={0:"From config file",1:"amino", 2:"clock"}
 			else:
 				available_diagrams={0:"From config file",1:"amino", 2:"clock"}
@@ -163,13 +158,13 @@ if __name__ == '__main__':
 			diagram_type=config_read.diagram_type
 	else:
 		if args.domain_file!=None:
-			if args.analysis_type=="occurance":
+			if args.analysis_type=="occurence":
 				available_diagrams={1:"amino", 2:"domains",3:"clock"}
 			else:
 				available_diagrams={1:"amino", 2:"domains"}
 		else:
-			if args.analysis_type=="occurance" or trajectory!=None:
-			#if args.analysis_type=="occurance":
+			if args.analysis_type=="occurence":
+			#if args.analysis_type=="occurence":
 				available_diagrams={1:"amino", 2:"clock"}
 			else:
 				available_diagrams={1:"amino"}
@@ -180,23 +175,23 @@ if __name__ == '__main__':
 
 	#############################################################################################################
 
-	if analysis_type=="occurance":
+	if analysis_type=="occurence":
 		md_sim = Topol_Data(topology, None, ligand_name, offset)
-		occurance = Occurance_analysis(topology, trajectory, ligand_name, cutoff, offset, md_sim)
-		occurance.get_closest_residues(analysis_cutoff)
-		hbonds = HBonds(md_sim, molecule_file, analysis_cutoff,topology,trajectory)
+		occurence = Occurence_analysis(topology, trajectory, ligand_name, cutoff, offset, md_sim)
+		occurence.get_closest_residues(analysis_cutoff)
+		hbonds = HBonds(md_sim, molecule_file,topology, trajectory, ligand_name, offset,analysis_cutoff)
 	else: 
 	#if analysis type is anything different only one traj at time is going to be analysed
 		assert trajectory is None or len(trajectory)<=1, "Only one trajectory at the time can be analysed."
 		if trajectory	is None:
 			md_sim = Topol_Data(topology, trajectory, ligand_name, offset)
 			md_sim.find_res_to_plot(cutoff)
-			hbonds = HBonds(md_sim, molecule_file,analysis_cutoff)
+			hbonds = HBonds(md_sim, molecule_file,topology, trajectory, ligand_name, offset,analysis_cutoff)
 		else:
-			md_sim = Topol_Data(topology, trajectory[0], ligand_name, offset)
-			occurance = Occurance_analysis(topology, trajectory, ligand_name, cutoff, offset, md_sim)
-			occurance.get_closest_residues(analysis_cutoff)
-			hbonds = HBonds(md_sim, molecule_file,analysis_cutoff,topology,trajectory)
+			md_sim = Topol_Data(topology, None, ligand_name, offset)
+			occurence = Occurence_analysis(topology, trajectory, ligand_name, cutoff, offset, md_sim)
+			occurence.get_closest_residues(analysis_cutoff)
+			hbonds = HBonds(md_sim, molecule_file,topology, trajectory, ligand_name, offset,analysis_cutoff)
 
 	md_sim.get_closest_ligand_atoms(hbonds)
 
@@ -215,7 +210,7 @@ if __name__ == '__main__':
 
 	molecule = Molecule(molecule_file, md_sim)
 	if analysis_type=="RMSF" or analysis_type=="rmsf":
-		rmsf = RMSF_measurements(md_sim)
+		rmsf = RMSF_measurements(md_sim,topology, trajectory, ligand_name, offset)
 		molecule = Molecule(molecule_file, md_sim, rmsf)
 
 

@@ -24,12 +24,12 @@ class Topol_Data(object):
         self.renumber_system(offset)
     def load_system(self, topology, trajectory):
         if trajectory is None:
-            self.universe = MDAnalysis.Universe(topology)
             self.topology=MDAnalysis.Universe(topology)
+            self.universe = MDAnalysis.Universe(topology)
             self.frame_count = self.universe.trajectory.n_frames
         else:
-            self.universe = MDAnalysis.Universe(topology, trajectory)
             self.topology=MDAnalysis.Universe(topology)
+            self.universe = MDAnalysis.Universe(topology, trajectory)
             self.frame_count = self.universe.trajectory.n_frames
     def define_ligand(self,ligand_name):
         self.ligand = ligand_name
@@ -60,19 +60,26 @@ class Topol_Data(object):
                 i+=1
                 if dist_array[i].min()== dist_array.min():
                     self.closest_atoms[residue]=atom.name, dist_array[i].min()
-        
-        check_hbonds={}
-        for atom in self.closest_atoms:
-            check_hbonds[atom]=[]
-            i=-1
-            for res in self.hbonds.hbonds_for_drawing:
-                i+=1
-                if atom ==self.hbonds.hbonds_for_drawing[i][1]:
-                    check_hbonds[atom].append(self.hbonds.hbonds_for_drawing[i][0])
-        
-        for atom in check_hbonds:
-            if len(check_hbonds[atom])==1 and check_hbonds[atom]!=self.closest_atoms[atom][0]:
-                self.closest_atoms[atom]=check_hbonds[atom][0],self.hbonds.distance
+
+        if self.hbonds!=None:
+            check_hbonds={}
+            for atom in self.closest_atoms:
+                check_hbonds[atom]=[]
+                i=-1
+                for res in self.hbonds.hbonds_for_drawing:
+                    i+=1
+                    if atom ==self.hbonds.hbonds_for_drawing[i][1]:
+                        check_hbonds[atom].append(self.hbonds.hbonds_for_drawing[i][0])
+            
+            for atom in check_hbonds:
+                if len(check_hbonds[atom])==1 and check_hbonds[atom]!=self.closest_atoms[atom][0]:
+                    self.closest_atoms[atom]=check_hbonds[atom][0],self.hbonds.distance
+                if len(check_hbonds[atom])==2:
+                    closest_dist=self.closest_atoms[atom]
+                    if check_hbonds[atom][0]==closest_dist[0]:
+                        self.closest_atoms[atom]=closest_dist[0],closest_dist[1],check_hbonds[atom][1],self.hbonds.distance
+                    else:
+                        self.closest_atoms[atom]=closest_dist[0],closest_dist[1],check_hbonds[atom][0],self.hbonds.distance
         
 
 

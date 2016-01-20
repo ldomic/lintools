@@ -104,10 +104,10 @@ class Plots(object):
         print "Plotting..."
 
     def plot_clock_diagramms(self):
-        """Uses matplotlib to plot clock diagramms used for data analysis of trajectories, for example, occurance time  over timecourse of simulation"""
+        """Uses matplotlib to plot clock diagramms used for data analysis of trajectories, for example, occurence time  over timecourse of simulation"""
         #Plot the residues in clock diagramm fashion
-        #colors_1=['#1f78b4','white']
-        colors_1=['#5C0016','white']
+        colors_1=['#1f78b4','white']
+        #colors_1=['#5C0016','white']
         colors_2=['#33a02c','white']
         colors_3=['#6a3d9a','white']
 
