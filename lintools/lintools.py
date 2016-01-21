@@ -144,14 +144,14 @@ if __name__ == '__main__':
 
 	if args.config_file!=None:
 		if args.domain_file!=None:
-			if args.analysis_type=="occurence" or len(trajectory)>0:
+			if args.analysis_type=="occurence" or trajectory!=None:
 				available_diagrams={0:"From config file",1:"amino", 2:"domains",3:"clock"}
-			else:
+			if trajectory==None:
 				available_diagrams={0:"From config file", 1:"amino", 2:"domains"}
 		else:
-			if args.analysis_type=="occurence" or len(trajectory)>0:
+			if args.analysis_type=="occurence" or trajectory!=None:
 				available_diagrams={0:"From config file",1:"amino", 2:"clock"}
-			else:
+			if trajectory==None:
 				available_diagrams={0:"From config file",1:"amino", 2:"clock"}
 		for diagram in available_diagrams:
 			print diagram, " : ", available_diagrams[diagram]
@@ -160,15 +160,15 @@ if __name__ == '__main__':
 			diagram_type=config_read.diagram_type
 	else:
 		if args.domain_file!=None:
-			if args.analysis_type=="occurence" or len(trajectory)>0:
+			if args.analysis_type=="occurence" or trajectory!=None:
 				available_diagrams={1:"amino", 2:"domains",3:"clock"}
-			else:
+			if trajectory==None:
 				available_diagrams={1:"amino", 2:"domains"}
 		else:
-			if args.analysis_type=="occurence" or len(trajectory)>0:
+			if args.analysis_type=="occurence" or trajectory!=None:
 			#if args.analysis_type=="occurence":
 				available_diagrams={1:"amino", 2:"clock"}
-			else:
+			if trajectory==None:
 				available_diagrams={1:"amino"}
 		for diagram in available_diagrams:
 			print diagram, " : ", available_diagrams[diagram]
