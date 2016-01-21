@@ -86,10 +86,8 @@ class Topol_Data(object):
     def get_closest_ligand_atoms_new(self):
         """Finds the ligand atom that is closest to a particular residue"""
         ## Selecting ligand without hydrogen atoms as these are not depicted in the RDKit fig
-
         self.ligand_no_H = self.universe.select_atoms('segid '+str(self.ligand.segids[0])+' and resid '+str(self.ligand.resids[0])+" and not name H*")
         for residue in self.dict_of_plotted_res:
-            print residue
             residue_select= self.universe.select_atoms("resid "+str(self.dict_of_plotted_res[residue][0]))
             dist_array=[]
             for ts in self.universe.trajectory:

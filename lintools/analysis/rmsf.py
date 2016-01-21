@@ -17,8 +17,6 @@ class RMSF_measurements(object):
                 i+=1
                 md_sim = Topol_Data(topology,traj,ligand_name, offset)
                 ligand_no_H=md_sim.universe.select_atoms('segid '+str(ligand_name.segids[0])+' and resid '+str(ligand_name.resids[0])+" and not name H*")
-
-        print md_sim.ligand_no_H
         R = MDAnalysis.analysis.rms.RMSF(ligand_no_H)
         R.run()
         rmsf_list = R.rmsf.tolist()

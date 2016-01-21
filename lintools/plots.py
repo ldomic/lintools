@@ -33,15 +33,15 @@ class Plots(object):
                 if len(line.rsplit(";",5))==3:
                     domains[int(line.rsplit(";",5)[0])]=([],line.rsplit(";",5)[2])
                 if len(line.rsplit(";",5))==4:
-                    domains[int(line.rsplit(";",5)[0])]=([],line.rsplit(";",5)[2],line.rsplit(";",5)[3])
+                    domains[int(line.rsplit(";",5)[0])]=([],line.rsplit(";",5)[2],line.rsplit(";",5)[3][:7])
                 if len(line.rsplit(";",5))==5:
-                    domains[int(line.rsplit(";",5)[0])]=([],line.rsplit(";",5)[2],line.rsplit(";",5)[3],line.rsplit(";",5)[4])
-                for i in range(len(line.rsplit(";",5)[1].rsplit(",",20))):
-                    if len(line.rsplit(";",5)[1].rsplit(",",20)[i].rsplit("-",2))>1:
-                        for num in range(int(line.rsplit(";",5)[1].rsplit(",",20)[i].rsplit("-",2)[0]),int(line.rsplit(";",5)[1].rsplit(",",20)[i].rsplit("-",2)[1])+1):
+                    domains[int(line.rsplit(";",5)[0])]=([],line.rsplit(";",5)[2],line.rsplit(";",5)[3][:7],line.rsplit(";",5)[4])
+                for i in range(len(line.rsplit(";",5)[1].rsplit(",",50))):
+                    if len(line.rsplit(";",5)[1].rsplit(",",50)[i].rsplit("-",2))>1:
+                        for num in range(int(line.rsplit(";",5)[1].rsplit(",",50)[i].rsplit("-",2)[0]),int(line.rsplit(";",5)[1].rsplit(",",50)[i].rsplit("-",2)[1])+1):
                             domains[int(line.rsplit(";",5)[0])][0].append(num)
                     else:
-                        domains[int(line.rsplit(";",5)[0])][0].append(int(line.rsplit(";",5)[1].rsplit(",",20)[i]))
+                        domains[int(line.rsplit(";",5)[0])][0].append(int(line.rsplit(";",5)[1].rsplit(",",50)[i]))
         for domain in domains:
             for res in self.universe.dict_of_plotted_res:
                 if int(res[3::]) in domains[domain][0] and len(domains[domain])==2:
@@ -51,7 +51,11 @@ class Plots(object):
                 if int(res[3::]) in domains[domain][0] and len(domains[domain])==4:
                     #extra checks for dashes
                     if str(domains[domain][2])=="None":
+                        print res
+                        if res not in self.residues_within_domain.keys():
+                            self.residues_within_domain[res]=[domain, domains[domain][1],"#A9A9A9",domains[domain][3]]
                         self.residues_within_domain[res][3]=[domains[domain][3]]
+                        print self.residues_within_domain[res]
                         domain_description=[domain, domains[domain][1],"#A9A9A9",domains[domain][3]]
                         if domain_description not in self.plotted_domains:
                             #domain_description=[domain, domains[domain][1],"#A9A9A9",domains[domain][3]]

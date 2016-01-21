@@ -37,7 +37,10 @@ class Figure(object):
                     else:
                         sys.stdout.write(line.replace ("</svg>","</g>"))
                 input1 = "</defs>"
-                output1 = "<g transform='translate("+str(int(self.molecule.nearest_points_coords[residue][0]+(self.molecule.x_dim-600)/2)-54)+","+str(int(self.molecule.nearest_points_coords[residue][1]+(self.molecule.y_dim-300)/2)-54)+")'>"
+                if self.rmsf!=None:
+                    output1 = "<g transform='translate("+str(int(self.molecule.nearest_points_coords[residue][0]+(self.molecule.x_dim-600)/2)-154)+","+str(int(self.molecule.nearest_points_coords[residue][1]+(self.molecule.y_dim-300)/2)-54)+")'>" # add 100 to the left to have better alignment
+                else:
+                    output1 = "<g transform='translate("+str(int(self.molecule.nearest_points_coords[residue][0]+(self.molecule.x_dim-600)/2)-54)+","+str(int(self.molecule.nearest_points_coords[residue][1]+(self.molecule.y_dim-300)/2)-54)+")'>"
                 self.change_lines_in_svg(str(residue[3:])+'.svg', input1, output1)
                 input2 = "font-style:normal;"
                 output2 = "font-style:normal;font-weight:bold;"
@@ -50,7 +53,10 @@ class Figure(object):
         else:
             self.draw_plots=""
             for residue in self.plots.residues_within_domain:
-                transform = "<g transform='translate("+str(int(self.molecule.nearest_points_coords[residue][0]+(self.molecule.x_dim-600)/2)-54)+","+str(int(self.molecule.nearest_points_coords[residue][1]+(self.molecule.y_dim-300)/2)-54)+")'>"
+                if self.rmsf!=None:
+                    transform = "<g transform='translate("+str(int(self.molecule.nearest_points_coords[residue][0]+(self.molecule.x_dim-600)/2)-154)+","+str(int(self.molecule.nearest_points_coords[residue][1]+(self.molecule.y_dim-300)/2)-54)+")'>"  
+                else:
+                    transform = "<g transform='translate("+str(int(self.molecule.nearest_points_coords[residue][0]+(self.molecule.x_dim-600)/2)-54)+","+str(int(self.molecule.nearest_points_coords[residue][1]+(self.molecule.y_dim-300)/2)-54)+")'>"
                 path = "<rect style='fill:none' width='108' height='108' x='0' y='0' />"
                 circle = "<circle cx='54' cy='54' r='38' stroke='"+str(self.plots.residues_within_domain[residue][2])+"' stroke-width='10' fill='white' />"
                 dashed_circle =  "<circle cx='54' cy='54' r='38' stroke='"+str(self.plots.residues_within_domain[residue][2])+"' stroke-width='10' fill='white' stroke-dasharray='10,5'" 
@@ -67,22 +73,21 @@ class Figure(object):
     def add_bigger_box(self, diagram_type):
         """Rewrite the molecule.svg file line by line, otherwise it fails."""
         if self.rmsf!=None:
-            self.molecule.x_dim=self.molecule.x_dim+150
+            self.molecule.x_dim=self.molecule.x_dim+100
+        if diagram_type=="domains":
+            self.molecule.x_dim=self.molecule.x_dim+300
+        if diagram_type=="amino":
+            self.molecule.y_dim=self.molecule.y_dim+60
         start1 = "width='600px' height='300px' >"
         start2 = "<rect style='opacity:1.0;fill:#FFFFFF;stroke:none' width='600' height='300' x='0' y='0'> </rect>"
         bigger_box ="width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim)+"px' > "
-        big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim)+"px' x='0' y='0'> </rect> <g transform='translate("+str((self.molecule.x_dim-600)/2)+","+str((self.molecule.y_dim-300)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='600' height='300' x='0' y='0' /> "
-        domain_box = "width='"+str(self.molecule.x_dim+300)+"px' height='"+str(self.molecule.y_dim)+"px' > "
-        amino_box = "width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim+60)+"px' > "
+        if self.rmsf!=None:
+            big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim)+"px' x='0' y='0'> </rect> <g transform='translate("+str((self.molecule.x_dim-600)/2-100)+","+str((self.molecule.y_dim-300)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='600' height='300' x='0' y='0' /> "
+        else:
+            big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim)+"px' x='0' y='0'> </rect> <g transform='translate("+str((self.molecule.x_dim-600)/2)+","+str((self.molecule.y_dim-300)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='600' height='300' x='0' y='0' /> "
         self.end_symbol = "</svg>"
         no_end_symbol = "</g>"
-        num_lines = sum(1 for line in open('molecule.svg'))
-        if diagram_type=="domains":
-            self.change_lines_in_svg("molecule.svg", start1, domain_box)
-        if diagram_type=="amino":
-            self.change_lines_in_svg("molecule.svg", start1, amino_box)
-        else:
-            self.change_lines_in_svg("molecule.svg", start1, bigger_box)
+        self.change_lines_in_svg("molecule.svg", start1, bigger_box)
         self.change_lines_in_svg("molecule.svg", start2, big_box2)
         self.change_lines_in_svg("molecule.svg", self.end_symbol, no_end_symbol)
         with open("molecule.svg","r") as f:
@@ -99,8 +104,14 @@ class Figure(object):
                 f.close()
             self.legend = self.legend+legend
         if diagram_type=="domains":
+            if self.rmsf!=None:
+                x_dim=self.molecule.x_dim+100
+                y_dim= (self.molecule.y_dim-519.12-56.88)/2
+            else:
+                x_dim=self.molecule.x_dim
+                y_dim=0
             sorted_dom = sorted(self.plots.plotted_domains)
-            self.legend="<g transform='translate("+str(self.molecule.x_dim)+",0)'>"
+            self.legend="<g transform='translate("+str(x_dim)+","+str(y_dim)+")'>"
             y=50
             for dom in sorted_dom:
                 if dom[3][0][0]=="Y":
@@ -136,10 +147,9 @@ class Figure(object):
             else:
                 sys.stdout.write(line.replace ("</svg>","</g>"))
         y_dim = (self.molecule.y_dim-519.12-56.88)/2
-        print y_dim
         with open("rmsf_colorbar.svg", "r") as f:
             lines = f.readlines()
-            colorbar = "<g transform='translate("+str(self.molecule.x_dim+50)+","+str(y_dim)+")'> "+"".join(map(str,lines))
+            colorbar = "<g transform='translate(10,"+str(y_dim)+")'> "+"".join(map(str,lines))
             f.close()
         return colorbar
     def draw_white_circles_at_atoms(self):

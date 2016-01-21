@@ -48,7 +48,6 @@ class HBonds(object):
                 h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(ligand_name.segids[0])+' and resid '+str(ligand_name.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
                 h.run()
                 h.generate_table()  
-                print h.table.shape
                 self.h_bonds=np.hstack((self.h_bonds,h.table)) 
         self.distance = h.distance
         #h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe.universe,"protein",'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)

@@ -176,12 +176,14 @@ class Molecule(object):
                 xy_values.append(self.nearest_points_coords[residue])
                 i+=1
             values = [v for v in self.nearest_points_projection.values()]
-        self.x_dim  = max(x[0] for i,x in enumerate(xy_values))-min(x[0] for i,x in enumerate(xy_values))+250.00
+        #self.x_dim  = max(x[0] for i,x in enumerate(xy_values))-min(x[0] for i,x in enumerate(xy_values))+250.00
+        self.x_dim  = max(x[0] for i,x in enumerate(xy_values))+250.00
+
         self.y_dim = max(x[1] for i,x in enumerate(xy_values))-min(x[1] for i,x in enumerate(xy_values))+250.00
         if self.x_dim<600:
-            self.x_dim=600+216
+            self.x_dim=600+250
         if self.y_dim<300:
-            self.y_dim=300+216
+            self.y_dim=300+250
 
     def make_multiple_hulls(self):
         for residue in self.atom_coords_from_diagramm:
