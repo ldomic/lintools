@@ -5,7 +5,7 @@ from rdkit import Chem
 from collections import Counter
 from itertools import combinations
 
-class Occurence_analysis(object): 
+class Occurrence_analysis(object): 
     def __init__(self, topology, trajectory, ligand_name, cutoff, offset, topol_object):
         self.residue_counts = {}
         self.universe = topol_object
@@ -53,7 +53,7 @@ class Occurence_analysis(object):
 
             self.residue_counts[i] = Counter([item for sublist in frame_dict.values() for item in sublist])
        
-    def get_closest_residues(self,input_frame_cutoff):
+    def get_closest_residues_old(self,input_frame_cutoff):
         """Find the list of residues to be plotted using cutoff"""
         frame_cutoff=int(self.universe.frame_count)*int(input_frame_cutoff)/100
         self.universe.dict_of_plotted_res={}
@@ -84,3 +84,44 @@ class Occurence_analysis(object):
         if len(self.residue_counts)==3:
             for residue in list_of_plotted_res:
                 self.universe.dict_of_plotted_res[residue]=residue[3:], self.residue_counts[1][residue], self.residue_counts[2][residue], self.residue_counts[3][residue]
+
+
+    def get_closest_residues(self,input_frame_cutoff):
+         """Find the list of residues to be plotted using cutoff"""
+         frame_cutoff=int(self.universe.frame_count)*int(input_frame_cutoff)/100
+         self.universe.dict_of_plotted_res={}
+         if len(self.residue_counts)==1:
+             for res in self.residue_counts[1].keys():
+                 if self.residue_counts[1][res]>frame_cutoff:
+                     self.universe.dict_of_plotted_res[res]=res[3:],self.residue_counts[1][res]
+         else :
+             list_of_plotted_res=[]
+             new_res_list={}
+             for xtc in self.residue_counts:
+                 for res in self.residue_counts[xtc]:
+                    new_res_list[res]=[]
+             for res in new_res_list:
+                 for xtc in self.residue_counts:
+                     if res in self.residue_counts[xtc].keys():
+                         new_res_list[res].append(self.residue_counts[xtc][res])
+                     else:
+                         new_res_list[res].append(0)
+             if len(self.residue_counts)<4:
+                 for res in new_res_list:
+                     for (index1, value1),(index2, value2) in combinations(enumerate(new_res_list[res]),2):
+                         if value1>frame_cutoff and value2>frame_cutoff:
+                             if res not in list_of_plotted_res:
+                                 list_of_plotted_res.append(res)
+             else: 
+                 for res in new_res_list:
+                     for (index1, value1),(index2, value2),(index3,value3) in combinations(enumerate(new_res_list[res]),3):
+                         if value1>frame_cutoff and value2>frame_cutoff and value3>frame_cutoff:
+                             if res not in list_of_plotted_res:
+                                 list_of_plotted_res.append(res)
+
+         if len(self.residue_counts)>1:
+             for residue in list_of_plotted_res:
+                 res_counts_tuple = [residue[3:],self.residue_counts[1][residue]]
+                 for count in range(2, len(self.residue_counts)+1):
+                     res_counts_tuple.append(self.residue_counts[count][residue])
+                     self.universe.dict_of_plotted_res[residue] = tuple(res_counts_tuple) 

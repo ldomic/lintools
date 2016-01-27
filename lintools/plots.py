@@ -107,7 +107,7 @@ class Plots(object):
                 pylab.savefig(str(res[3::])+".svg", dpi=100, transparent=True)
         print "Plotting..."
 
-    def plot_clock_diagramms(self):
+    def plot_clock_diagramms_old(self):
         """Uses matplotlib to plot clock diagramms used for data analysis of trajectories, for example, occurrence time  over timecourse of simulation"""
         #Plot the residues in clock diagramm fashion
         colors_1=['#1f78b4','white']
@@ -145,3 +145,18 @@ class Plots(object):
             pylab.savefig(str(res[3::])+".svg", dpi=100, transparent=True)
             #plt.show()
         print "Plotting..."
+    def plot_clock_diagramms(self):
+        """Uses matplotlib to plot clock diagramms used for data analysis of trajectories, for example, occurrence time  over timecourse of simulation"""
+        colors = [['#00441b','white'], ['#1b7837','white'],['#5aae61','white'], ['#9970ab','white'], ['#762a83','white']['#40004b','white']]
+        for res in self.universe.dict_of_plotted_res.keys():
+            plt.figure(figsize=(1.5, 1.5))
+            ring_number=[sum(1 for x in v if x) for k,v in self.universe.dict_of_plotted_res.items()][0]
+            width=0.75/ring_number
+            rings=[]
+            for ring in range(1,ring_number):
+                ring,_=plt.pie([self.universe.dict_of_plotted_res[res][ring],self.universe.frame_count-self.universe.dict_of_plotted_res[res][ring]],  radius=0.6+width*ring, startangle=90, colors=colors[ring-1], counterclock=False)
+                rings=rings+ring
+            plt.setp(rings, width=width)
+            plt.text(0,-0.3,res[0:3]+"\n"+res[3::],ha='center',size=13, fontweight='bold')
+            pylab.savefig(str(res[3::])+".svg", dpi=100, transparent=True)
+

@@ -21,8 +21,9 @@ class Figure(object):
         self.rmsf = rmsf_object
         self.legend = ""
         self.make_legends(diagram_type)
-        self.add_bigger_box(diagram_type)
         self.manage_the_plots(diagram_type)
+        self.add_bigger_box(diagram_type)
+        print self.rmsf
     def change_lines_in_svg(self,filename, string1,string2):
         for i,line in enumerate(fileinput.input(filename, inplace=1)):
             sys.stdout.write(line.replace(str(string1),str(string2)))
@@ -73,16 +74,18 @@ class Figure(object):
     def add_bigger_box(self, diagram_type):
         """Rewrite the molecule.svg file line by line, otherwise it fails."""
         if self.rmsf!=None:
+            x_dim=self.molecule.x_dim
             self.molecule.x_dim=self.molecule.x_dim+100
         if diagram_type=="domains":
+            x_dim=self.molecule.x_dim
             self.molecule.x_dim=self.molecule.x_dim+300
         if diagram_type=="amino":
-            self.molecule.y_dim=self.molecule.y_dim+60
+            y_dim=self.molecule.y_dim+60
         start1 = "width='600px' height='300px' >"
         start2 = "<rect style='opacity:1.0;fill:#FFFFFF;stroke:none' width='600' height='300' x='0' y='0'> </rect>"
         bigger_box ="width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim)+"px' > "
         if self.rmsf!=None:
-            big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim)+"px' x='0' y='0'> </rect> <g transform='translate("+str((self.molecule.x_dim-600)/2-100)+","+str((self.molecule.y_dim-300)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='600' height='300' x='0' y='0' /> "
+            big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim)+"px' x='0' y='0'> </rect> <g transform='translate("+str((x_dim-600)/2-100)+","+str((self.molecule.y_dim-300)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='600' height='300' x='0' y='0' /> "
         else:
             big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim)+"px' x='0' y='0'> </rect> <g transform='translate("+str((self.molecule.x_dim-600)/2)+","+str((self.molecule.y_dim-300)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='600' height='300' x='0' y='0' /> "
         self.end_symbol = "</svg>"
