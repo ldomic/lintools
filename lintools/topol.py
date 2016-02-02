@@ -80,7 +80,15 @@ class Topol_Data(object):
                         self.closest_atoms[atom]=closest_dist[0],closest_dist[1],check_hbonds[atom][1],self.hbonds.distance
                     else:
                         self.closest_atoms[atom]=closest_dist[0],closest_dist[1],check_hbonds[atom][0],self.hbonds.distance
-        
+                if len(check_hbonds[atom])==3:
+                    closest_dist=self.closest_atoms[atom]
+                    if check_hbonds[atom][0]==closest_dist[0]:
+                        self.closest_atoms[atom]=closest_dist[0],closest_dist[1],check_hbonds[atom][1],self.hbonds.distance, check_hbonds[atom][2],self.hbonds.distance
+                    if check_hbonds[atom][1]==closest_dist[0]:
+                        self.closest_atoms[atom]=closest_dist[0],closest_dist[1],check_hbonds[atom][0],self.hbonds.distance, check_hbonds[atom][2],self.hbonds.distance
+                    if check_hbonds[atom][2]==closest_dist[0]:
+                        self.closest_atoms[atom]=closest_dist[0],closest_dist[1],check_hbonds[atom][0],self.hbonds.distance, check_hbonds[atom][1],self.hbonds.distance
+
 
 
     def get_closest_ligand_atoms_new(self):

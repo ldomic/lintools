@@ -136,11 +136,13 @@ if __name__ == '__main__':
 		for lig in potential_ligands:			
 			print lig, potential_ligands[lig].resnames[0], potential_ligands[lig].resids[0], potential_ligands[lig].segids[0]
 	ligand_name=potential_ligands[int(raw_input( "Choose a ligand to analyse:"))]
+	print ligand_name, ligand_name.resids[0], ligand_name.segids[0]
 	if args.config_file!=None:
 		if ligand_name==potential_ligands[0]:
 			for ligand in potential_ligands.keys()[1:]:
 				if potential_ligands[ligand].resnames[0]==config_read.ligand_name[0] and potential_ligands[ligand].resids[0]==int(config_read.ligand_name[1]) and potential_ligands[ligand].segids[0]==config_read.ligand_name[2]:
 					ligand_name=potential_ligands[ligand]
+
 
 	if args.config_file!=None:
 		if args.domain_file!=None:
