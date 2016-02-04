@@ -88,19 +88,14 @@ class Molecule(object):
                 point2 =geometry.Point((self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][2]][0],self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][2]][1]))
                 proj1 = (b.boundary.project(point1) % b.boundary.length) 
                 proj2 = (b.boundary.project(point2) % b.boundary.length) 
-                print residue, proj1, proj2, b.boundary.length
                 self.b_for_all[residue] = (proj1+proj2)/2
                 if abs(proj1-proj2)>b.boundary.length/2:
-                    print "That should not be"
                     if proj1>proj2:
-                        print proj1, proj2
                         proj1=proj1-b.boundary.length
                         self.b_for_all[residue] = (proj1+proj2)/2
                     else:
-                        print proj1, proj2
                         proj2=proj2-b.boundary.length
                         self.b_for_all[residue] = (proj1+proj2)/2
-                    print residue, proj1, proj2, b.boundary.length, self.b_for_all[residue]
                 self.b_lenght = b.boundary.length
             if len(self.universe.closest_atoms[residue])==6:
                 point1 =geometry.Point((self.atom_coords_from_diagramm[residue][0],self.atom_coords_from_diagramm[residue][1]))
@@ -109,7 +104,23 @@ class Molecule(object):
                 proj1 =(b.boundary.project(point1) % b.boundary.length)
                 proj2=(b.boundary.project(point2) % b.boundary.length)
                 proj3=(b.boundary.project(point3) % b.boundary.length)
-                print proj1,proj2,proj3
+                if abs(proj1-proj2)>b.boundary.length/3 :
+                    if proj1>proj2:
+                        proj1=proj1-b.boundary.length
+                    else:
+                        proj2=proj2-b.boundary.length
+                if abs(proj2-proj3)>b.boundary.length/3 :
+                    if proj2>proj3:
+                        proj2=proj2-b.boundary.length
+
+                    else:
+                        proj3=proj3-b.boundary.length
+                if abs(proj1-proj3)>b.boundary.length/3:
+                    #one large value
+                    if proj1>proj3:
+                        proj1=proj1-b.boundary.length
+                    else:
+                        proj3=proj3-b.boundary.length
                 self.b_for_all[residue] = (proj1+proj2+proj3)/3
                 self.b_lenght = b.boundary.length
         sorted_projections=sorted(self.b_for_all.items(), key=operator.itemgetter(1))
@@ -196,8 +207,6 @@ class Molecule(object):
                 self.nearest_points[residue] = b.boundary.interpolate(self.nearest_points_projection[residue] % b.boundary.length)
                 self.nearest_points_coords[residue] = self.nearest_points[residue].x, self.nearest_points[residue].y
                 xy_values.append(self.nearest_points_coords[residue])
-                if residue=="GLU162":
-                    print self.nearest_points_projection[residue]
                 i+=1
             values = [v for v in self.nearest_points_projection.values()]
         #self.x_dim  = max(x[0] for i,x in enumerate(xy_values))-min(x[0] for i,x in enumerate(xy_values))+250.00
@@ -211,32 +220,53 @@ class Molecule(object):
 
     def make_multiple_hulls(self):
         for residue in self.atom_coords_from_diagramm:
-            b = self.a.boundary.parallel_offset(self.universe.closest_atoms[residue][1]*32.0+25,"left",join_style=2).convex_hull
             if len(self.universe.closest_atoms[residue])==2:
+                b = self.a.boundary.parallel_offset(self.universe.closest_atoms[residue][1]*32.0+25,"left",join_style=2).convex_hull
                 point =geometry.Point((self.atom_coords_from_diagramm[residue][0],self.atom_coords_from_diagramm[residue][1]))
                 self.nearest_points_projection[residue] = (b.boundary.project(point) % b.boundary.length)
             if len(self.universe.closest_atoms[residue])==4:
+                b = self.a.boundary.parallel_offset(((self.universe.closest_atoms[residue][1]+self.universe.closest_atoms[residue][3])/2)*32.0+25,"left",join_style=2).convex_hull
                 point1 =geometry.Point((self.atom_coords_from_diagramm[residue][0],self.atom_coords_from_diagramm[residue][1]))
                 point2 =geometry.Point((self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][2]][0],self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][2]][1]))
                 proj1 =(b.boundary.project(point1) % b.boundary.length)
                 proj2=(b.boundary.project(point2) % b.boundary.length)
                 self.nearest_points_projection[residue] = (proj1+proj2)/2
                 if abs(proj1-proj2)>b.boundary.length/2:
-                    print "That should not be"
                     if proj1>proj2:
                         proj1=proj1-b.boundary.length
                         self.nearest_points_projection[residue] = (proj1+proj2)/2
                     else:
                         proj2=proj2-b.boundary.length
                         self.nearest_points_projection[residue] = (proj1+proj2)/2
-                    print residue, proj1, proj2,self.nearest_points_projection[residue]
+
             if len(self.universe.closest_atoms[residue])==6:
+                b = self.a.boundary.parallel_offset(((self.universe.closest_atoms[residue][1]+self.universe.closest_atoms[residue][3]+self.universe.closest_atoms[residue][5])/3)*32.0+25,"left",join_style=2).convex_hull
+                print self.universe.closest_atoms[residue][1]
+                print (self.universe.closest_atoms[residue][1]+self.universe.closest_atoms[residue][3]+self.universe.closest_atoms[residue][5])/3
                 point1 =geometry.Point((self.atom_coords_from_diagramm[residue][0],self.atom_coords_from_diagramm[residue][1]))
                 point2 =geometry.Point((self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][2]][0],self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][2]][1]))
                 point3 =geometry.Point((self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][4]][0],self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][4]][1]))
                 proj1 =(b.boundary.project(point1) % b.boundary.length)
                 proj2=(b.boundary.project(point2) % b.boundary.length)
                 proj3=(b.boundary.project(point3) % b.boundary.length)
+                self.nearest_points_projection[residue] = (proj1+proj2+proj3)/3
+                if abs(proj1-proj2)>b.boundary.length/3 :
+                    if proj1>proj2:
+                        proj1=proj1-b.boundary.length
+                    else:
+                        proj2=proj2-b.boundary.length
+                if abs(proj2-proj3)>b.boundary.length/3 :
+                    if proj2>proj3:
+                        proj2=proj2-b.boundary.length
+
+                    else:
+                        proj3=proj3-b.boundary.length
+                if abs(proj1-proj3)>b.boundary.length/3:
+                    #one large value
+                    if proj1>proj3:
+                        proj1=proj1-b.boundary.length
+                    else:
+                        proj3=proj3-b.boundary.length
                 self.nearest_points_projection[residue] = (proj1+proj2+proj3)/3
             self.nearest_points[residue] = b.boundary.interpolate(self.nearest_points_projection[residue] % b.boundary.length)
             self.nearest_points_coords[residue]=self.nearest_points[residue].x,self.nearest_points[residue].y
