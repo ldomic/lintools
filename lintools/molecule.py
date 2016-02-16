@@ -6,6 +6,7 @@ from rdkit.Chem import Draw
 from rdkit.Chem.Draw import rdMolDraw2D
 from rdkit.Chem import rdDepictor
 from shapely import geometry
+from shapely.ops import cascaded_union
 import numpy as np
 from itertools import combinations
 import colorsys
@@ -24,7 +25,10 @@ class Molecule(object):
         self.nearest_points_projection = {}
         self.nearest_points_coords ={}
         self.coefficient ={}
+        self.ligand_atom_coords = []
+        self.arc_coords=None
         self.convex_hull()
+        self.draw_surface()
         self.make_new_projection_values()
     def pseudocolor(self,val, minval, maxval):
         # convert val in range minval..maxval to the range 0..120 degrees which
@@ -58,22 +62,22 @@ class Molecule(object):
     def convex_hull(self):
         """Draws a convex hull around ligand atoms and expands it, giving space to put diagramms on"""
         #Get coordinates of ligand atoms (needed to draw the convex hull around)
-        ligand_atom_coords = []
+        
         ligand_atoms = [x.name for x in self.universe.ligand_no_H.atoms]
         with open ("molecule.svg", "r") as f:
             lines = f.readlines()
             i=0
             for line in lines:
                 if line.startswith("<ellipse"): 
-                    ligand_atom_coords.append([float(line.rsplit("'",10)[1]), float(line.rsplit("'",10)[3])]) 
+                    self.ligand_atom_coords.append([float(line.rsplit("'",10)[1]), float(line.rsplit("'",10)[3])]) 
                     self.ligand_atom_coords_from_diagr[ligand_atoms[i]]=[float(line.rsplit("'",10)[1]), float(line.rsplit("'",10)[3])]
                     i+=1
             for atom in self.universe.closest_atoms:
                 self.atom_coords_from_diagramm[atom] = [self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[atom][0]][0],self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[atom][0]][1],  self.universe.closest_atoms[atom][0]]
                     
-        ligand_atom_coords=np.array(ligand_atom_coords)  
+        self.ligand_atom_coords=np.array(self.ligand_atom_coords)  
         # Get the convex hull around ligand atoms 
-        self.a = geometry.MultiPoint(ligand_atom_coords).convex_hull
+        self.a = geometry.MultiPoint(self.ligand_atom_coords).convex_hull
 
         self.b_for_all = {}
         for residue in self.atom_coords_from_diagramm:
@@ -128,6 +132,35 @@ class Molecule(object):
         self.big_item2=sorted_projections[-2]
         self.small_item=sorted_projections[0]
         self.make_multiple_hulls()
+
+    def draw_surface(self):
+        polygons = [geometry.Point(a).buffer(50) for a in self.ligand_atom_coords]
+        casc =cascaded_union(polygons)
+        casc_coords = casc.exterior.coords
+
+        i=0
+        self.arc_coords={}
+        for atom in polygons:
+            self.arc_coords[self.ligand_atom_coords_from_diagr.keys()[i]]=[]
+            for coords in atom.boundary.coords:
+                for arc in casc_coords:
+                    if coords==arc:
+                        self.arc_coords[self.ligand_atom_coords_from_diagr.keys()[i]].append(arc)
+            i+=1
+        for arc_id, arc_data in self.arc_coords.items():
+            jump_idx = [
+                idx for idx, (c1, c2) in enumerate(zip(arc_data[1:],arc_data[:-1])) 
+                if np.linalg.norm(np.array(c1) - np.array(c2)) > 20]
+            if len(jump_idx) == 0:
+                self.arc_coords[arc_id] = [arc_data]
+            else:
+                old_arc_data = arc_data
+                self.arc_coords[arc_id] = []
+                jump_idx = [-1] + jump_idx + [-1]
+                for s_start, s_end in zip(jump_idx[:-1], jump_idx[1:]):
+                    self.arc_coords[arc_id].append(old_arc_data[s_start+1: s_end])
+
+
         
         
     def calc_2d_forces(self,x1,y1,x2,y2,width):
@@ -241,8 +274,6 @@ class Molecule(object):
 
             if len(self.universe.closest_atoms[residue])==6:
                 b = self.a.boundary.parallel_offset(((self.universe.closest_atoms[residue][1]+self.universe.closest_atoms[residue][3]+self.universe.closest_atoms[residue][5])/3)*32.0+25,"left",join_style=2).convex_hull
-                print self.universe.closest_atoms[residue][1]
-                print (self.universe.closest_atoms[residue][1]+self.universe.closest_atoms[residue][3]+self.universe.closest_atoms[residue][5])/3
                 point1 =geometry.Point((self.atom_coords_from_diagramm[residue][0],self.atom_coords_from_diagramm[residue][1]))
                 point2 =geometry.Point((self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][2]][0],self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][2]][1]))
                 point3 =geometry.Point((self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][4]][0],self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][4]][1]))

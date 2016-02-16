@@ -8,13 +8,14 @@ from matplotlib import pylab
 import numpy as np
 
 class Figure(object):
-    def __init__(self, molecule_object, diagram_type, hbonds_object=None, plot_object=None, rmsf_object=None):
+    def __init__(self, molecule_object, diagram_type,topol_object, hbonds_object=None, plot_object=None, rmsf_object=None):
         self.draw_plots = None
         self.draw_molecule =None
         self.draw_lines=" "
         self.filestart=""
         self.white_circles=""
         self.final_molecule =None
+        self.topol = topol_object
         self.molecule = molecule_object
         self.hbonds = hbonds_object
         self.plots = plot_object
@@ -23,6 +24,7 @@ class Figure(object):
         self.make_legends(diagram_type)
         self.manage_the_plots(diagram_type)
         self.add_bigger_box(diagram_type)
+        self.draw_surface()
         print self.rmsf
     def change_lines_in_svg(self,filename, string1,string2):
         for i,line in enumerate(fileinput.input(filename, inplace=1)):
@@ -155,6 +157,21 @@ class Figure(object):
             colorbar = "<g transform='translate(10,"+str(y_dim)+")'> "+"".join(map(str,lines))
             f.close()
         return colorbar
+    def draw_surface(self):
+        self.arcs ="<g id='arcs' transform='translate("+str((self.molecule.x_dim-600)/2)+","+str((self.molecule.y_dim-300)/2)+")'>"
+        for arc in self.molecule.arc_coords:
+            print arc
+            if len(self.molecule.arc_coords[arc])>0:
+                for segment in self.molecule.arc_coords[arc]:
+                    if self.topol.lig_atom_dist[arc]>4.0:
+                        one_arc="<polyline fill='none' stroke='gray' stroke-width='10.0' stroke-linecap='round' points='"
+                    else:
+                        one_arc="<polyline fill='none' stroke='black' stroke-width='10.0' stroke-linecap='round' points='"
+                    for point in segment:
+                        one_arc=one_arc+str(point[0])+","+str(point[1])+" "
+                    one_arc=one_arc+"' />"
+                    self.arcs = self.arcs+one_arc
+        self.arcs = self.arcs+"</g>"
     def draw_white_circles_at_atoms(self):
         #for atom in self.molecule.atom_coords_from_diagramm:
          #   self.white_circles = self.white_circles+"<circle cx='"+str(int(self.molecule.atom_coords_from_diagramm[atom][0])+(self.molecule.x_dim-600)/2)+"' cy='"+str(int(self.molecule.atom_coords_from_diagramm[atom][1])+(self.molecule.y_dim-300)/2)+"' r='30' fill='red' />"
@@ -167,7 +184,7 @@ class Figure(object):
         for bond in self.hbonds.hbonds_for_drawing:
             self.draw_lines=self.draw_lines+"<line stroke-dasharray='5,5'  x1='"+str(int(self.molecule.nearest_points_coords[bond[1]][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[bond[1]][1]))+"' x2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[0]][0]))+"' y2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[0]][1]))+"' style='stroke:black;stroke-width:4' />"
     def put_everything_together(self):
-        molecule_list = [self.filestart]+[self.draw_lines]+[self.draw_molecule]+[self.white_circles]+[self.draw_plots]+[self.legend]+[self.end_symbol]
+        molecule_list = [self.filestart]+[self.draw_lines]+[self.draw_molecule]+[self.white_circles]+[self.arcs]+[self.draw_plots]+[self.legend]+[self.end_symbol]
         self.final_molecule = "".join(map(str,molecule_list))
     def write_final_draw_file(self, output_name):
         finalsvg = open(output_name+".svg","w")

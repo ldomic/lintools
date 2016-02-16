@@ -92,6 +92,16 @@ class Topol_Data(object):
                     if check_hbonds[atom][2]==closest_dist[0]:
                         self.closest_atoms[atom]=closest_dist[0],closest_dist[1],check_hbonds[atom][0],self.hbonds.distance, check_hbonds[atom][1],self.hbonds.distance
 
+        self.lig_atom_dist={}
+
+        residue_select= self.topology.select_atoms("protein and around 6 segid "+str(self.ligand.segids[0])+' and resid '+str(self.ligand.resids[0])+" and not name H*")
+        res_pos = residue_select.positions
+        dist_array2 = MDAnalysis.analysis.distances.distance_array(lig_pos, res_pos)
+        i=0
+        for atom in self.ligand_no_H:
+            self.lig_atom_dist[atom.name]=dist_array2[i].min()
+            i+=1
+
 
 
 

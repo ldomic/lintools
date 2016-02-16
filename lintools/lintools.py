@@ -227,14 +227,14 @@ if __name__ == '__main__':
 
 	if analysis_type=="RMSF" or analysis_type=="rmsf":
 		if args.hydr_bonds!=True:
-			figure=Figure(molecule, diagram_type,hbonds,plots,rmsf)
+			figure=Figure(molecule, diagram_type,md_sim,hbonds,plots,rmsf)
 		else:
-			figure=Figure(molecule, diagram_type,plot_object=plots,rmsf_object=rmsf)
+			figure=Figure(molecule, diagram_type,md_sim, plot_object=plots,rmsf_object=rmsf)
 	else:
 		if args.hydr_bonds!=True:
-			figure=Figure(molecule, diagram_type,hbonds,plots)
+			figure=Figure(molecule, diagram_type,md_sim,hbonds,plots)
 		else:
-			figure=Figure(molecule, diagram_type,plots)
+			figure=Figure(molecule, diagram_type,md_sim,plots)
 	if args.hydr_bonds!=True:
 		figure.draw_hbonds_in_graph()
 	figure.draw_white_circles_at_atoms()
