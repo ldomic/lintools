@@ -7,6 +7,7 @@ from MDAnalysis.analysis import distances
 import time
 import numpy as np
 import operator
+import openbabel
 
 
 class Topol_Data(object):
@@ -21,6 +22,7 @@ class Topol_Data(object):
         self.dict_of_plotted_res={}
         self.load_system(topology, trajectory)
         self.define_ligand(ligand_name)
+        self.make_mol2_file()
         self.renumber_system(offset)
     def load_system(self, topology, trajectory):
         if trajectory is None:
@@ -33,6 +35,15 @@ class Topol_Data(object):
             self.frame_count = self.universe.trajectory.n_frames
     def define_ligand(self,ligand_name):
         self.ligand = ligand_name
+        self.ligand.write(str("LIG.pdb"))
+        self.pdb ="LIG.pdb"
+    def make_mol2_file(self):
+        obConversion = openbabel.OBConversion()
+        obConversion.SetInAndOutFormats("pdb","mol2")
+        mol = openbabel.OBMol()
+        obConversion.ReadFile(mol,"LIG.pdb")
+        obConversion.WriteFile(mol, "LIG.mol2")
+        self.mol2_file = "LIG.mol2"
     def renumber_system(self, offset=0):
         self.protein = self.universe.select_atoms("protein")
         self.protein.set_resids(self.protein.resids+int(offset))
@@ -60,8 +71,7 @@ class Topol_Data(object):
             for atom in self.ligand_no_H:
                 i+=1
                 min_values_per_atom[atom.name]=dist_array[i].min()
-                #if dist_array[i].min()== dist_array.min():
-                #    self.closest_atoms[residue]=atom.name, dist_array[i].min()
+
             sorted_min_values = sorted(min_values_per_atom.items(), key=operator.itemgetter(1))     
             self.closest_atoms[residue]=sorted_min_values[0][0],sorted_min_values[0][1],sorted_min_values[1][0],sorted_min_values[1][1],sorted_min_values[2][0],sorted_min_values[2][1]       
         if self.hbonds!=None:
@@ -92,15 +102,6 @@ class Topol_Data(object):
                     if check_hbonds[atom][2]==closest_dist[0]:
                         self.closest_atoms[atom]=closest_dist[0],closest_dist[1],check_hbonds[atom][0],self.hbonds.distance, check_hbonds[atom][1],self.hbonds.distance
 
-        self.lig_atom_dist={}
-
-        residue_select= self.topology.select_atoms("protein and around 6 segid "+str(self.ligand.segids[0])+' and resid '+str(self.ligand.resids[0])+" and not name H*")
-        res_pos = residue_select.positions
-        dist_array2 = MDAnalysis.analysis.distances.distance_array(lig_pos, res_pos)
-        i=0
-        for atom in self.ligand_no_H:
-            self.lig_atom_dist[atom.name]=dist_array2[i].min()
-            i+=1
 
 
 
@@ -111,13 +112,12 @@ class Config(object):
         self.topology=None
         self.trajectory=[]
         #self.write_config_file(outname,topology,trajectory, res_offset, molecule_file, diagram_type, cutoff_distance, analysis_type, domain_file)
-    def write_config_file(self, outname, topology, trajectory, res_offset, molecule_file, diagram_type, cutoff_distance, analysis_type, domain_file,analysis_cutoff):
+    def write_config_file(self, outname, topology, trajectory, res_offset, diagram_type, cutoff_distance, analysis_type, domain_file,analysis_cutoff):
         config_file=open(outname+"_config.txt", "w")
         config_file.write("This log file was created at "+time.strftime("%c")+" and saved as "+outname+"_config.txt. \n \n \n")
         config_file.write("Topology input file:  "+topology+"\n \n")
         config_file.write("Trajectory input file(s):  "+str(trajectory)+"\n \n")
         config_file.write("Residue offset:  "+str(res_offset)+" \n\n")
-        config_file.write("Molecule input file:  "+molecule_file+"\n \n")
         config_file.write("Selected ligand residue:  "+str(self.topol_obj.ligand.resnames[0])+" "+str(self.topol_obj.ligand.resids[0])+" on chain "+str(self.topol_obj.ligand.segids[0])+"\n \n")
         config_file.write("Diagram type:  "+diagram_type+"\n \n")
         config_file.write("Cutoff distance:  "+str(cutoff_distance)+" Angstrom \n \n")
@@ -140,8 +140,6 @@ class Config(object):
                             self.trajectory.append(my_line.rsplit(",",3)[i][2:-1])
                 if line.startswith("Residue offset:"):
                     self.res_offset=line.rsplit(":",2)[1][2:-1]
-                if line.startswith("Molecule input file:"):
-                    self.mol2_file=line.rsplit(":",2)[1][2:-1]
                 if line.startswith("Diagram type:"):
                     self.diagram_type=line.rsplit(":",2)[1][2:-1]
                 if line.startswith("Cutoff distance:"):
