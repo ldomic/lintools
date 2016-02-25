@@ -7,22 +7,22 @@ LINTools require these packages:
 * RDKit (installation instructions with Anaconda available from RDKit GitHub account: https://github.com/rdkit/conda-rdkit)
 * Shapely (available on GitHub https://github.com/Toblerity/Shapely)
 * MDAnalysis (available on GitHub https://github.com/MDAnalysis/mdanalysis)
+* OpenBabel with Python bindings
 
 If this is a problem for your computer's architecture, a Dockerfile has also been provided.
 
-You will need at least a topology file and a mol2 file of your ligand.
+You will need a topology file and (optional) trajectory.
 
 Usage:
-At the moment it is best to run the script in the lintools folder where lintools.py is available.
 For a topology file (no trajectory data):
 ```
-python lintools.py -t my_top_file.pdb -o my_output -m ligand.mol2
+lintools -t my_top_file.pdb -o my_output
 (Optional: --cutoff [a number] --residueoffset [a number] --diagram_type "amino" or "domains" -df domain text file )
 ```
 
 For trajectory data:
 ```
-python lintools.py -t my_top_file.pdb -x my_traj.xtc -o my_output -m ligand.mol2
+lintools -t my_top_file.pdb -x my_traj.xtc -o my_output 
 (Optional: same as above + --analysis "occurance"or  "rmsf" and for occurance analysis it is possible to choose up to three trajectories
 which are displayed as clock diagrams. --diagram_type "clock" must be specified)
 ```
@@ -40,11 +40,11 @@ Domain text file should contain lines of your domains, containing ID - a number 
 
 Example domain file:
 ```
-1; 1-20,24;TMH 1
-2; 26-35,40-56; TMH 2; #D9774B 
-3; 61-100;TMH 3; Y # Not allowed
-3; 61-100;Chain B; #889DCC; Y 
-4; 34,56,78; Binding site; None; Y #This will make a dashed circle regardless of the original assignment, always has to come last in the domain file.
+1;1-20,24;TMH 1
+2;26-35,40-56;TMH 2;#D9774B 
+3;61-100;TMH 3;Y      # Not allowed
+3;61-100;Chain B;#889DCC;Y 
+4;34,56,78;Binding site;None;Y    #This will make a dashed circle regardless of the original assignment, always has to come last in the domain file.
 ```
 The test.pdf and new_domains.pdf files were produced using crystal structure with PDB ID 4XP1 and displays the LDP residue.
 
