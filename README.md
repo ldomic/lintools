@@ -7,7 +7,6 @@ To install LINTools and all the dependencies shown below:
 conda install rdkit
 conda install geos  # library for shapely
 pip install lintools
-
 ```
 
 #Dependencies
