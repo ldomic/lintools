@@ -1,6 +1,14 @@
 # LINTools [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.45076.svg)](http://dx.doi.org/10.5281/zenodo.45076)
 
 LINTools (or Ligand Interaction Network Tools) is an open source program fully written in Python. It produces diagrams of interaction between protein and ligands in a molecular dynamics trajectory or a topology file. It can be used to investigate docking poses, show the residues that are spending most time in the vicinity of the ligand and possibly other things. Examples shall follow on a later date.
+#Installation
+To install LINTools and all the dependencies shown below:
+```
+conda install rdkit
+conda install geos  # library for shapely
+pip install lintools
+
+```
 
 #Dependencies
 LINTools require these packages:
