@@ -173,6 +173,8 @@ if __name__ == '__main__':
 
 	if analysis_type=="occurrence":
 		md_sim = Topol_Data(topology, None, ligand_name, offset)
+		md_sim.define_ligand(ligand_name)
+		md_sim.make_mol2_file()
 		occurrence = Occurrence_analysis(topology, trajectory, ligand_name, cutoff, offset, md_sim)
 		occurrence.get_closest_residues(analysis_cutoff)
 		if args.hydr_bonds!=True:
@@ -182,11 +184,15 @@ if __name__ == '__main__':
 		assert trajectory is None or len(trajectory)<=1, "Only one trajectory at the time can be analysed."
 		if trajectory	is None:
 			md_sim = Topol_Data(topology, trajectory, ligand_name, offset)
+			md_sim.define_ligand(ligand_name)
+			md_sim.make_mol2_file()
 			md_sim.find_res_to_plot(cutoff)
 			if args.hydr_bonds!=True:
 				hbonds = HBonds(md_sim,topology, trajectory, ligand_name, offset,analysis_cutoff)
 		else:
 			md_sim = Topol_Data(topology, None, ligand_name, offset)
+			md_sim.define_ligand(ligand_name)
+			md_sim.make_mol2_file()
 			occurrence = Occurrence_analysis(topology, trajectory, ligand_name, cutoff, offset, md_sim)
 			occurrence.get_closest_residues(analysis_cutoff)
 			if args.hydr_bonds!=True:
@@ -212,7 +218,7 @@ if __name__ == '__main__':
 
 	molecule = Molecule(md_sim)
 	if analysis_type=="RMSF" or analysis_type=="rmsf":
-		rmsf = RMSF_measurements(md_sim,topology, trajectory, ligand_name, offset)
+		rmsf = RMSF_measurements(md_sim,topology, trajectory, ligand_name, offset, args.output_name)
 		molecule = Molecule(md_sim, rmsf)
 
 
@@ -236,7 +242,7 @@ if __name__ == '__main__':
 	figure.write_final_draw_file(args.output_name)
 
 	file_list=[]
-	file_list=["molecule.svg","LIG.mol2","LIG.pdb"]
+	file_list=["molecule.svg"]
 	for residue in md_sim.dict_of_plotted_res.keys():
 		file_list.append(str(residue[3:])+".svg")
 

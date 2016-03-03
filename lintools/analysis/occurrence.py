@@ -34,12 +34,8 @@ class Occurrence_analysis(object):
             md_sim = topol_data.universe
             frame_dict = {}
             firstframe_ps=None
-           
             for frame in md_sim.trajectory:
-                if ligand_name!="not protein":
-                    selection = md_sim.select_atoms('protein and around '+str(cutoff)+' (segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')               
-                else:
-                    selection = md_sim.select_atoms('protein and around '+str(cutoff)+' '+ligand_name)
+                selection = md_sim.select_atoms('protein and around '+str(cutoff)+' (segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')               
                 residue_list = [atom.resname+str(atom.resid) for atom in selection]
                 residue_list2 = [atom.resid for atom in selection]
                 frame_dict[frame.time]=set(residue_list)

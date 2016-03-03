@@ -39,58 +39,68 @@ class HBonds(object):
         if trajectory is None:
             try:
                 md_sim = Topol_Data(topology,None,ligand_name,offset)
-                h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(md_sim.ligand.segids[0])+' and resid '+str(md_sim.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
+                h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
                 h.run()
                 h.generate_table()  
                 self.h_bonds=h.table
             except ValueError:
                 md_sim = Topol_Data(topology,None,ligand_name,offset)
                 #The curious case of offending residue names that include numbers 
-                test = md_sim.universe.select_atoms('(segid '+str(md_sim.ligand.segids[0])+' and resid '+str(md_sim.ligand.resids[0])+')')
+                test = md_sim.universe.select_atoms('(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')
                 test.resnames = "LIG"
-                h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(md_sim.ligand.segids[0])+' and resid '+str(md_sim.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
+                h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
                 h.run()
                 h.generate_table()  
                 self.h_bonds=h.table
         else:
             try:
                 md_sim = Topol_Data(topology,None,ligand_name,offset)
-                h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(md_sim.ligand.segids[0])+' and resid '+str(md_sim.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
+                ligand = ligand_name
+                ligand.resnames = "LIG"
+                ligand.resname = "LIG"
+                h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
                 h.run()
                 h.generate_table()  
                 self.h_bonds=h.table  
                 i=0
                 for traj in trajectory:
+                    md_sim = Topol_Data(topology,trajectory[i],ligand_name, offset)
+                    ligand = ligand_name
+                    ligand.resnames = "LIG"
+                    ligand.resname = "LIG"
+                    h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
                     i+=1
-                    md_sim = Topol_Data(topology,traj,ligand_name, offset)
-                    h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(ligand_name.segids[0])+' and resid '+str(ligand_name.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
                     h.run()
                     h.generate_table()  
                     self.h_bonds=np.hstack((self.h_bonds,h.table))
-            except ValueError: 
+            except AttributeError:
                 md_sim = Topol_Data(topology,None,ligand_name,offset)
-                test = md_sim.universe.select_atoms('(segid '+str(md_sim.ligand.segids[0])+' and resid '+str(md_sim.ligand.resids[0])+')')
-                test.resnames = "LIG"
-                h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(md_sim.ligand.segids[0])+' and resid '+str(md_sim.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
+                ligand = ligand_name
+                ligand.resnames = "LIG"
+                ligand.resname = "LIG"
+                h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
                 h.run()
                 h.generate_table()  
-                self.h_bonds=h.table  
+                self.h_bonds=h.table 
                 i=0
                 for traj in trajectory:
-                    i+=1
-                    md_sim = Topol_Data(topology,traj,ligand_name, offset)
-                    test = md_sim.universe.select_atoms('(segid '+str(md_sim.ligand.segids[0])+' and resid '+str(md_sim.ligand.resids[0])+')')
-                    test.resnames = "LIG"
-                    h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(ligand_name.segids[0])+' and resid '+str(ligand_name.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
+                    md_sim2 = MDAnalysis.Universe(topology,trajectory[i])
+                    ligand = md_sim2.universe.select_atoms('(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')
+                    ligand.resnames = "LIG"
+                    ligand.resname = "LIG"
+                    h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim2.universe,"protein",'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')', acceptors=self.acceptors,donors=self.donors)
                     h.run()
                     h.generate_table()  
                     self.h_bonds=np.hstack((self.h_bonds,h.table))
+                    i+=1
         self.distance = h.distance
         #h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe.universe,"protein",'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
         try:
             ligand_from_mol2 = MDAnalysis.Universe(self.universe.mol2_file) 
         except ValueError:
             ligand_from_mol2 = MDAnalysis.Universe(self.universe.pdb)
+        #except KeyError:
+        #    ligand_from_mol2 = MDAnalysis.Universe(self.universe.pdb)
         self.hbond_frequency = {}
         for i in range(np.prod(self.h_bonds.shape)):
             if self.h_bonds[i][3]==self.universe.ligand.resnames[0]:

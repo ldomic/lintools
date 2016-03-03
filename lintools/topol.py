@@ -21,8 +21,6 @@ class Topol_Data(object):
         self.closest_atoms={}
         self.dict_of_plotted_res={}
         self.load_system(topology, trajectory)
-        self.define_ligand(ligand_name)
-        self.make_mol2_file()
         self.renumber_system(offset)
     def load_system(self, topology, trajectory):
         if trajectory is None:
@@ -35,6 +33,8 @@ class Topol_Data(object):
             self.frame_count = self.universe.trajectory.n_frames
     def define_ligand(self,ligand_name):
         self.ligand = ligand_name
+        self.ligand.resnames = "LIG"
+        self.ligand.resname = "LIG"
         self.ligand.write(str("LIG.pdb"))
         self.pdb ="LIG.pdb"
     def make_mol2_file(self):
@@ -44,6 +44,7 @@ class Topol_Data(object):
         obConversion.ReadFile(mol,"LIG.pdb")
         obConversion.WriteFile(mol, "LIG.mol2")
         self.mol2_file = "LIG.mol2"
+
     def renumber_system(self, offset=0):
         self.protein = self.universe.select_atoms("protein")
         self.protein.set_resids(self.protein.resids+int(offset))

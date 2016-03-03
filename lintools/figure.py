@@ -38,7 +38,7 @@ class Figure(object):
                         sys.stdout.write(line.replace ("</svg>","</g>"))
                 input1 = "</defs>"
                 if self.rmsf!=None:
-                    output1 = "<g transform='translate("+str(int(self.molecule.nearest_points_coords[residue][0]+(self.molecule.x_dim-600)/2)-154)+","+str(int(self.molecule.nearest_points_coords[residue][1]+(self.molecule.y_dim-300)/2)-54)+")'>" # add 100 to the left to have better alignment
+                    output1 = "<g transform='translate("+str(int(self.molecule.nearest_points_coords[residue][0]+(self.molecule.x_dim-600)/2)+46)+","+str(int(self.molecule.nearest_points_coords[residue][1]+(self.molecule.y_dim-300)/2)-54)+")'>" # add 100 to the left to have better alignment
                 else:
                     output1 = "<g transform='translate("+str(int(self.molecule.nearest_points_coords[residue][0]+(self.molecule.x_dim-600)/2)-54)+","+str(int(self.molecule.nearest_points_coords[residue][1]+(self.molecule.y_dim-300)/2)-54)+")'>"
                 self.change_lines_in_svg(str(residue[3:])+'.svg', input1, output1)
@@ -54,7 +54,7 @@ class Figure(object):
             self.draw_plots=""
             for residue in self.plots.residues_within_domain:
                 if self.rmsf!=None:
-                    transform = "<g transform='translate("+str(int(self.molecule.nearest_points_coords[residue][0]+(self.molecule.x_dim-600)/2)-154)+","+str(int(self.molecule.nearest_points_coords[residue][1]+(self.molecule.y_dim-300)/2)-54)+")'>"  
+                    transform = "<g transform='translate("+str(int(self.molecule.nearest_points_coords[residue][0]+(self.molecule.x_dim-600)/2)+46)+","+str(int(self.molecule.nearest_points_coords[residue][1]+(self.molecule.y_dim-300)/2)-54)+")'>"  
                 else:
                     transform = "<g transform='translate("+str(int(self.molecule.nearest_points_coords[residue][0]+(self.molecule.x_dim-600)/2)-54)+","+str(int(self.molecule.nearest_points_coords[residue][1]+(self.molecule.y_dim-300)/2)-54)+")'>"
                 path = "<rect style='fill:none' width='108' height='108' x='0' y='0' />"
@@ -84,7 +84,7 @@ class Figure(object):
         start2 = "<rect style='opacity:1.0;fill:#FFFFFF;stroke:none' width='600' height='300' x='0' y='0'> </rect>"
         bigger_box ="width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim)+"px' > "
         if self.rmsf!=None:
-            big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim)+"px' x='0' y='0'> </rect> <g transform='translate("+str((x_dim-600)/2-100)+","+str((self.molecule.y_dim-300)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='600' height='300' x='0' y='0' /> "
+            big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim)+"px' x='0' y='0'> </rect> <g transform='translate("+str((x_dim-600)/2+100)+","+str((self.molecule.y_dim-300)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='600' height='300' x='0' y='0' /> "
         else:
             big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim)+"px' x='0' y='0'> </rect> <g transform='translate("+str((self.molecule.x_dim-600)/2)+","+str((self.molecule.y_dim-300)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='600' height='300' x='0' y='0' /> "
         self.end_symbol = "</svg>"
@@ -126,8 +126,8 @@ class Figure(object):
             print "Making colorbar"
             fig = plt.figure(figsize=(1, 8))
             ax1 = fig.add_axes([0, 0, 0.5, 0.9])
-            cmap = plt.get_cmap("hsv")
-            new_cmap = self.truncate_colormap(cmap,0.0,0.33)
+            cmap = plt.get_cmap("hsv_r")
+            new_cmap = self.truncate_colormap(cmap,0.67,1.00)
             norm = matplotlib.colors.Normalize(vmin=int(self.rmsf.min_value), vmax=int(self.rmsf.max_value))
             cb1 = matplotlib.colorbar.ColorbarBase(ax1, cmap=new_cmap,
                                             norm=norm,
@@ -155,8 +155,12 @@ class Figure(object):
             f.close()
         return colorbar
     def draw_white_circles_at_atoms(self):
-        for atom in self.molecule.nearest_points_coords:
-            self.white_circles = self.white_circles+"<circle cx='"+str(int(self.molecule.nearest_points_coords[atom][0])+(self.molecule.x_dim-600)/2)+"' cy='"+str(int(self.molecule.nearest_points_coords[atom][1])+(self.molecule.y_dim-300)/2)+"' r='30' fill='white' />"
+        if self.rmsf!=None:
+            for atom in self.molecule.nearest_points_coords:
+                self.white_circles = self.white_circles+"<circle cx='"+str((int(self.molecule.nearest_points_coords[atom][0])+(self.molecule.x_dim-600)/2)+100)+"' cy='"+str(int(self.molecule.nearest_points_coords[atom][1])+(self.molecule.y_dim-300)/2)+"' r='30' fill='white' />"
+        else:
+             for atom in self.molecule.nearest_points_coords:
+                self.white_circles = self.white_circles+"<circle cx='"+str(int(self.molecule.nearest_points_coords[atom][0])+(self.molecule.x_dim-600)/2)+"' cy='"+str(int(self.molecule.nearest_points_coords[atom][1])+(self.molecule.y_dim-300)/2)+"' r='30' fill='white' />"
     def draw_lines_in_graph(self):
         for residue in self.molecule.nearest_points_coords:
             self.draw_lines=self.draw_lines+"<line x1='"+str(int(self.molecule.nearest_points_coords[residue][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[residue][1]))+"' x2='"+str(float(self.molecule.atom_coords_from_diagramm[residue][0]))+"' y2='"+str(float(self.molecule.atom_coords_from_diagramm[residue][1]))+"' style='stroke:red;stroke-width:2' />"
