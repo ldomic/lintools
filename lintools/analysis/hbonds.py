@@ -55,9 +55,6 @@ class HBonds(object):
         else:
             try:
                 md_sim = Topol_Data(topology,None,ligand_name,offset)
-                ligand = ligand_name
-                ligand.resnames = "LIG"
-                ligand.resname = "LIG"
                 h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
                 h.run()
                 h.generate_table()  
@@ -65,9 +62,6 @@ class HBonds(object):
                 i=0
                 for traj in trajectory:
                     md_sim = Topol_Data(topology,trajectory[i],ligand_name, offset)
-                    ligand = ligand_name
-                    ligand.resnames = "LIG"
-                    ligand.resname = "LIG"
                     h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
                     i+=1
                     h.run()
@@ -75,9 +69,6 @@ class HBonds(object):
                     self.h_bonds=np.hstack((self.h_bonds,h.table))
             except AttributeError:
                 md_sim = Topol_Data(topology,None,ligand_name,offset)
-                ligand = ligand_name
-                ligand.resnames = "LIG"
-                ligand.resname = "LIG"
                 h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
                 h.run()
                 h.generate_table()  
@@ -102,9 +93,12 @@ class HBonds(object):
         #except KeyError:
         #    ligand_from_mol2 = MDAnalysis.Universe(self.universe.pdb)
         self.hbond_frequency = {}
+        ligand = md_sim.universe.select_atoms('(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')
         for i in range(np.prod(self.h_bonds.shape)):
-            if self.h_bonds[i][3]==self.universe.ligand.resnames[0]:
+            print "HBONDS", self.h_bonds[i][3], "ligand", ligand.resnames[0]
+            if self.h_bonds[i][3]==ligand.resnames[0]:
                 atomname = self.h_bonds[i][5]
+                print atomname
             else:
                 atomname = self.h_bonds[i][8]
             if atomname.startswith("O",0):
@@ -115,7 +109,7 @@ class HBonds(object):
                         lig_atom =  ligand_from_mol2.atoms.bonds.bondlist[x][1].name
                     if atomname==ligand_from_mol2.atoms.bonds.bondlist[x][1].name:
                         lig_atom = ligand_from_mol2.atoms.bonds.bondlist[x][0].name
-            if self.h_bonds[i][3]==self.universe.ligand.resnames[0]:
+            if self.h_bonds[i][3]==ligand.resnames[0]:
                 results_tuple = lig_atom,self.h_bonds[i][6]+str(self.h_bonds[i][7])
             else:
                 results_tuple = lig_atom,self.h_bonds[i][3]+str(self.h_bonds[i][4])

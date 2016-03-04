@@ -17,7 +17,7 @@ __all__ = [
 from pkg_resources import resource_filename
 
 PDB = resource_filename(__name__,'data/4XP1.pdb')
-MOL2 = resource_filename(__name__,'data/LDP.mol2')
-LIG_PDB = resource_filename(__name__,'data/LDP.pdb')
+MOL2 = resource_filename(__name__,'data/LIG.mol2')
+LIG_PDB = resource_filename(__name__,'data/LIG.pdb')
 # This should be the last line: clean up namespace
 del resource_filename
