@@ -67,7 +67,7 @@ class HBonds(object):
                     h.run()
                     h.generate_table()  
                     self.h_bonds=np.hstack((self.h_bonds,h.table))
-            except AttributeError:
+            except Exception:
                 md_sim = Topol_Data(topology,None,ligand_name,offset)
                 h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
                 h.run()

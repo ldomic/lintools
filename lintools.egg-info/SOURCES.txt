@@ -1,3 +1,4 @@
+setup.cfg
 setup.py
 lintools/__init__.py
 lintools/figure.py
