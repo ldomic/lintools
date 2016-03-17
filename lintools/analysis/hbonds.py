@@ -67,8 +67,28 @@ class HBonds(object):
                     h.run()
                     h.generate_table()  
                     self.h_bonds=np.hstack((self.h_bonds,h.table))
-            except Exception:
+            except AttributeError:
                 md_sim = Topol_Data(topology,None,ligand_name,offset)
+                h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
+                h.run()
+                h.generate_table()  
+                self.h_bonds=h.table 
+                i=0
+                for traj in trajectory:
+                    md_sim2 = MDAnalysis.Universe(topology,trajectory[i])
+                    ligand = md_sim2.universe.select_atoms('(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')
+                    ligand.resnames = "LIG"
+                    ligand.resname = "LIG"
+                    h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim2.universe,"protein",'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')', acceptors=self.acceptors,donors=self.donors)
+                    h.run()
+                    h.generate_table()  
+                    self.h_bonds=np.hstack((self.h_bonds,h.table))
+                    i+=1
+            except ValueError:
+                md_sim = Topol_Data(topology,None,ligand_name,offset)
+                                #The curious case of offending residue names that include numbers 
+                test = md_sim.universe.select_atoms('(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')
+                test.resnames = "LIG"
                 h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
                 h.run()
                 h.generate_table()  
