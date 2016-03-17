@@ -110,12 +110,15 @@ class HBonds(object):
             ligand_from_mol2 = MDAnalysis.Universe(self.universe.mol2_file) 
         except ValueError:
             ligand_from_mol2 = MDAnalysis.Universe(self.universe.pdb)
-        #except KeyError:
-        #    ligand_from_mol2 = MDAnalysis.Universe(self.universe.pdb)
+        except KeyError:
+            ligand_from_mol2 = MDAnalysis.Universe(self.universe.pdb)
+        if len(ligand_from_mol2.atoms.bonds.bondlist)==0:
+            self.universe.make_pdb_with_bond_info()
+            ligand_from_mol2 = MDAnalysis.Universe(self.universe.pdb)
         self.hbond_frequency = {}
         ligand = md_sim.universe.select_atoms('(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')
+        print "BONDLIST",ligand_from_mol2.atoms.bonds.bondlist
         for i in range(np.prod(self.h_bonds.shape)):
-            print "HBONDS", self.h_bonds[i][3], "ligand", ligand.resnames[0]
             if self.h_bonds[i][3]==ligand.resnames[0]:
                 atomname = self.h_bonds[i][5]
                 print atomname

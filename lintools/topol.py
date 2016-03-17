@@ -36,7 +36,7 @@ class Topol_Data(object):
         self.ligand.resnames = "LIG"
         self.ligand.resname = "LIG"
         self.ligand.write(str("LIG.pdb"))
-        self.pdb ="LIG.pdb"
+        self.pdb = "LIG.pdb"
     def make_mol2_file(self):
         obConversion = openbabel.OBConversion()
         obConversion.SetInAndOutFormats("pdb","mol2")
@@ -44,7 +44,14 @@ class Topol_Data(object):
         obConversion.ReadFile(mol,"LIG.pdb")
         obConversion.WriteFile(mol, "LIG.mol2")
         self.mol2_file = "LIG.mol2"
-
+    def make_pdb_with_bond_info(self):
+        """This function was made to add bond information to pdb files, as without it functions fail further down the line in case of some exceptions"""
+        obConversion = openbabel.OBConversion()
+        obConversion.SetInAndOutFormats("mol2","pdb")
+        mol = openbabel.OBMol()
+        obConversion.ReadFile(mol,"LIG.mol2")
+        obConversion.WriteFile(mol, "LIG.pdb")
+        self.pdb = "LIG.pdb"
     def renumber_system(self, offset=0):
         self.protein = self.universe.select_atoms("protein")
         self.protein.set_resids(self.protein.resids+int(offset))

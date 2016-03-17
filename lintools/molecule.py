@@ -65,6 +65,7 @@ class Molecule(object):
         highlight=[]
         colors={}
         mol2_in_rdkit = Chem.MolFromMol2File(self.universe.mol2_file)
+        print mol2_in_rdkit
         Chem.MolToSmiles(mol2_in_rdkit)
         self.smiles = Chem.MolFromSmiles(Chem.MolToSmiles(mol2_in_rdkit))
         self.atom_identities = {}
