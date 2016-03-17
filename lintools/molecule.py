@@ -64,9 +64,13 @@ class Molecule(object):
     def load_molecule_in_rdkit_smiles(self, molSize=(600,300),kekulize=True):
         highlight=[]
         colors={}
-        mol2_in_rdkit = Chem.MolFromMol2File(self.universe.mol2_file)
-        print mol2_in_rdkit
-        Chem.MolToSmiles(mol2_in_rdkit)
+        try:
+            mol2_in_rdkit = Chem.MolFromMol2File(self.universe.mol2_file)
+            Chem.MolToSmiles(mol2_in_rdkit)
+        except:
+            mol2_in_rdkit = Chem.MolFromPDBFile(self.universe.pdb)
+            print mol2_in_rdkit
+            Chem.MolToSmiles(mol2_in_rdkit)
         self.smiles = Chem.MolFromSmiles(Chem.MolToSmiles(mol2_in_rdkit))
         self.atom_identities = {}
         i=0
@@ -310,4 +314,4 @@ class Molecule(object):
             self.nearest_points[residue] = b.boundary.interpolate(self.nearest_points_projection[residue] % b.boundary.length)
             self.nearest_points_coords[residue]=self.nearest_points[residue].x,self.nearest_points[residue].y
 
-    
+         

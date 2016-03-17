@@ -117,7 +117,6 @@ class HBonds(object):
             ligand_from_mol2 = MDAnalysis.Universe(self.universe.pdb)
         self.hbond_frequency = {}
         ligand = md_sim.universe.select_atoms('(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')
-        print "BONDLIST",ligand_from_mol2.atoms.bonds.bondlist
         for i in range(np.prod(self.h_bonds.shape)):
             if self.h_bonds[i][3]==ligand.resnames[0]:
                 atomname = self.h_bonds[i][5]
