@@ -11,13 +11,14 @@ import openbabel
 
 
 class Topol_Data(object):
-    def __init__(self, topology, trajectory=None, ligand_name=None, offset=0):
+    def __init__(self, topology, trajectory=None, ligand_name=None, offset=0,mol2_input=None):
         self.universe = None
         self.protein = None
         self.ligand = None
         self.ligand_no_H =None
         self.protein_selection =None
         self.frame_count=None
+        self.mol2_input=mol2_input
         self.closest_atoms={}
         self.dict_of_plotted_res={}
         self.load_system(topology, trajectory)
@@ -38,18 +39,25 @@ class Topol_Data(object):
         self.ligand.write(str("LIG.pdb"))
         self.pdb = "LIG.pdb"
     def make_mol2_file(self):
-        obConversion = openbabel.OBConversion()
-        obConversion.SetInAndOutFormats("pdb","mol2")
-        mol = openbabel.OBMol()
-        obConversion.ReadFile(mol,"LIG.pdb")
-        obConversion.WriteFile(mol, "LIG.mol2")
-        self.mol2_file = "LIG.mol2"
+        if self.mol2_input==None:
+            obConversion = openbabel.OBConversion()
+            obConversion.SetInAndOutFormats("pdb","mol2")
+            mol = openbabel.OBMol()
+            obConversion.ReadFile(mol,"LIG.pdb")
+            obConversion.WriteFile(mol, "LIG.mol2")
+            self.mol2_file = "LIG.mol2"
+        else:
+            self.mol2_file = self.mol2_input
+            self.make_pdb_with_bond_info()
     def make_pdb_with_bond_info(self):
         """This function was made to add bond information to pdb files, as without it functions fail further down the line in case of some exceptions"""
         obConversion = openbabel.OBConversion()
         obConversion.SetInAndOutFormats("mol2","pdb")
         mol = openbabel.OBMol()
-        obConversion.ReadFile(mol,"LIG.mol2")
+        if self.mol2_input==None:
+            obConversion.ReadFile(mol,"LIG.mol2")
+        else:
+            obConversion.ReadFile(mol,self.mol2_input)
         obConversion.WriteFile(mol, "LIG.pdb")
         self.pdb = "LIG.pdb"
     def renumber_system(self, offset=0):

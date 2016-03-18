@@ -24,6 +24,7 @@ if __name__ == '__main__':
 	parser.add_argument('-ac', '--analysis_cutoff', dest = "analysis_cutoff", default=30, help='Analysis cutoff - a feature has to appear for at least a third of the simulation to be counted. Default: 30')
 	parser.add_argument('-df', '--domain_file', dest = "domain_file", default=None, help='Input file for domains of your protein. To see the required format, check README or our GitHub page')
 	parser.add_argument('-conf', '--config_file', dest = "config_file", default=None, help="Input the name of the config file.")
+	parser.add_argument('-mol2', '--mol2_file', dest = "mol2_file", default=None, help='Input file for ligand used in case of tricky babel installation')
 	parser.add_argument('--no_hbonds', dest='hydr_bonds', action="store_true", help="The hydrogen bonds will not be detected.")
 	parser.add_argument('--debug', dest='debug', action="store_true", help="Functions for debugging.")
 
