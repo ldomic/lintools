@@ -11,7 +11,7 @@ import openbabel
 
 
 class Topol_Data(object):
-    def __init__(self, topology, trajectory=None, ligand_name=None, offset=0,mol2_input=None):
+    def __init__(self, topology, trajectory=None, ligand_name=None, offset=0,mol2_input=None,pdb_input=None):
         self.universe = None
         self.protein = None
         self.ligand = None
@@ -19,6 +19,7 @@ class Topol_Data(object):
         self.protein_selection =None
         self.frame_count=None
         self.mol2_input=mol2_input
+        self.pdb_input=pdb_input
         self.closest_atoms={}
         self.dict_of_plotted_res={}
         self.load_system(topology, trajectory)
@@ -36,8 +37,11 @@ class Topol_Data(object):
         self.ligand = ligand_name
         self.ligand.resnames = "LIG"
         self.ligand.resname = "LIG"
-        self.ligand.write(str("LIG.pdb"))
-        self.pdb = "LIG.pdb"
+        if self.pdb_input==None:
+            self.ligand.write(str("LIG.pdb"))
+            self.pdb = "LIG.pdb"
+        else:
+            self.pdb = pdb_input
     def make_mol2_file(self):
         if self.mol2_input==None:
             obConversion = openbabel.OBConversion()
@@ -48,7 +52,8 @@ class Topol_Data(object):
             self.mol2_file = "LIG.mol2"
         else:
             self.mol2_file = self.mol2_input
-            self.make_pdb_with_bond_info()
+            if self.pdb_input==None:
+                self.make_pdb_with_bond_info()
     def make_pdb_with_bond_info(self):
         """This function was made to add bond information to pdb files, as without it functions fail further down the line in case of some exceptions"""
         obConversion = openbabel.OBConversion()
