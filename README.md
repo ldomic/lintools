@@ -24,7 +24,7 @@ Usage:
 For a topology file (no trajectory data):
 ```
 lintools -t my_top_file.pdb -o my_output
-(Optional: --cutoff [a number] --residueoffset [a number] --diagram_type "amino" or "domains" -df domain text file )
+(Optional:-mol2 [mol2 file of the ligand in case of babel misbehaving] --cutoff [a number] --residueoffset [a number] --diagram_type "amino" or "domains" -df domain text file )
 ```
 
 For trajectory data:
