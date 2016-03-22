@@ -41,7 +41,7 @@ class Topol_Data(object):
             self.ligand.write(str("LIG.pdb"))
             self.pdb = "LIG.pdb"
         else:
-            self.pdb = pdb_input
+            self.pdb = self.pdb_input
     def make_mol2_file(self):
         if self.mol2_input==None:
             obConversion = openbabel.OBConversion()

@@ -192,7 +192,7 @@ if __name__ == '__main__':
 			if args.hydr_bonds!=True:
 				hbonds = HBonds(md_sim,topology, trajectory, ligand_name, offset,analysis_cutoff)
 		else:
-			md_sim = Topol_Data(topology, None, ligand_name, offset, args.mol2_file, args.pdb_file)
+			md_sim = Topol_Data(topology, None, ligand_name, offset, args.mol2_file, args.pdb_file         )
 			md_sim.define_ligand(ligand_name)
 			md_sim.make_mol2_file()
 			occurrence = Occurrence_analysis(topology, trajectory, ligand_name, cutoff, offset, md_sim)
