@@ -180,7 +180,7 @@ if __name__ == '__main__':
 		occurrence = Occurrence_analysis(topology, trajectory, ligand_name, cutoff, offset, md_sim)
 		occurrence.get_closest_residues(analysis_cutoff)
 		if args.hydr_bonds!=True:
-			hbonds = HBonds(md_sim,topology, trajectory, ligand_name, offset,analysis_cutoff)
+			hbonds = HBonds(md_sim,topology, trajectory, ligand_name, offset,analysis_cutoff,args.mol2_file, args.pdb_file)
 	else: 
 	#if analysis type is anything different only one traj at time is going to be analysed
 		assert trajectory is None or len(trajectory)<=1, "Only one trajectory at the time can be analysed."
@@ -190,7 +190,7 @@ if __name__ == '__main__':
 			md_sim.make_mol2_file()
 			md_sim.find_res_to_plot(cutoff)
 			if args.hydr_bonds!=True:
-				hbonds = HBonds(md_sim,topology, trajectory, ligand_name, offset,analysis_cutoff)
+				hbonds = HBonds(md_sim,topology, trajectory, ligand_name, offset,analysis_cutoff,args.mol2_file,args.pdb_file)
 		else:
 			md_sim = Topol_Data(topology, None, ligand_name, offset, args.mol2_file, args.pdb_file         )
 			md_sim.define_ligand(ligand_name)
@@ -198,7 +198,7 @@ if __name__ == '__main__':
 			occurrence = Occurrence_analysis(topology, trajectory, ligand_name, cutoff, offset, md_sim)
 			occurrence.get_closest_residues(analysis_cutoff)
 			if args.hydr_bonds!=True:
-				hbonds = HBonds(md_sim, topology, trajectory, ligand_name, offset,analysis_cutoff)
+				hbonds = HBonds(md_sim, topology, trajectory, ligand_name, offset,analysis_cutoff,args.mol2_file,args.pdb_file)
 
 	if args.hydr_bonds!=True:
 		md_sim.get_closest_ligand_atoms(hbonds)
