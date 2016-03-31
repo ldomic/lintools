@@ -109,14 +109,6 @@ class HBonds(object):
         self.distance = h.distance
         #h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe.universe,"protein",'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
         
-        ##### Debug
-
-        print "MOL2",self.universe.mol2_file
-        print "MOL2_input", self.mol2_input
-        print "PDB", self.universe.pdb
-        print "pdb_input", self.pdb_input
-
-        ######################################
         try:
             ligand_from_mol2 = MDAnalysis.Universe(self.universe.mol2_file) 
         except ValueError:

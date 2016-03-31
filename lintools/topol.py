@@ -170,7 +170,7 @@ class Config(object):
                 if line.startswith("Domain file:"):
                     self.domain_file=line.rsplit(":",2)[1][2:-1]
                 if line.startswith("Analysis cutoff:"):
-                    self.domain_file=line.rsplit(":",2)[1][2:-1]
+                    self.analysis_cutoff=line.rsplit(":",2)[1][2:-1]
                 if line.startswith("Selected ligand residue"):
                     self.ligand_name=[line.rsplit(":",2)[1][1:].rsplit(" ",5)[1], line.rsplit(":",2)[1][1:].rsplit(" ",5)[2], line.rsplit(":",2)[1][1:-1].rsplit(" ",5)[5]]
                     
