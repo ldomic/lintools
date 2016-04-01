@@ -18,7 +18,7 @@ if __name__ == '__main__':
 	parser.add_argument('-t', '--topology', dest = 'grofile', default=None, help='Input File name of topology file. Accepts gro, pdb files')
 	parser.add_argument('-x', '--trajectory', dest = "xtcfile", nargs="*", default=None, help='Input File name of trajectory file(s). Accepts up to 3 xtc files (Optional. Default: None)')
 	parser.add_argument('-o', '--outname', dest = "output_name", help='Name of the output files.')
-	parser.add_argument('-a', '--analysis', dest = "analysis_type", default = None, help='Select type of analysis for plotting. Available types - RMSF, occurrence. (Optional, default is None.)')
+	parser.add_argument('-rmsf', '--rmsf', dest = "rmsf", action="store_true", help="Analysis of ligand root mean square fluctuations.")
 	parser.add_argument('-c', '--cutoff', dest = "cutoff", default = 3.5, help='Input cutoff distance from the ligand that is taken into account in angstroms (Example: 3.5).')
 	parser.add_argument('-ro', '--residueoffset', dest = "offset", default = 0, help='Input the number of offset residues for the protein. (Optional, default is 0)')
 	parser.add_argument('-ac', '--analysis_cutoff', dest = "analysis_cutoff", default=30, help='Analysis cutoff - a feature has to appear for at least a third of the simulation to be counted. Default: 30')
@@ -68,11 +68,6 @@ if __name__ == '__main__':
 			domain_file=os.path.abspath(args.domain_file)
 		else:
 			domain_file=config_read.domain_file
-		# Analysis type
-		if args.analysis_type!=None:
-			analysis_type= args.analysis_type
-		else:
-			analysis_type=config_read.analysis_type
 		# Cutoff
 		if args.cutoff!=3.5:
 			cutoff=args.cutoff
@@ -98,8 +93,6 @@ if __name__ == '__main__':
 			domain_file=os.path.abspath(args.domain_file)
 		else:
 			domain_file=None
-		#diagram_type=args.diagram_type
-		analysis_type=args.analysis_type
 		cutoff=args.cutoff
 		analysis_cutoff=args.analysis_cutoff
  	
@@ -140,12 +133,12 @@ if __name__ == '__main__':
 
 	if args.config_file!=None:
 		if args.domain_file!=None:
-			if args.analysis_type=="occurrence" or trajectory!=None:
+			if trajectory!=None:
 				available_diagrams={0:"From config file",1:"amino", 2:"domains",3:"clock"}
 			if trajectory==None:
 				available_diagrams={0:"From config file", 1:"amino", 2:"domains"}
 		else:
-			if args.analysis_type=="occurrence" or trajectory!=None:
+			if trajectory!=None:
 				available_diagrams={0:"From config file",1:"amino", 2:"clock"}
 			if trajectory==None:
 				available_diagrams={0:"From config file",1:"amino", 2:"clock"}
@@ -156,13 +149,12 @@ if __name__ == '__main__':
 			diagram_type=config_read.diagram_type
 	else:
 		if args.domain_file!=None:
-			if args.analysis_type=="occurrence" or trajectory!=None:
+			if  trajectory!=None:
 				available_diagrams={1:"amino", 2:"domains",3:"clock"}
 			if trajectory==None:
 				available_diagrams={1:"amino", 2:"domains"}
 		else:
-			if args.analysis_type=="occurrence" or trajectory!=None:
-			#if args.analysis_type=="occurrence":
+			if   trajectory!=None:
 				available_diagrams={1:"amino", 2:"clock"}
 			if trajectory==None:
 				available_diagrams={1:"amino"}
@@ -173,32 +165,21 @@ if __name__ == '__main__':
 
 	#############################################################################################################
 
-	if analysis_type=="occurrence":
-		md_sim = Topol_Data(topology, None, ligand_name, offset, args.mol2_file, args.pdb_file)
+	if trajectory	is None:
+		md_sim = Topol_Data(topology, trajectory, ligand_name, offset,args.mol2_file,args.pdb_file)
+		md_sim.define_ligand(ligand_name)
+		md_sim.make_mol2_file()
+		md_sim.find_res_to_plot(cutoff)
+		if args.hydr_bonds!=True:
+			hbonds = HBonds(md_sim,topology, trajectory, ligand_name, offset,analysis_cutoff,args.mol2_file,args.pdb_file)
+	else:
+		md_sim = Topol_Data(topology, None, ligand_name, offset, args.mol2_file, args.pdb_file         )
 		md_sim.define_ligand(ligand_name)
 		md_sim.make_mol2_file()
 		occurrence = Occurrence_analysis(topology, trajectory, ligand_name, cutoff, offset, md_sim)
 		occurrence.get_closest_residues(analysis_cutoff)
 		if args.hydr_bonds!=True:
-			hbonds = HBonds(md_sim,topology, trajectory, ligand_name, offset,analysis_cutoff,args.mol2_file, args.pdb_file)
-	else: 
-	#if analysis type is anything different only one traj at time is going to be analysed
-		assert trajectory is None or len(trajectory)<=1, "Only one trajectory at the time can be analysed."
-		if trajectory	is None:
-			md_sim = Topol_Data(topology, trajectory, ligand_name, offset,args.mol2_file,args.pdb_file)
-			md_sim.define_ligand(ligand_name)
-			md_sim.make_mol2_file()
-			md_sim.find_res_to_plot(cutoff)
-			if args.hydr_bonds!=True:
-				hbonds = HBonds(md_sim,topology, trajectory, ligand_name, offset,analysis_cutoff,args.mol2_file,args.pdb_file)
-		else:
-			md_sim = Topol_Data(topology, None, ligand_name, offset, args.mol2_file, args.pdb_file         )
-			md_sim.define_ligand(ligand_name)
-			md_sim.make_mol2_file()
-			occurrence = Occurrence_analysis(topology, trajectory, ligand_name, cutoff, offset, md_sim)
-			occurrence.get_closest_residues(analysis_cutoff)
-			if args.hydr_bonds!=True:
-				hbonds = HBonds(md_sim, topology, trajectory, ligand_name, offset,analysis_cutoff,args.mol2_file,args.pdb_file)
+			hbonds = HBonds(md_sim, topology, trajectory, ligand_name, offset,analysis_cutoff,args.mol2_file,args.pdb_file)
 
 	if args.hydr_bonds!=True:
 		md_sim.get_closest_ligand_atoms(hbonds)
@@ -219,13 +200,13 @@ if __name__ == '__main__':
 
 
 	molecule = Molecule(md_sim)
-	if analysis_type=="RMSF" or analysis_type=="rmsf":
+	if args.rmsf==True:
 		rmsf = RMSF_measurements(md_sim,topology, trajectory, ligand_name, offset, args.output_name)
 		molecule = Molecule(md_sim, rmsf)
 
 
 
-	if analysis_type=="RMSF" or analysis_type=="rmsf":
+	if args.rmsf==True:
 		if args.hydr_bonds!=True:
 			figure=Figure(molecule, diagram_type,md_sim,hbonds,plots,rmsf)
 		else:
@@ -252,7 +233,7 @@ if __name__ == '__main__':
 		os.remove(f)
 
 	config_write = Config(md_sim)
-	config_write.write_config_file(args.output_name, topology, trajectory, offset, diagram_type, cutoff, analysis_type, domain_file,analysis_cutoff)
+	config_write.write_config_file(args.output_name, topology, trajectory, offset, diagram_type, cutoff, domain_file,analysis_cutoff)
 	print "Ready!"
 
 	print "The figure you created has been saved under filename "+args.output_name+".svg"
