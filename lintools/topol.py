@@ -7,7 +7,7 @@ from MDAnalysis.analysis import distances
 import time
 import numpy as np
 import operator
-import openbabel
+
 
 
 class Topol_Data(object):
@@ -18,7 +18,7 @@ class Topol_Data(object):
         self.ligand_no_H =None
         self.protein_selection =None
         self.frame_count=None
-        self.mol2_input=mol2_input
+        self.mol2_file=mol2_input
         self.pdb_input=pdb_input
         self.closest_atoms={}
         self.dict_of_plotted_res={}
@@ -42,29 +42,7 @@ class Topol_Data(object):
             self.pdb = "LIG.pdb"
         else:
             self.pdb = self.pdb_input
-    def make_mol2_file(self):
-        if self.mol2_input==None:
-            obConversion = openbabel.OBConversion()
-            obConversion.SetInAndOutFormats("pdb","mol2")
-            mol = openbabel.OBMol()
-            obConversion.ReadFile(mol,"LIG.pdb")
-            obConversion.WriteFile(mol, "LIG.mol2")
-            self.mol2_file = "LIG.mol2"
-        else:
-            self.mol2_file = self.mol2_input
-            if self.pdb_input==None:
-                self.make_pdb_with_bond_info()
-    def make_pdb_with_bond_info(self):
-        """This function was made to add bond information to pdb files, as without it functions fail further down the line in case of some exceptions"""
-        obConversion = openbabel.OBConversion()
-        obConversion.SetInAndOutFormats("mol2","pdb")
-        mol = openbabel.OBMol()
-        if self.mol2_input==None:
-            obConversion.ReadFile(mol,"LIG.mol2")
-        else:
-            obConversion.ReadFile(mol,self.mol2_input)
-        obConversion.WriteFile(mol, "LIG.pdb")
-        self.pdb = "LIG.pdb"
+
     def renumber_system(self, offset=0):
         self.protein = self.universe.select_atoms("protein")
         self.protein.set_resids(self.protein.resids+int(offset))

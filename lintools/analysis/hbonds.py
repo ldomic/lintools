@@ -115,9 +115,8 @@ class HBonds(object):
             ligand_from_mol2 = MDAnalysis.Universe(self.universe.pdb)
         except KeyError:
             ligand_from_mol2 = MDAnalysis.Universe(self.universe.pdb)
-        if len(ligand_from_mol2.atoms.bonds.bondlist)==0:
-            self.universe.make_pdb_with_bond_info()
-            ligand_from_mol2 = MDAnalysis.Universe(self.universe.pdb)
+        except len(ligand_from_mol2.atoms.bonds.bondlist)==0:
+            print "The pdb file does not have bond information. Please add it."
         self.hbond_frequency = {}
         ligand = md_sim.universe.select_atoms('(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')
         for i in range(np.prod(self.h_bonds.shape)):

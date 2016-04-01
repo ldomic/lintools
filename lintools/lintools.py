@@ -109,14 +109,15 @@ if __name__ == '__main__':
 		i=0
 	for residue in gro.residues:
 	    if residue.resnames[0] not in list_of_non_ligands:
-	    	if residue.altLocs[0]!=str(""):
+	    	if residue.altLocs[0]==str("") or  residue.altLocs[0]==None:
+	        	potential_ligands[i]=residue.atoms
+	    	else:
 	    		#Deal with ligands that have alternative locations
 	    		altloc = str(residue.altLocs[0])
 	    		resid = residue.resids[0]
 	    		new_residue = residue.select_atoms("resid "+str(resid)+" and altloc "+str(altloc))
 	    		potential_ligands[i] = new_residue
-	    	else:
-	        	potential_ligands[i]=residue.atoms
+
 	        i+=1
 
 	print "# Nr  # Name   # Resnumber  # Chain ID"
@@ -175,14 +176,12 @@ if __name__ == '__main__':
 	if trajectory	is None:
 		md_sim = Topol_Data(topology, trajectory, ligand_name, offset,args.mol2_file,args.pdb_file)
 		md_sim.define_ligand(ligand_name)
-		md_sim.make_mol2_file()
 		md_sim.find_res_to_plot(cutoff)
 		if args.hydr_bonds!=True:
 			hbonds = HBonds(md_sim,topology, trajectory, ligand_name, offset,analysis_cutoff,args.mol2_file,args.pdb_file)
 	else:
 		md_sim = Topol_Data(topology, None, ligand_name, offset, args.mol2_file, args.pdb_file         )
 		md_sim.define_ligand(ligand_name)
-		md_sim.make_mol2_file()
 		occurrence = Occurrence_analysis(topology, trajectory, ligand_name, cutoff, offset, md_sim)
 		occurrence.get_closest_residues(analysis_cutoff)
 		if args.hydr_bonds!=True:
