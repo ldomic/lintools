@@ -133,7 +133,7 @@ class Config(object):
         self.topology=None
         self.trajectory=[]
         #self.write_config_file(outname,topology,trajectory, res_offset, molecule_file, diagram_type, cutoff_distance, analysis_type, domain_file)
-    def write_config_file(self, outname, topology, trajectory, res_offset, diagram_type, cutoff_distance, analysis_type, domain_file,analysis_cutoff):
+    def write_config_file(self, outname, topology, trajectory, res_offset, diagram_type, cutoff_distance, domain_file,analysis_cutoff):
         config_file=open(outname+"_config.txt", "w")
         config_file.write("This log file was created at "+time.strftime("%c")+" and saved as "+outname+"_config.txt. \n \n \n")
         config_file.write("Topology input file:  "+topology+"\n \n")
@@ -142,7 +142,6 @@ class Config(object):
         config_file.write("Selected ligand residue:  "+str(self.topol_obj.ligand.resnames[0])+" "+str(self.topol_obj.ligand.resids[0])+" on chain "+str(self.topol_obj.ligand.segids[0])+"\n \n")
         config_file.write("Diagram type:  "+diagram_type+"\n \n")
         config_file.write("Cutoff distance:  "+str(cutoff_distance)+" Angstrom \n \n")
-        config_file.write("Type of analysis used:  "+str(analysis_type)+"\n\n")
         config_file.write("Domain file:  "+str(domain_file)+"\n \n")
         config_file.write("Analysis cutoff:  "+str(analysis_cutoff)+"\n \n")
         config_file.close()
@@ -165,8 +164,6 @@ class Config(object):
                     self.diagram_type=line.rsplit(":",2)[1][2:-1]
                 if line.startswith("Cutoff distance:"):
                     self.cutoff=line.rsplit(":",2)[1][2:-11]
-                if line.startswith("Type of analysis used:"):
-                    self.analysis_type=line.rsplit(":",2)[1][2:-1]
                 if line.startswith("Domain file:"):
                     self.domain_file=line.rsplit(":",2)[1][2:-1]
                 if line.startswith("Analysis cutoff:"):
