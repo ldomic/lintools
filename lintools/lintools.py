@@ -109,7 +109,14 @@ if __name__ == '__main__':
 		i=0
 	for residue in gro.residues:
 	    if residue.resnames[0] not in list_of_non_ligands:
-	        potential_ligands[i]=residue
+	    	if residue.altLocs[0]!=str(""):
+	    		#Deal with ligands that have alternative locations
+	    		altloc = str(residue.altLocs[0])
+	    		resid = residue.resids[0]
+	    		new_residue = residue.select_atoms("resid "+str(resid)+" and altloc "+str(altloc))
+	    		potential_ligands[i] = new_residue
+	    	else:
+	        	potential_ligands[i]=residue.atoms
 	        i+=1
 
 	print "# Nr  # Name   # Resnumber  # Chain ID"

@@ -81,7 +81,7 @@ class Topol_Data(object):
         """Finds the ligand atom that is closest to a particular residue"""
         ## Selecting ligand without hydrogen atoms as these are not depicted in the RDKit fig
         self.hbonds=hbond_object
-        self.ligand_no_H = self.topology.select_atoms('segid '+str(self.ligand.segids[0])+' and resid '+str(self.ligand.resids[0])+" and not name H*")
+        self.ligand_no_H = self.ligand.select_atoms("not name H*")
         lig_pos = self.ligand_no_H.positions
         for residue in self.dict_of_plotted_res:
             residue_select= self.topology.select_atoms("resid "+str(self.dict_of_plotted_res[residue][0]))
