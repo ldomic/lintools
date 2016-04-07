@@ -1,6 +1,4 @@
 language: python
-python:
-  - "2.7"
 os:
   - osx
 before_install:
@@ -10,9 +8,9 @@ before_install:
   - export PATH=$(pwd)/miniconda/bin:$PATH
   - conda update --yes conda
 install:
-  - conda create --yes -q -c https://conda.anaconda.org/rdkit -n my-rdkit-env rdkit python
+  - conda create --yes -q -c https://conda.anaconda.org/rdkit -n my-rdkit-env rdkit python=2.7
   - source activate my-rdkit-env
-  - conda install -y -n my-rdkit-env python numpy matplotlib geos shapely scipy
+  - conda install -y -n my-rdkit-env python=2.7 numpy matplotlib geos shapely scipy
   - pip install MDAnalysis unittest coveralls
 script: python -m unittest -v lintools.testsuite.analysis.test_topol
 after_success:
