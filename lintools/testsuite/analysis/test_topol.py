@@ -3,6 +3,7 @@ import unittest
 import os
 from lintools.topol import Topol_Data
 from lintools.testsuite.datafiles import *
+import numpy as np
 
 class TestCheckLigand(TestCase):
     def setUp(self):
