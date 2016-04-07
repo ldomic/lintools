@@ -11,6 +11,8 @@ install:
   - source activate my-rdkit-env
   - conda install -y -n my-rdkit-env python=2.7 numpy matplotlib geos shapely scipy
   - pip install MDAnalysis coveralls
-script: python -m unittest -v lintools.testsuite.analysis.test_topol
+script: 
+  - python -m unittest -v lintools.testsuite.analysis.test_topol
+  - python -m unittest -v lintools.testsuite.analysis.test_molecule
 after_success:
   - coveralls
