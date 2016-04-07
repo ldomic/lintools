@@ -1,6 +1,8 @@
 language: python
 python:
   - "2.7"
+os:
+  - osx
 before_install:
   - wget http://repo.continuum.io/miniconda/Miniconda-latest-MacOSX-x86_64.sh -O miniconda.sh
   - chmod +x miniconda.sh
@@ -11,5 +13,7 @@ install:
   - conda create --yes -q -c https://conda.anaconda.org/rdkit -n my-rdkit-env rdkit python
   - source activate my-rdkit-env
   - conda install -y -n my-rdkit-env python numpy matplotlib geos shapely scipy
-  - pip install MDAnalysis
+  - pip install MDAnalysis unittest coveralls
 script: python -m unittest -v lintools.testsuite.analysis.test_topol
+after_success:
+  - coveralls
