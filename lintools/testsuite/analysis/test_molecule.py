@@ -1,10 +1,10 @@
 from numpy.testing import TestCase, assert_equal, assert_almost_equal
 import unittest
 import os
-from lintools.topol import Topol_Data
-from lintools.testsuite.datafiles import *
+from lintools.lintools.topol import Topol_Data
+from lintools.lintools.testsuite.datafiles import *
 import numpy as np
-from lintools.molecule import Molecule
+from lintools.lintools.molecule import Molecule
 
 class TestCheckMolecule(TestCase):
     "Tests without running Hydrogen bond analysis as that changes the initial setup"
