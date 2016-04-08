@@ -11,15 +11,14 @@ import operator
 
 
 class Topol_Data(object):
-    def __init__(self, topology, trajectory=None, ligand_name=None, offset=0,mol2_input=None,pdb_input=None):
+    def __init__(self, topology, trajectory=None, ligand_name=None, offset=0,mol2_input=None):
         self.universe = None
         self.protein = None
         self.ligand = None
         self.ligand_no_H =None
         self.protein_selection =None
         self.frame_count=None
-        self.mol2_file=mol2_input
-        self.pdb_input=pdb_input
+        self.mol2_file=None
         self.closest_atoms={}
         self.dict_of_plotted_res={}
         self.load_system(topology, trajectory)
@@ -37,11 +36,9 @@ class Topol_Data(object):
         self.ligand = ligand_name
         self.ligand.resnames = "LIG"
         self.ligand.resname = "LIG"
-        if self.pdb_input==None:
-            self.ligand.write(str("LIG.pdb"))
-            self.pdb = "LIG.pdb"
-        else:
-            self.pdb = self.pdb_input
+        self.ligand.write(str("LIG.pdb"))
+        self.pdb = "LIG.pdb"
+
 
     def renumber_system(self, offset=0):
         self.protein = self.universe.select_atoms("protein")
