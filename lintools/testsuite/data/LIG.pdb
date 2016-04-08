@@ -1,5 +1,5 @@
 HEADER    MEMBRANE PROTEIN/TRANSPORT PROTEIN      16-JAN-15   4XP1
-TITLE     MDANALYSIS FRAME 0: Created by PrimitivePDBWriter
+TITLE     MDANALYSIS FRAMES FROM 0, SKIP 1: Created by PrimitivePDBWriter
 COMPND    MOL_ID: 1;
 COMPND    2 MOLECULE: DOPAMINE TRANSPORTER, ISOFORM B;
 COMPND    3 CHAIN: A;
@@ -411,28 +411,30 @@ REMARK     900 RELATED ID: 4XPG   RELATED DB: PDB
 REMARK     900 RELATED ID: 4XPH   RELATED DB: PDB
 REMARK     900 RELATED ID: 4XPT   RELATED DB: PDB
 CRYST1   96.797  140.181  166.195  90.00  90.00  90.00 P 1           1
-ATOM      1  C7  LIG A 708      -9.190   2.991 -26.818  1.00 74.60      A    C 0
-ATOM      2  C1  LIG A 708     -10.340   3.577 -26.027  1.00 67.35      A    C 0
-ATOM      3  C4  LIG A 708     -12.498   4.640 -24.661  1.00 69.83      A    C 0
-ATOM      4  C2  LIG A 708     -10.201   3.953 -24.698  1.00 64.63      A    C 0
-ATOM      5  C6  LIG A 708     -11.552   3.736 -26.670  1.00 67.79      A    C 0
-ATOM      6  C5  LIG A 708     -12.630   4.265 -25.988  1.00 70.47      A    C 0
-ATOM      7  C3  LIG A 708     -11.286   4.483 -24.014  1.00 67.57      A    C 0
-ATOM      8  O1  LIG A 708     -11.168   4.870 -22.666  1.00 67.63      A    O 0
-ATOM      9  O2  LIG A 708     -13.604   5.179 -23.976  1.00 71.74      A    O 0
-ATOM     10  C8  LIG A 708      -8.275   2.214 -25.896  1.00 78.41      A    C 0
-ATOM     11  N1  LIG A 708      -7.384   1.410 -26.667  1.00 86.24      A    N 0
-ATOM     12  H71 LIG A 708      -8.685   3.713 -27.243  1.00 89.52      A    H 0
-ATOM     13  H72 LIG A 708      -9.541   2.392 -27.507  1.00 89.52      A    H 0
-ATOM     14  H2  LIG A 708      -9.344   3.840 -24.244  1.00 77.55      A    H 0
-ATOM     15  H6  LIG A 708     -11.647   3.471 -27.604  1.00 81.34      A    H 0
-ATOM     16  H5  LIG A 708     -13.487   4.376 -26.443  1.00 84.56      A    H 0
-ATOM     17  HO1 LIG A 708     -10.973   5.736 -22.623  1.00 81.16      A    H 0
-ATOM     18  HO2 LIG A 708     -14.250   4.570 -23.931  1.00 86.09      A    H 0
-ATOM     19  H81 LIG A 708      -8.813   1.638 -25.314  1.00 94.09      A    H 0
-ATOM     20  H82 LIG A 708      -7.758   2.840 -25.348  1.00 94.09      A    H 0
-ATOM     21 HN11 LIG A 708      -7.390   0.553 -26.344  1.00103.49      A    H 0
-ATOM     22 HN12 LIG A 708      -6.536   1.753 -26.609  1.00103.49      A    H 0
+MODEL         1
+ATOM      1  C7  LIG A 708      -9.190   2.991 -26.818  1.00 74.60      A    C
+ATOM      2  C1  LIG A 708     -10.340   3.577 -26.027  1.00 67.35      A    C
+ATOM      3  C4  LIG A 708     -12.498   4.640 -24.661  1.00 69.83      A    C
+ATOM      4  C2  LIG A 708     -10.201   3.953 -24.698  1.00 64.63      A    C
+ATOM      5  C6  LIG A 708     -11.552   3.736 -26.670  1.00 67.79      A    C
+ATOM      6  C5  LIG A 708     -12.630   4.265 -25.988  1.00 70.47      A    C
+ATOM      7  C3  LIG A 708     -11.286   4.483 -24.014  1.00 67.57      A    C
+ATOM      8  O1  LIG A 708     -11.168   4.870 -22.666  1.00 67.63      A    O
+ATOM      9  O2  LIG A 708     -13.604   5.179 -23.976  1.00 71.74      A    O
+ATOM     10  C8  LIG A 708      -8.275   2.214 -25.896  1.00 78.41      A    C
+ATOM     11  N1  LIG A 708      -7.384   1.410 -26.667  1.00 86.24      A    N
+ATOM     12  H71 LIG A 708      -8.685   3.713 -27.243  1.00 89.52      A    H
+ATOM     13  H72 LIG A 708      -9.541   2.392 -27.507  1.00 89.52      A    H
+ATOM     14  H2  LIG A 708      -9.344   3.840 -24.244  1.00 77.55      A    H
+ATOM     15  H6  LIG A 708     -11.647   3.471 -27.604  1.00 81.34      A    H
+ATOM     16  H5  LIG A 708     -13.487   4.376 -26.443  1.00 84.56      A    H
+ATOM     17  HO1 LIG A 708     -10.973   5.736 -22.623  1.00 81.16      A    H
+ATOM     18  HO2 LIG A 708     -14.250   4.570 -23.931  1.00 86.09      A    H
+ATOM     19  H81 LIG A 708      -8.813   1.638 -25.314  1.00 94.09      A    H
+ATOM     20  H82 LIG A 708      -7.758   2.840 -25.348  1.00 94.09      A    H
+ATOM     21 HN11 LIG A 708      -7.390   0.553 -26.344  1.00103.49      A    H
+ATOM     22 HN12 LIG A 708      -6.536   1.753 -26.609  1.00103.49      A    H
+ENDMDL
 CONECT    1    2   10   12   13
 CONECT    2    1    4    5
 CONECT    3    6    7    9

@@ -7,7 +7,7 @@ from MDAnalysis.analysis import distances
 import time
 import numpy as np
 import operator
-import openbabel
+
 
 
 class Topol_Data(object):
@@ -18,7 +18,7 @@ class Topol_Data(object):
         self.ligand_no_H =None
         self.protein_selection =None
         self.frame_count=None
-        self.mol2_input=mol2_input
+        self.mol2_file=mol2_input
         self.pdb_input=pdb_input
         self.closest_atoms={}
         self.dict_of_plotted_res={}
@@ -42,29 +42,7 @@ class Topol_Data(object):
             self.pdb = "LIG.pdb"
         else:
             self.pdb = self.pdb_input
-    def make_mol2_file(self):
-        if self.mol2_input==None:
-            obConversion = openbabel.OBConversion()
-            obConversion.SetInAndOutFormats("pdb","mol2")
-            mol = openbabel.OBMol()
-            obConversion.ReadFile(mol,"LIG.pdb")
-            obConversion.WriteFile(mol, "LIG.mol2")
-            self.mol2_file = "LIG.mol2"
-        else:
-            self.mol2_file = self.mol2_input
-            if self.pdb_input==None:
-                self.make_pdb_with_bond_info()
-    def make_pdb_with_bond_info(self):
-        """This function was made to add bond information to pdb files, as without it functions fail further down the line in case of some exceptions"""
-        obConversion = openbabel.OBConversion()
-        obConversion.SetInAndOutFormats("mol2","pdb")
-        mol = openbabel.OBMol()
-        if self.mol2_input==None:
-            obConversion.ReadFile(mol,"LIG.mol2")
-        else:
-            obConversion.ReadFile(mol,self.mol2_input)
-        obConversion.WriteFile(mol, "LIG.pdb")
-        self.pdb = "LIG.pdb"
+
     def renumber_system(self, offset=0):
         self.protein = self.universe.select_atoms("protein")
         self.protein.set_resids(self.protein.resids+int(offset))
@@ -81,7 +59,7 @@ class Topol_Data(object):
         """Finds the ligand atom that is closest to a particular residue"""
         ## Selecting ligand without hydrogen atoms as these are not depicted in the RDKit fig
         self.hbonds=hbond_object
-        self.ligand_no_H = self.topology.select_atoms('segid '+str(self.ligand.segids[0])+' and resid '+str(self.ligand.resids[0])+" and not name H*")
+        self.ligand_no_H = self.ligand.select_atoms("not name H*")
         lig_pos = self.ligand_no_H.positions
         for residue in self.dict_of_plotted_res:
             residue_select= self.topology.select_atoms("resid "+str(self.dict_of_plotted_res[residue][0]))
@@ -133,7 +111,7 @@ class Config(object):
         self.topology=None
         self.trajectory=[]
         #self.write_config_file(outname,topology,trajectory, res_offset, molecule_file, diagram_type, cutoff_distance, analysis_type, domain_file)
-    def write_config_file(self, outname, topology, trajectory, res_offset, diagram_type, cutoff_distance, analysis_type, domain_file,analysis_cutoff):
+    def write_config_file(self, outname, topology, trajectory, res_offset, diagram_type, cutoff_distance, domain_file,analysis_cutoff):
         config_file=open(outname+"_config.txt", "w")
         config_file.write("This log file was created at "+time.strftime("%c")+" and saved as "+outname+"_config.txt. \n \n \n")
         config_file.write("Topology input file:  "+topology+"\n \n")
@@ -142,7 +120,6 @@ class Config(object):
         config_file.write("Selected ligand residue:  "+str(self.topol_obj.ligand.resnames[0])+" "+str(self.topol_obj.ligand.resids[0])+" on chain "+str(self.topol_obj.ligand.segids[0])+"\n \n")
         config_file.write("Diagram type:  "+diagram_type+"\n \n")
         config_file.write("Cutoff distance:  "+str(cutoff_distance)+" Angstrom \n \n")
-        config_file.write("Type of analysis used:  "+str(analysis_type)+"\n\n")
         config_file.write("Domain file:  "+str(domain_file)+"\n \n")
         config_file.write("Analysis cutoff:  "+str(analysis_cutoff)+"\n \n")
         config_file.close()
@@ -165,12 +142,10 @@ class Config(object):
                     self.diagram_type=line.rsplit(":",2)[1][2:-1]
                 if line.startswith("Cutoff distance:"):
                     self.cutoff=line.rsplit(":",2)[1][2:-11]
-                if line.startswith("Type of analysis used:"):
-                    self.analysis_type=line.rsplit(":",2)[1][2:-1]
                 if line.startswith("Domain file:"):
                     self.domain_file=line.rsplit(":",2)[1][2:-1]
                 if line.startswith("Analysis cutoff:"):
-                    self.domain_file=line.rsplit(":",2)[1][2:-1]
+                    self.analysis_cutoff=line.rsplit(":",2)[1][2:-1]
                 if line.startswith("Selected ligand residue"):
                     self.ligand_name=[line.rsplit(":",2)[1][1:].rsplit(" ",5)[1], line.rsplit(":",2)[1][1:].rsplit(" ",5)[2], line.rsplit(":",2)[1][1:-1].rsplit(" ",5)[5]]
                     

@@ -10,6 +10,6 @@ setup(name='lintools',
       license='GPL',
       packages=['lintools'],
       install_requires=[
-	     'MDAnalysis','openbabel','shapely','scipy','matplotlib','ipython',
+	     'MDAnalysis','shapely','scipy','matplotlib','ipython',
       ],
       zip_safe=False)

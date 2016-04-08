@@ -107,44 +107,7 @@ class Plots(object):
                 pylab.savefig(str(res[3::])+".svg", dpi=100, transparent=True)
         print "Plotting..."
 
-    def plot_clock_diagramms_old(self):
-        """Uses matplotlib to plot clock diagramms used for data analysis of trajectories, for example, occurrence time  over timecourse of simulation"""
-        #Plot the residues in clock diagramm fashion
-        colors_1=['#1f78b4','white']
-        #colors_1=['#5C0016','white']
-        colors_2=['#33a02c','white']
-        colors_3=['#6a3d9a','white']
 
-        for res in self.universe.dict_of_plotted_res.keys():
-            if len(self.universe.dict_of_plotted_res[res])==4:
-                plt.figure(figsize=(1.6, 1.6))
-            else:
-                plt.figure(figsize=(1.5, 1.5))
-            if [sum(1 for x in v if x) for k,v in self.universe.dict_of_plotted_res.items()][0]==2:
-                width=0.25
-                ring1,_=plt.pie([self.universe.dict_of_plotted_res[res][1],self.universe.frame_count-self.universe.dict_of_plotted_res[res][1]],  radius=1-width, startangle=90, colors=colors_1, counterclock=False)
-            elif [sum(1 for x in v if x) for k,v in self.universe.dict_of_plotted_res.items()][0]==3:
-                width=0.25
-                ring1,_=plt.pie([self.universe.dict_of_plotted_res[res][1],self.universe.frame_count-self.universe.dict_of_plotted_res[res][1]],  radius=1-width, startangle=90, colors=colors_1, counterclock=False)
-                ring2,_=plt.pie([self.universe.dict_of_plotted_res[res][2],self.universe.frame_count-self.universe.dict_of_plotted_res[res][2]],  radius=1, startangle=90, colors=colors_2, counterclock=False)
-            elif [sum(1 for x in v if x) for k,v in self.universe.dict_of_plotted_res.items()][0]==4:
-                width=0.25
-                ring1,_=plt.pie([self.universe.dict_of_plotted_res[res][1],self.universe.frame_count-self.universe.dict_of_plotted_res[res][1]],  radius=1-width, startangle=90, colors=colors_1, counterclock=False)
-                ring2,_=plt.pie([self.universe.dict_of_plotted_res[res][2],self.universe.frame_count-self.universe.dict_of_plotted_res[res][2]],  radius=1, startangle=90, colors=colors_2, counterclock=False)
-                ring3,_=plt.pie([self.universe.dict_of_plotted_res[res][3],self.universe.frame_count-self.universe.dict_of_plotted_res[res][3]],  radius=1+width, startangle=90, colors=colors_3, counterclock=False)
-            plt.axis('equal')
-            if len(self.universe.dict_of_plotted_res[res])==2:
-                plt.setp(ring1, width=width)
-                plt.text(0,-0.35,res[0:3]+"\n"+res[3::],ha='center',size=19, fontweight='bold')
-            elif len(self.universe.dict_of_plotted_res[res])==3:
-                plt.setp(ring1+ring2, width=width)
-                plt.text(0,-0.325,res[0:3]+"\n"+res[3::],ha='center',size=15, fontweight='bold')
-            elif len(self.universe.dict_of_plotted_res[res])==4:
-                plt.setp(ring1+ring2+ring3, width=width)
-                plt.text(0,-0.3,res[0:3]+"\n"+res[3::],ha='center',size=13, fontweight='bold')
-            pylab.savefig(str(res[3::])+".svg", dpi=100, transparent=True)
-            #plt.show()
-        print "Plotting..."
     def plot_clock_diagramms(self):
         """Uses matplotlib to plot clock diagramms used for data analysis of trajectories, for example, occurrence time  over timecourse of simulation"""
         colors = [['#00441b','white'], ['#1b7837','white'],['#5aae61','white'], ['#9970ab','white'], ['#762a83','white'],['#40004b',"white"]]
@@ -154,7 +117,7 @@ class Plots(object):
             width=0.75/ring_number
             rings=[]
             for ring in range(1,ring_number):
-                ring,_=plt.pie([self.universe.dict_of_plotted_res[res][ring],self.universe.frame_count-self.universe.dict_of_plotted_res[res][ring]],  radius=0.65+width*ring, startangle=90, colors=colors[ring-1], counterclock=False)
+                ring,_=plt.pie([self.universe.dict_of_plotted_res[res][ring],self.universe.frame_count[ring-1]-self.universe.dict_of_plotted_res[res][ring]],  radius=0.65+width*ring, startangle=90, colors=colors[ring-1], counterclock=False)
                 rings=rings+ring
             plt.setp(rings, width=width)
             plt.text(0,-0.3,res[0:3]+"\n"+res[3::],ha='center',size=13, fontweight='bold')

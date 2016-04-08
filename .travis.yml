@@ -1,0 +1,18 @@
+os:
+  - osx
+before_install:
+  - wget http://repo.continuum.io/miniconda/Miniconda-latest-MacOSX-x86_64.sh -O miniconda.sh
+  - chmod +x miniconda.sh
+  - ./miniconda.sh -b -p $(pwd)/miniconda
+  - export PATH=$(pwd)/miniconda/bin:$PATH
+  - conda update --yes conda
+install:
+  - conda create --yes -q -c https://conda.anaconda.org/rdkit -n my-rdkit-env rdkit python=2.7
+  - source activate my-rdkit-env
+  - conda install -y -n my-rdkit-env python=2.7 numpy nose matplotlib geos shapely scipy
+  - pip install MDAnalysis coveralls
+  - chmod +x lintools/testsuite/lintools_nosetests
+script: 
+  - ./lintools/testsuite/lintools_nosetests --with-coverage --cover-package lintools --cover-inclusive
+after_success:
+  - coveralls

@@ -109,23 +109,14 @@ class HBonds(object):
         self.distance = h.distance
         #h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe.universe,"protein",'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',acceptors=self.acceptors,donors=self.donors)
         
-        ##### Debug
-
-        print "MOL2",self.universe.mol2_file
-        print "MOL2_input", self.mol2_input
-        print "PDB", self.universe.pdb
-        print "pdb_input", self.pdb_input
-
-        ######################################
         try:
             ligand_from_mol2 = MDAnalysis.Universe(self.universe.mol2_file) 
         except ValueError:
             ligand_from_mol2 = MDAnalysis.Universe(self.universe.pdb)
         except KeyError:
             ligand_from_mol2 = MDAnalysis.Universe(self.universe.pdb)
-        if len(ligand_from_mol2.atoms.bonds.bondlist)==0:
-            self.universe.make_pdb_with_bond_info()
-            ligand_from_mol2 = MDAnalysis.Universe(self.universe.pdb)
+        except len(ligand_from_mol2.atoms.bonds.bondlist)==0:
+            print "The pdb file does not have bond information. Please add it."
         self.hbond_frequency = {}
         ligand = md_sim.universe.select_atoms('(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')
         for i in range(np.prod(self.h_bonds.shape)):
