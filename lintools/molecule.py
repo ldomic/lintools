@@ -1,7 +1,6 @@
 import rdkit
 from rdkit import Chem
 from rdkit.Chem import AllChem
-from IPython.display import SVG
 from rdkit.Chem import Draw
 from rdkit.Chem.Draw import rdMolDraw2D
 from rdkit.Chem import rdDepictor
@@ -39,29 +38,6 @@ class Molecule(object):
         # note: the hsv_to_rgb() function expects h to be in the range 0..1 not 0..360
         r, g, b = colorsys.hsv_to_rgb(h/360, 1., 1.)
         return (r, g, b)
-    def load_molecule_in_rdkit(self, molSize=(600,300)):
-        highlight= []
-        colors = {}
-        try:
-            self.ligand_in_rdkit=Chem.MolFromMol2File(self.universe.mol2_file)
-            rdDepictor.Compute2DCoords(self.ligand_in_rdkit)
-        except Exception:
-            self.ligand_in_rdkit=Chem.MolFromPDBFile(self.universe.pdb)
-            rdDepictor.Compute2DCoords(self.ligand_in_rdkit)   
-        if self.rmsf is not None:
-            for i in range(self.ligand_in_rdkit.GetNumAtoms()):
-                highlight.append(i)
-                colors[i] = self.pseudocolor(self.rmsf.ligand_rmsf[i], self.rmsf.min_value, self.rmsf.max_value)
-        else:
-            for i in range(self.ligand_in_rdkit.GetNumAtoms()):
-                highlight.append(i)
-                colors[i]=(1,1,1)
-        drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0],molSize[1])
-        drawer.DrawMolecule(self.ligand_in_rdkit,highlightAtoms=highlight,highlightBonds=[], highlightAtomColors=colors)
-        drawer.FinishDrawing()
-        self.svg = drawer.GetDrawingText().replace('svg:','')
-        filesvg = open("molecule.svg", "w+")
-        filesvg.write(self.svg)
     def load_molecule_in_rdkit_smiles(self, molSize=(600,300),kekulize=True):
         highlight=[]
         colors={}
