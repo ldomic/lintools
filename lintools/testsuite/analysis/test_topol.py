@@ -1,8 +1,8 @@
 from numpy.testing import TestCase, assert_equal, assert_almost_equal
 import unittest
 import os
-from lintools.topol import Topol_Data
-from lintools.testsuite.datafiles import *
+from lintools.lintools.topol import Topol_Data
+from lintools.lintools.testsuite.datafiles import *
 import numpy as np
 
 class TestCheckLigand(TestCase):
