@@ -13,6 +13,6 @@ install:
   - pip install MDAnalysis coveralls
   - chmod +x lintools/testsuite/lintools_nosetests
 script: 
-  - .lintools/testsuite/lintools_nosetests --with-coverage --cover-package lintools
+  - ./lintools/testsuite/lintools_nosetests --with-coverage --cover-package lintools --cover-inclusive
 after_success:
   - coveralls
