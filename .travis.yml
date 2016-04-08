@@ -9,10 +9,10 @@ before_install:
 install:
   - conda create --yes -q -c https://conda.anaconda.org/rdkit -n my-rdkit-env rdkit python=2.7
   - source activate my-rdkit-env
-  - conda install -y -n my-rdkit-env python=2.7 numpy matplotlib geos shapely scipy
+  - conda install -y -n my-rdkit-env python=2.7 numpy nose matplotlib geos shapely scipy
   - pip install MDAnalysis coveralls
+  - chmod +x lintools/lintools/testsuite/lintools_nosetests
 script: 
-  - python -m unittest -v lintools.testsuite.analysis.test_topol
-  - python -m unittest -v lintools.testsuite.analysis.test_molecule
+  - ./lintools_nosetests --with-coverage --cover-package lintools
 after_success:
   - coveralls
