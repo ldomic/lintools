@@ -12,6 +12,7 @@ install:
   - conda install -y -n my-rdkit-env python=2.7 numpy nose matplotlib geos shapely scipy
   - pip install MDAnalysis coveralls
   - chmod +x lintools/testsuite/lintools_nosetests
+  - ENV PYTHONPATH $PYTHONPATH:/ldomic/lintools/
 script: 
   - ./lintools/testsuite/lintools_nosetests --with-coverage --cover-package lintools --cover-inclusive
 after_success:
