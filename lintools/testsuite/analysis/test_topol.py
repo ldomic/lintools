@@ -13,19 +13,6 @@ class TestCheckLigand(TestCase):
         del self.topology
         if os.path.isfile("LIG.pdb")==True:
             os.remove("LIG.pdb")
-    def test_ligand_pdb(self):
-        self.u = self.topology.universe
-        self.ligand = self.u.select_atoms("resname LDP")
-        self.topology.define_ligand(self.ligand)
-        with open("LIG.pdb","r") as f:
-            lines = f.readlines()
-            self.out_pdb = " ".join(map(str,lines[2:-1]))
-            f.close()
-        with open(LIG_PDB,"r") as f:
-            lines = f.readlines()
-            self.in_pdb = " ".join(map(str,lines[2:-1]))
-            f.close()    
-        assert_equal(self.in_pdb, self.out_pdb)
     def test_renumber(self):
         res1 = self.topology.universe.select_atoms("resid 1")
         self.topology.renumber_system(60)
