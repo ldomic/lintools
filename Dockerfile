@@ -1,6 +1,5 @@
 FROM phusion/baseimage:0.9.17
 MAINTAINER “Laura Domicevica <ldomicevica@gmail.com>”
-
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 RUN apt-get update
@@ -23,14 +22,14 @@ WORKDIR /tmp
 
 RUN conda create -c https://conda.anaconda.org/rdkit -n my-rdkit-env rdkit
 
-RUN conda install -y -n my-rdkit-env pip matplotlib jupyter ipython notebook ipywidgets shapely scipy numpy
+RUN conda install -y -n my-rdkit-env pip matplotlib shapely scipy numpy nose
 
 RUN conda clean -y -t
 
-RUN source activate my-rdkit-env && pip install MDAnalysis && conda install -c https://conda.anaconda.org/clyde_fare openbabel
-WORKDIR /my_software2
+RUN source activate my-rdkit-env && pip install MDAnalysis 
+WORKDIR /my_software
 RUN git clone https://github.com/ldomic/lintools.git
-ENV PYTHONPATH $PYTHONPATH:/my_software2/lintools/lintools
+ENV PYTHONPATH $PYTHONPATH:/my_software/lintools/
 
 WORKDIR /data
 

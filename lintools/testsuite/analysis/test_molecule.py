@@ -9,7 +9,7 @@ from lintools.lintools.molecule import Molecule
 class TestCheckMolecule(TestCase):
     "Tests without running Hydrogen bond analysis as that changes the initial setup"
     def setUp(self):
-        self.topology = Topol_Data(PDB,None,None,0,MOL2)
+        self.topology = Topol_Data(PDB,None,None,0)
         self.u = self.topology.universe
         self.topology.ligand = self.u.select_atoms("resname LDP")
         self.topology.ligand_no_H=self.u.select_atoms("resname LDP and not name H*")

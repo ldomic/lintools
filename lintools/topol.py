@@ -8,6 +8,7 @@ import time
 import numpy as np
 import operator
 from utils import pdb2mol2
+from rdkit import Chem
 
 
 
@@ -40,6 +41,19 @@ class Topol_Data(object):
         self.pdb = "LIG.pdb"
         pdb2mol2.pdb2mol2(self.pdb)
         self.mol2_file = "LIG_test.mol2"
+        self.load_mol2_in_rdkit()
+    def load_mol2_in_rdkit(self):
+        try:
+            self.mol2 = Chem.MolFromMol2File(self.mol2_file,removeHs=False)
+            if self.mol2 == None:
+                print "Exiting. No mol2 file was supplied."
+                sys.exit()
+            # Kind of a debug
+            mol = Chem.MolFromSmarts('[$([N;!H0;v3]),$([N;!H0;+1;v4]),$([O,S;H1;+0]),$([n;H1;+0])]')
+            self.mol2.GetSubstructMatches(mol, uniquify=1)
+        except AttributeError:
+            self.mol2 = Chem.MolFromMol2File(self.universe.mol2_file,removeHs=False,sanitize=False)
+            self.mol2.UpdatePropertyCache(strict=False)
     def renumber_system(self, offset=0):
         self.protein = self.universe.select_atoms("protein")
         self.protein.set_resids(self.protein.resids+int(offset))

@@ -11,12 +11,11 @@ import colorsys
 import operator
 
 class Molecule(object):
-    def __init__(self,  topol_object, rmsf_object=None, hbonds_object=None,test=False):
+    def __init__(self,  topol_object, rmsf_object=None,test=False):
         self.svg = None
         self.universe = topol_object
         self.rmsf = rmsf_object
         self.final_svg = None
-        self.hbonds=hbonds_object
         self.atom_coords_from_diagramm = {}
         self.ligand_atom_coords_from_diagr={}
         self.nearest_points ={}
@@ -42,7 +41,7 @@ class Molecule(object):
     def load_molecule_in_rdkit_smiles(self, molSize=(600,300),kekulize=True):
         highlight=[]
         colors={}
-        mol2_in_rdkit = self.hbonds.ligand #need to reload without hydrogens
+        mol2_in_rdkit = self.universe.mol2 #need to reload without hydrogens
         mol2_in_rdkit = Chem.RemoveHs(mol2_in_rdkit)
         self.smiles = Chem.MolFromSmiles(Chem.MolToSmiles(mol2_in_rdkit))
         self.atom_identities = {}

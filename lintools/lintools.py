@@ -7,7 +7,7 @@ if __name__ == '__main__':
 	from plots import Plots
 	from molecule import Molecule
 	from figure import Figure
-	from analysis.hbonds import HBonds
+	from analysis.hbonds import HBonds, Salt_Bridges
 	from analysis.rmsf import RMSF_measurements
 	from analysis.occurrence import Occurrence_analysis
 	from topol import Config
@@ -24,8 +24,6 @@ if __name__ == '__main__':
 	parser.add_argument('-ac', '--analysis_cutoff', dest = "analysis_cutoff", default=30, help='Analysis cutoff - a feature has to appear for at least a third of the simulation to be counted. Default: 30')
 	parser.add_argument('-df', '--domain_file', dest = "domain_file", default=None, help='Input file for domains of your protein. To see the required format, check README or our GitHub page')
 	parser.add_argument('-conf', '--config_file', dest = "config_file", default=None, help="Input the name of the config file.")
-	parser.add_argument('-mol2', '--mol2_file', dest = "mol2_file", default=None, help='Input file (MOL2) for ligand used in case of tricky babel installation')
-	parser.add_argument('-pdb', '--pdb_file', dest = "pdb_file", default=None, help='Input file (PDB) for ligand used in case of tricky babel installation')
 	parser.add_argument('--no_hbonds', dest='hydr_bonds', action="store_true", help="The hydrogen bonds will not be detected.")
 	parser.add_argument('--debug', dest='debug', action="store_true", help="Functions for debugging.")
 
@@ -107,18 +105,20 @@ if __name__ == '__main__':
 	else:
 		potential_ligands={}
 		i=0
+
 	for residue in gro.residues:
 	    if residue.resnames[0] not in list_of_non_ligands:
 	    	if residue.altLocs[0]==str("") or  residue.altLocs[0]==None:
 	        	potential_ligands[i]=residue.atoms
 	    	else:
 	    		#Deal with ligands that have alternative locations
-	    		altloc = str(residue.altLocs[0])
+	    		altloc = str(residue.altLocs[1])
 	    		resid = residue.resids[0]
 	    		new_residue = residue.select_atoms("resid "+str(resid)+" and altloc "+str(altloc))
 	    		potential_ligands[i] = new_residue
 
 	        i+=1
+
 
 	print "# Nr  # Name   # Resnumber  # Chain ID"
 	if args.config_file!=None:
@@ -174,25 +174,25 @@ if __name__ == '__main__':
 	#############################################################################################################
 
 	if trajectory	is None:
-		md_sim = Topol_Data(topology, trajectory, ligand_name, offset,args.mol2_file,args.pdb_file)
+		md_sim = Topol_Data(topology, trajectory, ligand_name, offset)
 		md_sim.define_ligand(ligand_name)
 		md_sim.find_res_to_plot(cutoff)
 		if args.hydr_bonds!=True:
-			hbonds = HBonds(md_sim,topology, trajectory, ligand_name, offset,analysis_cutoff,args.mol2_file,args.pdb_file)
+			hbonds = HBonds(md_sim,topology, trajectory, ligand_name, offset,analysis_cutoff)
 	else:
-		md_sim = Topol_Data(topology, None, ligand_name, offset, args.mol2_file, args.pdb_file         )
+		md_sim = Topol_Data(topology, None, ligand_name, offset )
 		md_sim.define_ligand(ligand_name)
 		occurrence = Occurrence_analysis(topology, trajectory, ligand_name, cutoff, offset, md_sim)
 		occurrence.get_closest_residues(analysis_cutoff)
 		if args.hydr_bonds!=True:
-			hbonds = HBonds(md_sim, topology, trajectory, ligand_name, offset,analysis_cutoff,args.mol2_file,args.pdb_file)
+			hbonds = HBonds(md_sim, topology, trajectory, ligand_name, offset,analysis_cutoff)
 
 	if args.hydr_bonds!=True:
 		md_sim.get_closest_ligand_atoms(hbonds)
 	else:
 		md_sim.get_closest_ligand_atoms()
 
-
+	salt_bridges = Salt_Bridges(md_sim)
 	plots = Plots(md_sim)
 	if diagram_type=="amino":
 		plots.define_amino_acids()
@@ -214,14 +214,14 @@ if __name__ == '__main__':
 
 	if args.rmsf==True:
 		if args.hydr_bonds!=True:
-			figure=Figure(molecule, diagram_type,md_sim,hbonds,plots,rmsf)
+			figure=Figure(molecule, diagram_type,md_sim,hbonds,plots,rmsf,salt_bridges)
 		else:
-			figure=Figure(molecule, diagram_type,md_sim, plot_object=plots,rmsf_object=rmsf)
+			figure=Figure(molecule, diagram_type,md_sim, plot_object=plots,rmsf_object=rmsf,salt_bridge_object=salt_bridges)
 	else:
 		if args.hydr_bonds!=True:
-			figure=Figure(molecule, diagram_type,md_sim,hbonds,plots)
+			figure=Figure(molecule, diagram_type,md_sim,hbonds,plots,salt_bridge_object=salt_bridges)
 		else:
-			figure=Figure(molecule, diagram_type,md_sim,plots)
+			figure=Figure(molecule, diagram_type,md_sim,plots,salt_bridge_object=salt_bridges)
 	if args.hydr_bonds!=True:
 		figure.draw_hbonds_in_graph()
 	figure.draw_white_circles_at_atoms()
@@ -231,7 +231,7 @@ if __name__ == '__main__':
 	figure.write_final_draw_file(args.output_name)
 
 	file_list=[]
-	file_list=["molecule.svg"]
+	file_list=[]
 	for residue in md_sim.dict_of_plotted_res.keys():
 		file_list.append(str(residue[3:])+".svg")
 

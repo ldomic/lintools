@@ -6,7 +6,7 @@ from MDAnalysis.analysis import hbonds
 import numpy as np
 
 class HBonds(object):
-    def __init__(self,topol_object, topology, trajectory, ligand_name,offset,frame_cutoff,mol2_input = None,pdb_input= None):
+    def __init__(self,topol_object, topology, trajectory, ligand_name,offset,frame_cutoff):
         self.HDonorSmarts = Chem.MolFromSmarts('[$([N;!H0;v3]),$([N;!H0;+1;v4]),$([O,S;H1;+0]),$([n;H1;+0])]')
         haccep = "[$([O,S;H1;v2]-[!$(*=[O,N,P,S])]),$([O,S;H0;v2]),$([O,S;-]),$([N;v3;!$(N-*=!@[O,N,P,S])]),$([nH0,o,s;+0])]"
         self.HAcceptorSmarts = Chem.MolFromSmarts(haccep) 
@@ -14,28 +14,14 @@ class HBonds(object):
         self.acceptors = []
         self.universe=topol_object
         self.h_bonds = None
-        self.mol2_input = mol2_input
-        self.pdb_input =pdb_input
-        self.ligand = None
         self.hbonds_for_drawing = []
         self.find_donors_and_acceptors_in_ligand()
         self.analyse_hbonds(topology, trajectory, ligand_name,offset,frame_cutoff,3.5)
     def find_donors_and_acceptors_in_ligand(self):
         atom_names=[x.name for x in self.universe.ligand]
-        self.ligand = Chem.MolFromMol2File(self.mol2_input,removeHs=False)
-        if self.ligand == None:
-            print "Exiting. No mol2 file was supplied."
-            sys.exit()
-        try:
-            for atom in self.ligand.GetSubstructMatches(self.HDonorSmarts, uniquify=1):
-                self.donors.append(atom_names[atom[0]])
-        except AttributeError:
-            self.ligand = Chem.MolFromMol2File(self.universe.mol2_file,removeHs=False,sanitize=False)
-            self.ligand.UpdatePropertyCache(strict=False)
-            for atom in self.ligand.GetSubstructMatches(self.HDonorSmarts, uniquify=1):
-                self.donors.append(atom_names[atom[0]])
-
-        for atom in self.ligand.GetSubstructMatches(self.HAcceptorSmarts, uniquify=1):
+        for atom in self.universe.mol2.GetSubstructMatches(self.HDonorSmarts, uniquify=1):
+            self.donors.append(atom_names[atom[0]])
+        for atom in self.universe.mol2.GetSubstructMatches(self.HAcceptorSmarts, uniquify=1):
             self.acceptors.append(atom_names[atom[0]])
     def analyse_hbonds(self,topology, trajectory, ligand_name,offset,frame_cutoff,distance=3.5):
         self.hbond_frequency={}
@@ -51,7 +37,7 @@ class HBonds(object):
             prot_sel=prot_sel+"resid "+str(res[0])+" or "
         if trajectory is None:
             try:
-                md_sim = Topol_Data(topology,None,ligand_name,offset,self.mol2_input)
+                md_sim = Topol_Data(topology,None,ligand_name,offset)
                 h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',distance=distance,acceptors=self.acceptors,donors=self.donors)
                 h.run()
                 h.generate_table()  
@@ -59,7 +45,7 @@ class HBonds(object):
                 self.count_hbond_freq(0)
 
             except ValueError:
-                md_sim = Topol_Data(topology,None,ligand_name,offset,self.mol2_input)
+                md_sim = Topol_Data(topology,None,ligand_name,offset)
                 #The curious case of offending residue names that include numbers 
                 test = md_sim.universe.select_atoms('(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')
                 test.resnames = "LIG"
@@ -73,7 +59,7 @@ class HBonds(object):
             try:
                 i=0
                 for traj in trajectory:
-                    md_sim = Topol_Data(topology,trajectory[i],ligand_name, offset,self.mol2_input)
+                    md_sim = Topol_Data(topology,trajectory[i],ligand_name, offset)
                     h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',distance=distance,acceptors=self.acceptors,donors=self.donors)
                     h.run()
                     h.generate_table()  
@@ -134,7 +120,7 @@ class HBonds(object):
                 for atom in ligand_universe.atoms:
                     if atomname == atom.name:
                         atom_id = atom.id
-                rdkit_atom = self.ligand.GetAtomWithIdx(atom_id)
+                rdkit_atom = self.universe.mol2.GetAtomWithIdx(atom_id)
                 for neigh in rdkit_atom.GetNeighbors():
                     neigh_atom_id = neigh.GetIdx()
                 lig_atom = ligand_universe.atoms[neigh_atom_id].name
