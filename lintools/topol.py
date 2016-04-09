@@ -7,18 +7,18 @@ from MDAnalysis.analysis import distances
 import time
 import numpy as np
 import operator
+from utils import pdb2mol2
 
 
 
 class Topol_Data(object):
-    def __init__(self, topology, trajectory=None, ligand_name=None, offset=0,mol2_input=None):
+    def __init__(self, topology, trajectory=None, ligand_name=None, offset=0):
         self.universe = None
         self.protein = None
         self.ligand = None
         self.ligand_no_H =None
         self.protein_selection =None
         self.frame_count=None
-        self.mol2_file=None
         self.closest_atoms={}
         self.dict_of_plotted_res={}
         self.load_system(topology, trajectory)
@@ -38,6 +38,8 @@ class Topol_Data(object):
         self.ligand.resname = "LIG"
         self.ligand.write(str("LIG.pdb"))
         self.pdb = "LIG.pdb"
+        pdb2mol2.pdb2mol2(self.pdb)
+        self.mol2_file = "LIG_test.mol2"
     def renumber_system(self, offset=0):
         self.protein = self.universe.select_atoms("protein")
         self.protein.set_resids(self.protein.resids+int(offset))
