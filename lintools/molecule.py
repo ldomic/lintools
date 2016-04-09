@@ -11,11 +11,12 @@ import colorsys
 import operator
 
 class Molecule(object):
-    def __init__(self,  topol_object, rmsf_object=None, test=False):
+    def __init__(self,  topol_object, rmsf_object=None, hbonds_object=None,test=False):
         self.svg = None
         self.universe = topol_object
         self.rmsf = rmsf_object
         self.final_svg = None
+        self.hbonds=hbonds_object
         self.atom_coords_from_diagramm = {}
         self.ligand_atom_coords_from_diagr={}
         self.nearest_points ={}
@@ -41,13 +42,8 @@ class Molecule(object):
     def load_molecule_in_rdkit_smiles(self, molSize=(600,300),kekulize=True):
         highlight=[]
         colors={}
-        try:
-            mol2_in_rdkit = Chem.MolFromMol2File(self.universe.mol2_file)
-            Chem.MolToSmiles(mol2_in_rdkit)
-        except:
-            mol2_in_rdkit = Chem.MolFromPDBFile(self.universe.pdb)
-            print mol2_in_rdkit
-            Chem.MolToSmiles(mol2_in_rdkit)
+        mol2_in_rdkit = self.hbonds.ligand #need to reload without hydrogens
+        mol2_in_rdkit = Chem.RemoveHs(mol2_in_rdkit)
         self.smiles = Chem.MolFromSmiles(Chem.MolToSmiles(mol2_in_rdkit))
         self.atom_identities = {}
         i=0
@@ -97,7 +93,6 @@ class Molecule(object):
                     
 
         self.ligand_atom_coords=np.array(self.ligand_atom_coords)  
-        # Get the convex hull around ligand atoms 
         self.a = geometry.MultiPoint(self.ligand_atom_coords).convex_hull
 
         self.b_for_all = {}

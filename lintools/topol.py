@@ -38,8 +38,6 @@ class Topol_Data(object):
         self.ligand.resname = "LIG"
         self.ligand.write(str("LIG.pdb"))
         self.pdb = "LIG.pdb"
-
-
     def renumber_system(self, offset=0):
         self.protein = self.universe.select_atoms("protein")
         self.protein.set_resids(self.protein.resids+int(offset))
