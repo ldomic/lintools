@@ -10,7 +10,7 @@ from lintools.testsuite.datafiles import *
 __all__ = [
 	"PDB",
 	"LIG_PDB",
-	"MOL2"
+	"MOL2",
         "MOL_SVG_INIT"
  
 ]
