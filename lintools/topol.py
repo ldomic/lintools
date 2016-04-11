@@ -83,7 +83,7 @@ class Topol_Data(object):
                 min_values_per_atom[atom.name]=dist_array[i].min()
 
             sorted_min_values = sorted(min_values_per_atom.items(), key=operator.itemgetter(1))     
-            self.closest_atoms[residue]=sorted_min_values[0][0],sorted_min_values[0][1],sorted_min_values[1][0],sorted_min_values[1][1],sorted_min_values[2][0],sorted_min_values[2][1]       
+            self.closest_atoms[residue]=sorted_min_values[0][0],sorted_min_values[0][1]     
         if self.hbonds!=None:
             check_hbonds={}
             for atom in self.closest_atoms:

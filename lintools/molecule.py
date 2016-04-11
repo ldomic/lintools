@@ -16,7 +16,6 @@ class Molecule(object):
         self.universe = topol_object
         self.rmsf = rmsf_object
         self.final_svg = None
-        self.atom_coords_from_diagramm = {}
         self.ligand_atom_coords_from_diagr={}
         self.nearest_points ={}
         self.nearest_points_projection = {}
@@ -38,7 +37,7 @@ class Molecule(object):
         # note: the hsv_to_rgb() function expects h to be in the range 0..1 not 0..360
         r, g, b = colorsys.hsv_to_rgb(h/360, 1., 1.)
         return (r, g, b)
-    def load_molecule_in_rdkit_smiles(self, molSize=(600,300),kekulize=True):
+    def load_molecule_in_rdkit_smiles(self, molSize=(900,450),kekulize=True):
         highlight=[]
         colors={}
         mol2_in_rdkit = self.universe.mol2 #need to reload without hydrogens
@@ -97,7 +96,7 @@ class Molecule(object):
         self.b_for_all = {}
         for residue in self.universe.closest_atoms:
             self.b_lenght = None
-            b = self.a.boundary.parallel_offset(80,"left",join_style=2).convex_hull
+            b = self.a.boundary.parallel_offset(120,"left",join_style=2).convex_hull
             if len(self.universe.closest_atoms[residue])==2:
                 point =geometry.Point((self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][0]][0],self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][0]][1]))
                 self.b_for_all[residue] = (b.boundary.project(point) % b.boundary.length) 
@@ -218,7 +217,7 @@ class Molecule(object):
             i=0
             xy_values =[]
             for residue in  self.nearest_points_coords:
-                b = self.a.boundary.parallel_offset(self.universe.closest_atoms[residue][1]*38.0+36,"left",join_style=2).convex_hull
+                b = self.a.boundary.parallel_offset(self.universe.closest_atoms[residue][1]*50,"left",join_style=2).convex_hull
                 self.nearest_points_projection[residue] = values[i]
                 self.nearest_points[residue] = b.boundary.interpolate(self.nearest_points_projection[residue] % b.boundary.length)
                 self.nearest_points_coords[residue] = self.nearest_points[residue].x, self.nearest_points[residue].y
@@ -237,11 +236,11 @@ class Molecule(object):
     def make_multiple_hulls(self):
         for residue in self.universe.closest_atoms:
             if len(self.universe.closest_atoms[residue])==2:
-                b = self.a.boundary.parallel_offset(self.universe.closest_atoms[residue][1]*38.0+36,"left",join_style=2).convex_hull
+                b = self.a.boundary.parallel_offset(self.universe.closest_atoms[residue][1]*50,"left",join_style=2).convex_hull
                 point =geometry.Point((self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][0]][0],self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][0]][1]))
                 self.nearest_points_projection[residue] = (b.boundary.project(point) % b.boundary.length)
             if len(self.universe.closest_atoms[residue])==4:
-                b = self.a.boundary.parallel_offset(((self.universe.closest_atoms[residue][1]+self.universe.closest_atoms[residue][3])/2)*38.0+36,"left",join_style=2).convex_hull
+                b = self.a.boundary.parallel_offset(((self.universe.closest_atoms[residue][1]+self.universe.closest_atoms[residue][3])/2)*50,"left",join_style=2).convex_hull
                 point1 =geometry.Point((self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][0]][0],self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][0]][1]))
                 point2 =geometry.Point((self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][2]][0],self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][2]][1]))
                 proj1 =(b.boundary.project(point1) % b.boundary.length)
