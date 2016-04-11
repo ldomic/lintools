@@ -13,6 +13,7 @@ class TestCheckMolecule(TestCase):
         self.u = self.topology.universe
         self.topology.ligand = self.u.select_atoms("resname LDP")
         self.topology.ligand_no_H=self.u.select_atoms("resname LDP and not name H*")
+        self.topology.define_ligand(self.topology.ligand)
         self.topology.find_res_to_plot(3.5)
         self.topology.get_closest_ligand_atoms()
         self.molecule = Molecule(self.topology,test=True)
