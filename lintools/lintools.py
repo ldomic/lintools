@@ -7,7 +7,8 @@ if __name__ == '__main__':
 	from plots import Plots
 	from molecule import Molecule
 	from figure import Figure
-	from analysis.hbonds import HBonds, Salt_Bridges
+	#from analysis.hbonds import HBonds, Salt_Bridges
+	from analysis.hbonds import HBonds
 	from analysis.rmsf import RMSF_measurements
 	from analysis.occurrence import Occurrence_analysis
 	from topol import Config
