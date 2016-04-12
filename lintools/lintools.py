@@ -7,7 +7,6 @@ if __name__ == '__main__':
 	from plots import Plots
 	from molecule import Molecule
 	from figure import Figure
-	#from analysis.hbonds import HBonds, Salt_Bridges
 	from analysis.hbonds import HBonds
 	from analysis.rmsf import RMSF_measurements
 	from analysis.occurrence import Occurrence_analysis
@@ -193,7 +192,6 @@ if __name__ == '__main__':
 	else:
 		md_sim.get_closest_ligand_atoms()
 
-	salt_bridges = Salt_Bridges(md_sim)
 	plots = Plots(md_sim)
 	if diagram_type=="amino":
 		plots.define_amino_acids()
@@ -215,14 +213,14 @@ if __name__ == '__main__':
 
 	if args.rmsf==True:
 		if args.hydr_bonds!=True:
-			figure=Figure(molecule, diagram_type,md_sim,hbonds,plots,rmsf,salt_bridges)
+			figure=Figure(molecule, diagram_type,md_sim,hbonds,plots,rmsf)
 		else:
-			figure=Figure(molecule, diagram_type,md_sim, plot_object=plots,rmsf_object=rmsf,salt_bridge_object=salt_bridges)
+			figure=Figure(molecule, diagram_type,md_sim, plot_object=plots,rmsf_object=rmsf)
 	else:
 		if args.hydr_bonds!=True:
-			figure=Figure(molecule, diagram_type,md_sim,hbonds,plots,salt_bridge_object=salt_bridges)
+			figure=Figure(molecule, diagram_type,md_sim,hbonds,plots)
 		else:
-			figure=Figure(molecule, diagram_type,md_sim,plots,salt_bridge_object=salt_bridges)
+			figure=Figure(molecule, diagram_type,md_sim,plots)
 	if args.hydr_bonds!=True:
 		figure.draw_hbonds_in_graph()
 	figure.draw_white_circles_at_atoms()
