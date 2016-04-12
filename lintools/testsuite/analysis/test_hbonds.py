@@ -8,7 +8,7 @@ import numpy as np
 
 class TestHBonds(TestCase):
     def setUp(self):
-		self.topology = Topol_Data(PDB,None,None,0)
+        self.topology = Topol_Data(PDB,None,None,0)
         self.u = self.topology.universe
         self.topology.ligand = self.u.select_atoms("resname LDP")
         self.topology.ligand_no_H=self.u.select_atoms("resname LDP and not name H*")
@@ -29,5 +29,5 @@ class TestHBonds(TestCase):
  (u'O', u'LDP708'),
  (u'OD1', u'LDP708'),
  (u'OD2', u'LDP708')]
- 		assert_equal(for_drawing,self.hbonds.hbonds_for_drawing)
+        assert_equal(for_drawing,self.hbonds.hbonds_for_drawing)
 
