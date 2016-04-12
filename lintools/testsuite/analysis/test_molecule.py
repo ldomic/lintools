@@ -4,6 +4,7 @@ import os
 from lintools.lintools.topol import Topol_Data
 from lintools.lintools.testsuite.datafiles import *
 import numpy as np
+from rdkit import Chem
 from lintools.lintools.molecule import Molecule
 
 class TestCheckMolecule(TestCase):
@@ -42,13 +43,13 @@ class TestCheckMolecule(TestCase):
         atom_identities  = {'0': 2,
  '1': 3,
  '10': 0,
- '2': 6,
- '3': 10,
- '4': 4,
- '5': 5,
- '6': 8,
- '7': 9,
- '8': 7,
+ '2': 7,
+ '3': 4,
+ '4': 10,
+ '5': 9,
+ '6': 5,
+ '7': 6,
+ '8': 8,
  '9': 1}
         assert_equal(atom_identities,self.molecule.atom_identities)
     def test_init_residue_placement(self):

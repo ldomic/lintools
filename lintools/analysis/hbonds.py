@@ -6,7 +6,7 @@ from MDAnalysis.analysis import hbonds
 import numpy as np
 
 class HBonds(object):
-    def __init__(self,topol_object, topology, trajectory, ligand_name,offset,frame_cutoff):
+    def __init__(self,topol_object, topology, trajectory, ligand_name,offset,frame_cutoff,tests=False):
         self.HDonorSmarts = Chem.MolFromSmarts('[$([N;!H0;v3]),$([N;!H0;+1;v4]),$([O,S;H1;+0]),$([n;H1;+0])]')
         haccep = "[$([O,S;H1;v2]-[!$(*=[O,N,P,S])]),$([O,S;H0;v2]),$([O,S;-]),$([N;v3;!$(N-*=!@[O,N,P,S])]),$([nH0,o,s;+0])]"
         self.HAcceptorSmarts = Chem.MolFromSmarts(haccep) 
@@ -15,8 +15,9 @@ class HBonds(object):
         self.universe=topol_object
         self.h_bonds = None
         self.hbonds_for_drawing = []
-        self.find_donors_and_acceptors_in_ligand()
-        self.analyse_hbonds(topology, trajectory, ligand_name,offset,frame_cutoff,3.5)
+        if tests==False:
+            self.find_donors_and_acceptors_in_ligand()
+            self.analyse_hbonds(topology, trajectory, ligand_name,offset,frame_cutoff,3.5)
     def find_donors_and_acceptors_in_ligand(self):
         atom_names=[x.name for x in self.universe.ligand]
         for atom in self.universe.mol2.GetSubstructMatches(self.HDonorSmarts, uniquify=1):
