@@ -28,11 +28,11 @@ class TestHBonds(TestCase):
     	self.hbonds.analyse_hbonds(PDB, None, self.ligand,0,30,3.5)
     	for_drawing =[('O1', 'SER422'), ('N1', 'ASP46'), ('O2', 'ALA117')]
  	assert_equal(for_drawing,self.hbonds.hbonds_for_drawing)
- def test_get_closest_atoms_with_hbonds(self):
- 	self.hbonds.find_donors_and_acceptors_in_ligand()
-    	self.hbonds.analyse_hbonds(PDB, None, self.ligand,0,30,3.5)
-    	self.topology.get_closest_ligand_atoms(self.hbonds)
-    	closest_atoms = {'ALA117': ('O2', 3.5),
+    def test_get_closest_atoms_with_hbonds(self):
+        self.hbonds.find_donors_and_acceptors_in_ligand()
+        self.hbonds.analyse_hbonds(PDB, None, self.ligand,0,30,3.5)
+        self.topology.get_closest_ligand_atoms(self.hbonds)
+        closest_atoms = {'ALA117': ('O2', 3.5),
  'ASP121': ('O1', 2.7923072904423361),
  'ASP46': ('N1', 3.5),
  'PHE325': ('C6', 3.3749625311013798),
