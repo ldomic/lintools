@@ -1,20 +1,21 @@
-# LINTools [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.45076.svg)](http://dx.doi.org/10.5281/zenodo.45076)
+# LINTools [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.45076.svg)](http://dx.doi.org/10.5281/zenodo.45076) [![Build Status](https://travis-ci.org/ldomic/lintools.svg?branch=master)](https://travis-ci.org/ldomic/lintools) [![Coverage Status](https://coveralls.io/repos/github/ldomic/lintools/badge.svg?branch=master)](https://coveralls.io/github/ldomic/lintools?branch=master)
 
 LINTools (or Ligand Interaction Network Tools) is an open source program fully written in Python. It produces diagrams of interaction between protein and ligands in a molecular dynamics trajectory or a topology file. It can be used to investigate docking poses, show the residues that are spending most time in the vicinity of the ligand and possibly other things. Examples shall follow on a later date.
+
+![Alt text](https://github.com/ldomic/lintools/blob/master/lintools/testsuite/data/LDP.png "Title")
+
+
+
 #Installation
-To install LINTools and all the dependencies shown below:
-```
-conda install rdkit
-conda install geos  # library for shapely
-pip install lintools
-```
+To install LINTools and all the dependencies on a [Linux computer] (https://github.com/ldomic/lintools/wiki/Installation-on-Linux-computer)
+[More installation options and instructions for OSX will follow shortly]
+
 
 #Dependencies
 LINTools require these packages:
 * RDKit (installation instructions with Anaconda available from RDKit GitHub account: https://github.com/rdkit/conda-rdkit)
-* Shapely (available on GitHub https://github.com/Toblerity/Shapely)
+* Shapely (available on GitHub https://github.com/Toblerity/Shapely) and GEOS library
 * MDAnalysis (available on GitHub https://github.com/MDAnalysis/mdanalysis)
-* OpenBabel with Python bindings
 
 If this is a problem for your computer's architecture, a Dockerfile has also been provided.
 
@@ -24,14 +25,13 @@ Usage:
 For a topology file (no trajectory data):
 ```
 lintools -t my_top_file.pdb -o my_output
-(Optional:-mol2 [mol2 file of the ligand in case of babel misbehaving] --cutoff [a number] --residueoffset [a number] --diagram_type "amino" or "domains" -df domain text file )
+(Optional:- --cutoff [a number] --residueoffset [a number]  -df domain text file )
 ```
 
 For trajectory data:
 ```
 lintools -t my_top_file.pdb -x my_traj.xtc -o my_output 
-(Optional: same as above + --analysis "occurance"or  "rmsf" and for occurance analysis it is possible to choose up to three trajectories
-which are displayed as clock diagrams. --diagram_type "clock" must be specified)
+(Optional: same as above + -rmsf [for ligand atom RMSF analysis])
 ```
 
 With configuration file (written after every run):

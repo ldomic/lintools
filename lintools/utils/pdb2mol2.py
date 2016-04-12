@@ -193,7 +193,7 @@ def read_PDB(pdb):
     try:
         pdb_file = open(pdb, "r")
         for line in pdb_file.readlines():
-            if line.__contains__("ATOM") or line.__contains__("HETATM"):
+            if line.startswith("ATOM") or line.startswith("HETATM"):
                 atom = str(line[12:16]).replace(" ","")
                 x = float(line[31:38])
                 y = float(line[39:46])

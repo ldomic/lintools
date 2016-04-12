@@ -1,8 +1,8 @@
 from numpy.testing import TestCase, assert_equal, assert_almost_equal
 import unittest
 import os
-from lintools.topol import Topol_Data
-from lintools.testsuite.datafiles import *
+from lintools.lintools.topol import Topol_Data
+from lintools.lintools.testsuite.datafiles import *
 import numpy as np
 
 class TestCheckLigand(TestCase):
@@ -13,19 +13,6 @@ class TestCheckLigand(TestCase):
         del self.topology
         if os.path.isfile("LIG.pdb")==True:
             os.remove("LIG.pdb")
-    def test_ligand_pdb(self):
-        self.u = self.topology.universe
-        self.ligand = self.u.select_atoms("resname LDP")
-        self.topology.define_ligand(self.ligand)
-        with open("LIG.pdb","r") as f:
-            lines = f.readlines()
-            self.out_pdb = " ".join(map(str,lines[2:-1]))
-            f.close()
-        with open(LIG_PDB,"r") as f:
-            lines = f.readlines()
-            self.in_pdb = " ".join(map(str,lines[2:-1]))
-            f.close()    
-        assert_equal(self.in_pdb, self.out_pdb)
     def test_renumber(self):
         res1 = self.topology.universe.select_atoms("resid 1")
         self.topology.renumber_system(60)
@@ -50,15 +37,15 @@ class TestCheckLigand(TestCase):
         self.topology.ligand = self.u.select_atoms("resname LDP")
         self.topology.find_res_to_plot()
         self.topology.get_closest_ligand_atoms()
-        closest_res ={'ASP121': ('O1',2.7923072904423361,'O2',2.9820389652431976,'C3',3.8011160428911479),
- 'PHE325': ('C6',
-  3.3749625311013798,
-  'C5',
-  3.6330910060120107,
-  'C7',
-  4.3617278148294476),
- }
-        assert_equal(closest_res["ASP121"],self.topology.closest_atoms["ASP121"])
-        assert_equal(closest_res["PHE325"],self.topology.closest_atoms["PHE325"])
+        closest_res ={'ALA117': ('O2', 2.863625497483675),
+ 'ASP121': ('O1', 2.7923072904423361),
+ 'ASP46': ('N1', 3.1229403882574975),
+ 'PHE325': ('C6', 3.3749625311013798),
+ 'PHE43': ('C7', 4.1442749657414888),
+ 'SER421': ('C2', 4.0928581319641619),
+ 'SER422': ('O1', 3.5110469968840192),
+ 'TYR124': ('C8', 3.2547764210794483),
+ 'VAL120': ('C4', 3.5782832437246794)}
+        assert_equal(closest_res, self.topology.closest_atoms)
 
 

@@ -1,7 +1,6 @@
 import rdkit
 from rdkit import Chem
 from rdkit.Chem import AllChem
-from IPython.display import SVG
 from rdkit.Chem import Draw
 from rdkit.Chem.Draw import rdMolDraw2D
 from rdkit.Chem import rdDepictor
@@ -12,12 +11,11 @@ import colorsys
 import operator
 
 class Molecule(object):
-    def __init__(self,  topol_object, rmsf_object=None, test=False):
+    def __init__(self,  topol_object, rmsf_object=None,test=False):
         self.svg = None
         self.universe = topol_object
         self.rmsf = rmsf_object
         self.final_svg = None
-        self.atom_coords_from_diagramm = {}
         self.ligand_atom_coords_from_diagr={}
         self.nearest_points ={}
         self.nearest_points_projection = {}
@@ -39,39 +37,11 @@ class Molecule(object):
         # note: the hsv_to_rgb() function expects h to be in the range 0..1 not 0..360
         r, g, b = colorsys.hsv_to_rgb(h/360, 1., 1.)
         return (r, g, b)
-    def load_molecule_in_rdkit(self, molSize=(600,300)):
-        highlight= []
-        colors = {}
-        try:
-            self.ligand_in_rdkit=Chem.MolFromMol2File(self.universe.mol2_file)
-            rdDepictor.Compute2DCoords(self.ligand_in_rdkit)
-        except Exception:
-            self.ligand_in_rdkit=Chem.MolFromPDBFile(self.universe.pdb)
-            rdDepictor.Compute2DCoords(self.ligand_in_rdkit)   
-        if self.rmsf is not None:
-            for i in range(self.ligand_in_rdkit.GetNumAtoms()):
-                highlight.append(i)
-                colors[i] = self.pseudocolor(self.rmsf.ligand_rmsf[i], self.rmsf.min_value, self.rmsf.max_value)
-        else:
-            for i in range(self.ligand_in_rdkit.GetNumAtoms()):
-                highlight.append(i)
-                colors[i]=(1,1,1)
-        drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0],molSize[1])
-        drawer.DrawMolecule(self.ligand_in_rdkit,highlightAtoms=highlight,highlightBonds=[], highlightAtomColors=colors)
-        drawer.FinishDrawing()
-        self.svg = drawer.GetDrawingText().replace('svg:','')
-        filesvg = open("molecule.svg", "w+")
-        filesvg.write(self.svg)
-    def load_molecule_in_rdkit_smiles(self, molSize=(600,300),kekulize=True):
+    def load_molecule_in_rdkit_smiles(self, molSize=(900,450),kekulize=True):
         highlight=[]
         colors={}
-        try:
-            mol2_in_rdkit = Chem.MolFromMol2File(self.universe.mol2_file)
-            Chem.MolToSmiles(mol2_in_rdkit)
-        except:
-            mol2_in_rdkit = Chem.MolFromPDBFile(self.universe.pdb)
-            print mol2_in_rdkit
-            Chem.MolToSmiles(mol2_in_rdkit)
+        mol2_in_rdkit = self.universe.mol2 #need to reload without hydrogens
+        mol2_in_rdkit = Chem.RemoveHs(mol2_in_rdkit)
         self.smiles = Chem.MolFromSmiles(Chem.MolToSmiles(mol2_in_rdkit))
         self.atom_identities = {}
         i=0
@@ -121,13 +91,12 @@ class Molecule(object):
                     
 
         self.ligand_atom_coords=np.array(self.ligand_atom_coords)  
-        # Get the convex hull around ligand atoms 
         self.a = geometry.MultiPoint(self.ligand_atom_coords).convex_hull
 
         self.b_for_all = {}
         for residue in self.universe.closest_atoms:
             self.b_lenght = None
-            b = self.a.boundary.parallel_offset(80,"left",join_style=2).convex_hull
+            b = self.a.boundary.parallel_offset(120,"left",join_style=2).convex_hull
             if len(self.universe.closest_atoms[residue])==2:
                 point =geometry.Point((self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][0]][0],self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][0]][1]))
                 self.b_for_all[residue] = (b.boundary.project(point) % b.boundary.length) 
@@ -248,7 +217,7 @@ class Molecule(object):
             i=0
             xy_values =[]
             for residue in  self.nearest_points_coords:
-                b = self.a.boundary.parallel_offset(self.universe.closest_atoms[residue][1]*38.0+36,"left",join_style=2).convex_hull
+                b = self.a.boundary.parallel_offset(self.universe.closest_atoms[residue][1]*50,"left",join_style=2).convex_hull
                 self.nearest_points_projection[residue] = values[i]
                 self.nearest_points[residue] = b.boundary.interpolate(self.nearest_points_projection[residue] % b.boundary.length)
                 self.nearest_points_coords[residue] = self.nearest_points[residue].x, self.nearest_points[residue].y
@@ -267,11 +236,11 @@ class Molecule(object):
     def make_multiple_hulls(self):
         for residue in self.universe.closest_atoms:
             if len(self.universe.closest_atoms[residue])==2:
-                b = self.a.boundary.parallel_offset(self.universe.closest_atoms[residue][1]*38.0+36,"left",join_style=2).convex_hull
+                b = self.a.boundary.parallel_offset(self.universe.closest_atoms[residue][1]*50,"left",join_style=2).convex_hull
                 point =geometry.Point((self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][0]][0],self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][0]][1]))
                 self.nearest_points_projection[residue] = (b.boundary.project(point) % b.boundary.length)
             if len(self.universe.closest_atoms[residue])==4:
-                b = self.a.boundary.parallel_offset(((self.universe.closest_atoms[residue][1]+self.universe.closest_atoms[residue][3])/2)*38.0+36,"left",join_style=2).convex_hull
+                b = self.a.boundary.parallel_offset(((self.universe.closest_atoms[residue][1]+self.universe.closest_atoms[residue][3])/2)*50,"left",join_style=2).convex_hull
                 point1 =geometry.Point((self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][0]][0],self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][0]][1]))
                 point2 =geometry.Point((self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][2]][0],self.ligand_atom_coords_from_diagr[self.universe.closest_atoms[residue][2]][1]))
                 proj1 =(b.boundary.project(point1) % b.boundary.length)
