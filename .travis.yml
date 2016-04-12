@@ -1,5 +1,8 @@
 os:
   - osx
+env:
+  global:
+    - GH_DOC_BRANCH: master
 before_install:
   - wget http://repo.continuum.io/miniconda/Miniconda-latest-MacOSX-x86_64.sh -O miniconda.sh
   - chmod +x miniconda.sh
@@ -15,6 +18,14 @@ install:
   - python setup.py build
   - python setup.py install
 script: 
-  - ./lintools/lintools_nosetests --with-coverage --cover-package lintools 
+  - ./lintools/lintools_nosetests --with-coverage --cover-package lintools
+  - |
+     test ${TRAVIS_PULL_REQUEST} == "false" && \
+     test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
+     test "${TRAVIS_BUILD_NUMBER}.1" == "${TRAVIS_JOB_NUMBER}" 
 after_success:
   - coveralls
+  - |
+     test ${TRAVIS_PULL_REQUEST} == "false" && \
+     test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
+     test "${TRAVIS_BUILD_NUMBER}.1" == "${TRAVIS_JOB_NUMBER}"
