@@ -1,3 +1,3 @@
 #!/usr/bin/env python
-import lintools.testsuite as Tests
+import testsuite as Tests
 Tests.run()
