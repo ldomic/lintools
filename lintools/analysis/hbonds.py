@@ -37,25 +37,14 @@ class HBonds(object):
         for res in self.universe.dict_of_plotted_res.values():
             prot_sel=prot_sel+"resid "+str(res[0])+" or "
         if trajectory is None:
-            try:
-                md_sim = Topol_Data(topology,None,ligand_name,offset)
-                h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',distance=distance,acceptors=self.acceptors,donors=self.donors)
-                h.run()
-                h.generate_table()  
-                self.h_bonds=h.table
-                self.count_hbond_freq(0)
-
-            except ValueError:
-                md_sim = Topol_Data(topology,None,ligand_name,offset)
-                #The curious case of offending residue names that include numbers 
-                test = md_sim.universe.select_atoms('(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')
-                test.resnames = "LIG"
-                h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',distance=distance,acceptors=self.acceptors,donors=self.donors)
-                h.run()
-                h.generate_table()  
-                self.h_bonds=h.table 
-                self.count_hbond_freq(0)
-
+            md_sim = Topol_Data(topology,None,ligand_name,offset)
+            test = md_sim.universe.select_atoms('(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')
+            test.resnames = "LIG"
+            h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',distance=distance,acceptors=self.acceptors,donors=self.donors)
+            h.run()
+            h.generate_table()  
+            self.h_bonds=h.table
+            self.count_hbond_freq(0)
         else:
             try:
                 i=0
@@ -110,6 +99,7 @@ class HBonds(object):
     def count_hbond_freq(self,traj):
         ligand_universe = MDAnalysis.Universe(self.universe.pdb)
         ligand = self.universe.universe.select_atoms('(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')
+        ligand.resnames = "LIG"
         for i in range(np.prod(self.h_bonds.shape)):
             if self.h_bonds[i][3]==ligand.resnames[0]:
                 atomname = self.h_bonds[i][5]
