@@ -104,24 +104,6 @@ def calculate_bonds(coordinates, dist):
 def sanitise_charge(coordinates, dist):
     #Final sanitisation - add more rules id there is more you can think of...
     for i in range(0, len(coordinates)):
-        """if get_atom_name(coordinates[i].name) == "C" and coordinates[i].charge == -1:
-            min_dist = 100000
-            min_bond = -1
-            for index,bond in enumerate(coordinates[i].bonds):
-                if get_atom_name(coordinates[bond.b].name) == "N" and coordinates[bond.b].charge==0 and coordinates[i].charge == -1:
-                    # Is available to be charged
-                    if dist[bond.a, bond.b]<min_dist:
-                        min_bond = index
-                        min_dist = dist[bond.a, bond.b]
-
-            if min_bond>=0:
-                coordinates[i].bonds[min_bond].type = 2
-                coordinates[i].num_bonds = coordinates[i].num_bonds + 1
-                coordinates[i].charge = coordinates[i].num_bonds - valence[get_atom_name(coordinates[i].name)]
-                coordinates[coordinates[i].bonds[min_bond].b].num_bonds = coordinates[coordinates[i].bonds[min_bond].b].num_bonds + 1
-                coordinates[coordinates[i].bonds[min_bond].b].charge = coordinates[coordinates[i].bonds[min_bond].b].num_bonds - valence[get_atom_name(coordinates[coordinates[i].bonds[min_bond].b].name)]
-            else:
-                print "Could not determine the structure correctly- check your input file?"""
 
         if get_atom_name(coordinates[i].name) == "P" and coordinates[i].charge == 1:
             #phosphate
