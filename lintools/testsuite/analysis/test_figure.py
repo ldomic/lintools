@@ -47,4 +47,21 @@ class TestCheckFigure(TestCase):
             self.out_svg_to_test = " ".join(map(str,lines[2:-1]))
             f.close()
         assert_equal(self.out_test_svg,self.out_svg_to_test)
+    def test_plot_domains_diagrams(self):
+        self.plots.define_domains(DOM_FILE_4XP1, 3.5)
+        self.plots.plot_domains_diagramms()
+        self.figure = Figure(self.molecule,"domain",self.topology,self.hbonds,self.plots,tests=True)
+        self.figure.draw_hbonds_in_graph()
+        self.figure.draw_white_circles_at_atoms()
+        self.figure.put_everything_together()
+        self.figure.write_final_draw_file("domain_diagrams")
+        with open(DOMAIN_DIAGRAM,"r") as f:
+            lines = f.readlines()
+            self.out_test_svg = " ".join(map(str,lines[2:-1]))
+            f.close()
+        with open("domain_diagrams.svg","r") as f:
+            lines = f.readlines()
+            self.out_svg_to_test = " ".join(map(str,lines[2:-1]))
+            f.close()
+        assert_equal(self.out_test_svg,self.out_svg_to_test)
 

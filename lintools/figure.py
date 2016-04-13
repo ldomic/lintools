@@ -1,6 +1,7 @@
 
 import fileinput
 import sys
+import os
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
@@ -81,14 +82,15 @@ class Figure(object):
             self.molecule.x_dim=self.molecule.x_dim+300
         if diagram_type=="amino":
             x_dim=self.molecule.x_dim
-            self.molecule.y_dim=self.molecule.y_dim+60
+            y_dim=self.molecule.y_dim+60
+            #self.molecule.y_dim=self.molecule.y_dim+60
         start1 = "width='900px' height='450px' >"
         start2 = "<rect style='opacity:1.0;fill:#FFFFFF;stroke:none' width='900' height='450' x='0' y='0'> </rect>"
-        bigger_box ="width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim)+"px' > "
+        bigger_box ="width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim+60)+"px' > "
         if self.rmsf!=None:
-            big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim)+"px' x='0' y='0'> </rect> <g transform='translate("+str((x_dim-900)/2+100)+","+str((self.molecule.y_dim-450)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='900' height='450' x='0' y='0' /> "
+            big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim+60)+"px' x='0' y='0'> </rect> <g transform='translate("+str((x_dim-900)/2+100)+","+str((self.molecule.y_dim-450)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='900' height='450' x='0' y='0' /> "
         else:
-            big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim)+"px' x='0' y='0'> </rect> <g transform='translate("+str((x_dim-900)/2)+","+str((self.molecule.y_dim-450)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='900' height='450' x='0' y='0' /> "
+            big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim+60)+"px' x='0' y='0'> </rect> <g transform='translate("+str((x_dim-900)/2)+","+str((self.molecule.y_dim-450)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='900' height='450' x='0' y='0' /> "
         self.end_symbol = "</svg>"
         no_end_symbol = "</g>"
         self.change_lines_in_svg("molecule.svg", start1, bigger_box)
@@ -105,7 +107,7 @@ class Figure(object):
             if self.tests== False:
                 coord=sys.argv[0][0:-11]+"legends/amino_legend.svg"
             else:
-                coord="legends/amino_legend.svg"
+                coord=os.getcwd+"/legends/amino_legend.svg"
             with open(coord,"r") as f:
                 lines = f.readlines()
                 legend ="".join(map(str,lines))

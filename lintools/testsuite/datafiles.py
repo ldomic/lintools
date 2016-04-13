@@ -12,7 +12,8 @@ __all__ = [
 	"LIG_PDB",
         "MOL_SVG_INIT",
 	"DOM_FILE_4XP1",
-	"AMINO_DIAGRAM"
+	"AMINO_DIAGRAM",
+	"DOMAIN_DIAGRAM"
  
 ]
 
@@ -23,5 +24,6 @@ LIG_PDB = resource_filename(__name__,'data/LIG.pdb')
 MOL_SVG_INIT = resource_filename(__name__,'data/molecule_init.svg')
 DOM_FILE_4XP1 = resource_filename(__name__,'data/domain_file_4XP1.txt')
 AMINO_DIAGRAM = resource_filename(__name__,'data/amino_diagrams.svg')
+DOMAIN_DIAGRAM = resource_filename(__name__,'data/domain_diagram.svg')
 # This should be the last line: clean up namespace
 del resource_filename
