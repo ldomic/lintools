@@ -89,22 +89,13 @@ class Plots(object):
     def plot_domains_diagramms(self):
         width=0.20        
         for res in self.universe.closest_atoms:
-            if res in self.residues_within_domain:
-                color = [self.residues_within_domain[res][2],'white']
-                plt.figure(figsize=(1.5,1.5))
-                ring1,_=plt.pie([1],  radius=1-width, startangle=90, colors=color, counterclock=False)
-                plt.axis('equal')
-                plt.setp(ring1, width=width, edgecolor='white')
-                plt.text(0,-0.35,res[0:3]+"\n"+res[3::],ha='center',size=20, fontweight='bold')  
-                pylab.savefig(str(res[3::])+".svg", dpi=100, transparent = True)
-            else:
-                color = [self.colors_domains[13], 'white'] # Matplotlib colors takes more than 1 color, so a second color must be added
-                plt.figure(figsize=(1.5,1.5), dpi=100)
-                ring1,_=plt.pie([1],  radius=1-width, startangle=90, colors=color, counterclock=False)
-                plt.axis('equal')
-                plt.setp(ring1, width=width, edgecolor='white')
-                plt.text(0,-0.35,res[0:3]+"\n"+res[3::],ha='center',size=20, fontweight='bold')  
-                pylab.savefig(str(res[3::])+".svg", dpi=100, transparent=True)
+            color = [self.residues_within_domain[res][2],'white']
+            plt.figure(figsize=(1.5,1.5))
+            ring1,_=plt.pie([1],  radius=1-width, startangle=90, colors=color, counterclock=False)
+            plt.axis('equal')
+            plt.setp(ring1, width=width, edgecolor='white')
+            plt.text(0,-0.35,res[0:3]+"\n"+res[3::],ha='center',size=20, fontweight='bold')  
+            pylab.savefig(str(res[3::])+".svg", dpi=100, transparent = True)
         print "Plotting..."
 
 
