@@ -4,8 +4,8 @@
                        xmlns:rdkit='http://www.rdkit.org/xml'
                        xmlns:xlink='http://www.w3.org/1999/xlink'
                    xml:space='preserve'
- width='1181.40854272px' height='912.331668998px' > 
- <rect style='opacity:1.0;fill:white;stroke:none' width='1181.40854272px' height='912.331668998px' x='0' y='0'> </rect> <g transform='translate(140.704271362,231.165834499)'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='900' height='450' x='0' y='0' /> 
+ width='1181.40854272px' height='972.331668998px' > 
+ <rect style='opacity:1.0;fill:white;stroke:none' width='1181.40854272px' height='972.331668998px' x='0' y='0'> </rect> <g transform='translate(140.704271362,261.165834499)'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='900' height='450' x='0' y='0' /> 
  <line stroke-dasharray='5,5'  x1='644' y1='565' x2='652.152' y2='386.113' style='stroke:black;stroke-width:4' /><line stroke-dasharray='5,5'  x1='55' y1='79' x2='129.227' y2='238.075' style='stroke:black;stroke-width:4' /><line stroke-dasharray='5,5'  x1='931' y1='291' x2='787.905' y2='191.611' style='stroke:black;stroke-width:4' /><ellipse cx='129.227' cy='238.075' rx='31.6256' ry='31.6256' style='fill:#FFFFFF;fill-rule:evenoddstroke:#FFFFFF;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
 <ellipse cx='247.387' cy='248.232' rx='31.6256' ry='31.6256' style='fill:#FFFFFF;fill-rule:evenoddstroke:#FFFFFF;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
 <ellipse cx='315.264' cy='150.981' rx='31.6256' ry='31.6256' style='fill:#FFFFFF;fill-rule:evenoddstroke:#FFFFFF;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
@@ -37,7 +37,7 @@
 <text x='616.559' y='401.447' style='font-size:39px;font-style:normal;font-weight:normal;fill-opacity:1;stroke:none;font-family:sans-serif;text-anchor:start;fill:#FF0000' ><tspan>OH</tspan></text>
 <text x='752.312' y='206.945' style='font-size:39px;font-style:normal;font-weight:normal;fill-opacity:1;stroke:none;font-family:sans-serif;text-anchor:start;fill:#FF0000' ><tspan>OH</tspan></text>
 </g>
-<circle cx='784.704271362' cy='796.165834499' r='30' fill='white' /><circle cx='946.704271362' cy='218.165834499' r='30' fill='white' /><circle cx='195.704271362' cy='310.165834499' r='30' fill='white' /><circle cx='336.704271362' cy='657.165834499' r='30' fill='white' /><circle cx='714.704271362' cy='740.165834499' r='30' fill='white' /><circle cx='549.704271362' cy='761.165834499' r='30' fill='white' /><circle cx='612.704271362' cy='135.165834499' r='30' fill='white' /><circle cx='1071.70427136' cy='522.165834499' r='30' fill='white' /><circle cx='367.704271362' cy='195.165834499' r='30' fill='white' /> <g transform='translate(730,742)'>
+<circle cx='784.704271362' cy='826.165834499' r='30' fill='white' /><circle cx='946.704271362' cy='248.165834499' r='30' fill='white' /><circle cx='195.704271362' cy='340.165834499' r='30' fill='white' /><circle cx='336.704271362' cy='687.165834499' r='30' fill='white' /><circle cx='714.704271362' cy='770.165834499' r='30' fill='white' /><circle cx='549.704271362' cy='791.165834499' r='30' fill='white' /><circle cx='612.704271362' cy='165.165834499' r='30' fill='white' /><circle cx='1071.70427136' cy='552.165834499' r='30' fill='white' /><circle cx='367.704271362' cy='225.165834499' r='30' fill='white' /> <g transform='translate(730,742)'>
  <g id="figure_1">
   <g id="patch_1">
    <path d="
