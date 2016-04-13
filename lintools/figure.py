@@ -54,7 +54,7 @@ class Figure(object):
             self.draw_plots=""
             for residue in self.plots.residues_within_domain:
                 if self.rmsf!=None:
-                    transform = "<g transform='translate("+str(int(self.molecule.nearest_points_coords[residue][0]+(self.molecule.x_dim-900)/2)+46)+","+str(int(self.molecule.nearest_points_coords[residue][1]+(self.molecule.y_dim-450)/2)-54)+")'>"  
+                    transform = "<g transform='translate("+str(int(self.molecule.nearest_points_coords[residue][0]+(self.molecule.x_dim-900)/2)-54)+","+str(int(self.molecule.nearest_points_coords[residue][1]+(self.molecule.y_dim-450)/2)-54)+")'>"  
                 else:
                     transform = "<g transform='translate("+str(int(self.molecule.nearest_points_coords[residue][0]+(self.molecule.x_dim-900)/2)-54)+","+str(int(self.molecule.nearest_points_coords[residue][1]+(self.molecule.y_dim-450)/2)-54)+")'>"
                 path = "<rect style='fill:none' width='108' height='108' x='0' y='0' />"
@@ -86,7 +86,7 @@ class Figure(object):
         if self.rmsf!=None:
             big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim)+"px' x='0' y='0'> </rect> <g transform='translate("+str((x_dim-900)/2+100)+","+str((self.molecule.y_dim-450)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='900' height='450' x='0' y='0' /> "
         else:
-            big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim)+"px' x='0' y='0'> </rect> <g transform='translate("+str((self.molecule.x_dim-900)/2)+","+str((self.molecule.y_dim-450)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='900' height='450' x='0' y='0' /> "
+            big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim)+"px' x='0' y='0'> </rect> <g transform='translate("+str((x_dim-900)/2)+","+str((self.molecule.y_dim-450)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='900' height='450' x='0' y='0' /> "
         self.end_symbol = "</svg>"
         no_end_symbol = "</g>"
         self.change_lines_in_svg("molecule.svg", start1, bigger_box)

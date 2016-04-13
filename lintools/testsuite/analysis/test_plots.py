@@ -36,3 +36,25 @@ class TestCheckPlots(TestCase):
  'TYR124': 'aromatic',
  'VAL120': 'hydrophobic'}
         assert_equal(self.plots.amino_acid_type,amino_acid_type)
+    def test_domain_plots(self):
+    	self.plots.define_domains(DOM_FILE_4XP1,3.5)
+        res_within_domain = {'ALA117': [2, 'TMH 2', '#D9774B', 'N'],
+ 'ASP121': [2, 'TMH 2', '#D9774B', ['Y\n']],
+ 'ASP46': [1, 'TMH 1\n', '#78D035', 'N'],
+ 'PHE325': [0, 'No specified domain', '#A9A9A9', 'N'],
+ 'PHE43': [1, 'TMH 1\n', '#78D035', ['Y\n']],
+ 'SER421': [3, 'Chain B', '#889DCC', 'Y\n'],
+ 'SER422': [3, 'Chain B', '#889DCC', ['Y\n']],
+ 'TYR124': [2, 'TMH 2', '#D9774B', 'N'],
+ 'VAL120': [2, 'TMH 2', '#D9774B', ['Y\n']]}
+        assert_equal(res_within_domain,self.plots.residues_within_domain)
+    	self.plots.plot_domains_diagramms()
+        plotted_domains = [[4, 'Binding site', '#A9A9A9', 'Y\n'],
+ [0, 'No specified domain', '#A9A9A9', 'N'],
+ [2, 'TMH 2', '#D9774B', ['Y\n']],
+ [1, 'TMH 1\n', '#78D035', ['Y\n']],
+ [1, 'TMH 1\n', '#78D035', 'N'],
+ [2, 'TMH 2', '#D9774B', 'N'],
+ [3, 'Chain B', '#889DCC', 'Y\n'],
+ [3, 'Chain B', '#889DCC', ['Y\n']]]
+    	assert_equal(self.plots.plotted_domains,plotted_domains)
