@@ -34,10 +34,10 @@ class TestCheckFigure(TestCase):
     	self.plots.define_amino_acids()
     	self.plots.plot_amino_diagramms()
     	self.figure = Figure(self.molecule,"amino",self.topology,self.hbonds,self.plots,tests=True)
-	    self.figure.draw_hbonds_in_graph()
-	    self.figure.put_everything_together()
-	    self.figure.write_final_draw_file("amino_diagrams")
-	    with open(AMINO_DIAGRAM,"r") as f:
+	self.figure.draw_hbonds_in_graph()
+	self.figure.put_everything_together()
+        self.figure.write_final_draw_file("amino_diagrams")
+	with open(AMINO_DIAGRAM,"r") as f:
             lines = f.readlines()
             self.out_test_svg = " ".join(map(str,lines[2:-1]))
             f.close()
