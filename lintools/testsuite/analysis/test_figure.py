@@ -50,7 +50,7 @@ class TestCheckFigure(TestCase):
     def test_plot_domains_diagrams(self):
         self.plots.define_domains(DOM_FILE_4XP1, 3.5)
         self.plots.plot_domains_diagramms()
-        self.figure = Figure(self.molecule,"domain",self.topology,self.hbonds,self.plots,tests=True)
+        self.figure = Figure(self.molecule,"domains",self.topology,self.hbonds,self.plots,tests=True)
         self.figure.draw_hbonds_in_graph()
         self.figure.draw_white_circles_at_atoms()
         self.figure.put_everything_together()
