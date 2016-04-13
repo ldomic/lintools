@@ -8,7 +8,8 @@ from matplotlib import pylab
 import numpy as np
 
 class Figure(object):
-    def __init__(self, molecule_object, diagram_type,topol_object, hbonds_object=None, plot_object=None, rmsf_object=None):
+    def __init__(self, molecule_object, diagram_type,topol_object, hbonds_object=None, plot_object=None, rmsf_object=None,tests=False):
+        self.tests = tests
         self.draw_plots = None
         self.draw_molecule =None
         self.draw_lines=" "
@@ -79,6 +80,7 @@ class Figure(object):
             x_dim=self.molecule.x_dim
             self.molecule.x_dim=self.molecule.x_dim+300
         if diagram_type=="amino":
+            x_dim=self.molecule.x_dim
             y_dim=self.molecule.y_dim+60
         start1 = "width='900px' height='450px' >"
         start2 = "<rect style='opacity:1.0;fill:#FFFFFF;stroke:none' width='900' height='450' x='0' y='0'> </rect>"
@@ -100,7 +102,11 @@ class Figure(object):
     def make_legends(self, diagram_type,domain_file=None):
         if diagram_type=="amino":
             self.legend = "<g transform='translate(0,"+str(self.molecule.y_dim+20)+")'>"
-            with open(sys.argv[0][0:-11]+"legends/amino_legend.svg","r") as f:
+            if self.tests== False:
+                coord=sys.argv[0][0:coord]+"legends/amino_legend.svg"
+            else:
+                coord="lintools/legends/amino_legend.svg"
+            with open(coord,"r") as f:
                 lines = f.readlines()
                 legend ="".join(map(str,lines))
                 f.close()
