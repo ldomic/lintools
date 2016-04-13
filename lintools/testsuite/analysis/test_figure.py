@@ -57,11 +57,11 @@ class TestCheckFigure(TestCase):
         self.figure.write_final_draw_file("domain_diagrams")
         with open(DOMAIN_DIAGRAM,"r") as f:
             lines = f.readlines()
-            self.out_test_svg = " ".join(map(str,lines[2:-1]))
+            self.out_test_svg = " ".join(map(str,lines[2:-2]))
             f.close()
         with open("domain_diagrams.svg","r") as f:
             lines = f.readlines()
-            self.out_svg_to_test = " ".join(map(str,lines[2:-1]))
+            self.out_svg_to_test = " ".join(map(str,lines[2:-2]))
             f.close()
         assert_equal(self.out_test_svg,self.out_svg_to_test)
 
