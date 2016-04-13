@@ -105,9 +105,9 @@ class Figure(object):
         if diagram_type=="amino":
             self.legend = "<g transform='translate(0,"+str(self.molecule.y_dim+20)+")'>"
             if self.tests== False:
-                coord=sys.argv[0][0:-11]+"lintools/legends/amino_legend.svg"
+                coord=sys.argv[0][0:-11]+"legends/amino_legend.svg"
             else:
-                coord=os.getcwd()+"/legends/amino_legend.svg"
+                coord=os.getcwd()+"/lintools/legends/amino_legend.svg"
             with open(coord,"r") as f:
                 lines = f.readlines()
                 legend ="".join(map(str,lines))
