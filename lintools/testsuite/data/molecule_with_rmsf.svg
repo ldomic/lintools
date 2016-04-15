@@ -4,7 +4,7 @@
                       xmlns:rdkit='http://www.rdkit.org/xml'
                       xmlns:xlink='http://www.w3.org/1999/xlink'
                   xml:space='preserve'
-width='900px' height='450px' > 
+width='900px' height='450px' >
 <rect style='opacity:1.0;fill:#FFFFFF;stroke:none' width='900' height='450' x='0' y='0'> </rect>
 <ellipse cx='150.601' cy='58.1385' rx='23.5674' ry='23.5674' style='fill:#FF2900;fill-rule:evenoddstroke:#FF2900;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
 <ellipse cx='215.509' cy='118.118' rx='23.5674' ry='23.5674' style='fill:#ACFF00;fill-rule:evenoddstroke:#ACFF00;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
