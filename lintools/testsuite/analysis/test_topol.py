@@ -48,4 +48,13 @@ class TestCheckLigand(TestCase):
  'VAL120': ('C4', 3.5782832437246794)}
         assert_equal(closest_res, self.topology.closest_atoms)
 
+class TestCheckTrajectory(TestCase):
+    def setUp(self):
+        self.topology = Topol_Data(TOPOLOGY,TRAJ_20FR)
+    def tearDown(self):
+        del self.topology
+    def test_loading_trajectory(self):
+        assert_equal(self.topology.universe.trajectory.n_frames,21)
+
+
 

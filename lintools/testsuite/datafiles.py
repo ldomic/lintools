@@ -13,7 +13,10 @@ __all__ = [
         "MOL_SVG_INIT",
 	"DOM_FILE_4XP1",
 	"AMINO_DIAGRAM",
-	"DOMAIN_DIAGRAM"
+	"DOMAIN_DIAGRAM",
+	"TOPOLOGY",
+	"TRAJ_20FR",
+	"TRAJ_50FR"
  
 ]
 
@@ -25,5 +28,8 @@ MOL_SVG_INIT = resource_filename(__name__,'data/molecule_init.svg')
 DOM_FILE_4XP1 = resource_filename(__name__,'data/domain_file_4XP1.txt')
 AMINO_DIAGRAM = resource_filename(__name__,'data/amino_diagrams.svg')
 DOMAIN_DIAGRAM = resource_filename(__name__,'data/domain_diagram.svg')
+TOPOLOGY = resource_filename(__name__,'data/topology.gro')
+TRAJ_20FR = resource_filename(__name__,'data/trajectory_20frames.xtc')
+TRAJ_50FR = resource_filename(__name__,'data/trajectory_50frames.xtc')
 # This should be the last line: clean up namespace
 del resource_filename
