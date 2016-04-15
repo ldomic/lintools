@@ -107,7 +107,7 @@ class Figure(object):
             if self.tests== False:
                 coord=sys.argv[0][0:-11]+"legends/amino_legend.svg"
             else:
-                coord=os.getcwd()+"/legends/amino_legend.svg"
+                coord=os.getcwd()+"/lintools/legends/amino_legend.svg"
             with open(coord,"r") as f:
                 lines = f.readlines()
                 legend ="".join(map(str,lines))
