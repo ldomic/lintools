@@ -75,6 +75,7 @@ class TestCheckFigure(TestCase):
         self.ligand.resname = "LIG"
         self.ligand.resnames = "LIG"
         self.topology.define_ligand(self.ligand)
+        self.topology.ligand_no_H=self.u.select_atoms("resname UNK and not name H*")
         self.occurrence = Occurrence_analysis(TOPOLOGY, [TRAJ_20FR,TRAJ_50FR], self.ligand, 3.5, 0, self.topology)
         self.occurrence.get_closest_residues(30)
         self.rmsf = RMSF_measurements(self.topology,TOPOLOGY, [TRAJ_20FR,TRAJ_50FR], self.ligand, 0, "amino_rmsf_2traj")
