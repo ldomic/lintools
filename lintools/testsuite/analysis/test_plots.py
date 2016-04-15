@@ -66,7 +66,7 @@ class TestCheckPlotsWithTrajs(TestCase):
         self.ligand.resnames = "LIG"
         self.topology.define_ligand(self.ligand)
         self.occurrence = Occurrence_analysis(TOPOLOGY, [TRAJ_20FR,TRAJ_50FR], self.ligand, 3.5, 0, self.topology)
-        self.topology.get_closest_ligand_atoms()
+        self.occurrence.get_closest_residues(30)
         self.plots = Plots(self.topology)
     def tearDown(self):
         del self.topology
