@@ -136,11 +136,13 @@ class Figure(object):
             ax1 = fig.add_axes([0, 0, 0.5, 0.9])
             cmap = plt.get_cmap("hsv_r")
             new_cmap = self.truncate_colormap(cmap,0.67,1.00)
-            norm = matplotlib.colors.Normalize(vmin=int(self.rmsf.min_value), vmax=int(self.rmsf.max_value))
+            print float("{0:.1f}".format(self.rmsf.min_value))
+            norm = matplotlib.colors.Normalize(vmin=float("{0:.1f}".format(self.rmsf.min_value)), vmax=float("{0:.1f}".format(self.rmsf.max_value)))
             cb1 = matplotlib.colorbar.ColorbarBase(ax1, cmap=new_cmap,
                                             norm=norm,
                                             orientation='vertical')
-            cb1.set_label('RMSF',size=19, fontweight='bold')
+            cb1.ax.tick_params(labelsize=20) 
+            cb1.set_label('RMSF',size=24, fontweight='bold')
             pylab.savefig("rmsf_colorbar.svg", dpi=100, transparent=True)
             self.legend=self.legend+self.manage_the_rmsf_colorbar()
 
