@@ -2,6 +2,7 @@ from numpy.testing import TestCase, assert_equal, assert_almost_equal
 import unittest
 import os
 from lintools.lintools.topol import Topol_Data
+from lintools.lintools.analysis.rmsf import RMSF_measurements
 from lintools.lintools.testsuite.datafiles import *
 import numpy as np
 from rdkit import Chem
@@ -21,6 +22,8 @@ class TestCheckMolecule(TestCase):
     def tearDown(self):
         del self.topology
         del self.molecule
+        if os.path.isfile("molecule.svg")==True:
+            os.remove("molecule.svg")
     def test_smiles(self):
         "SMILES"
         self.molecule.load_molecule_in_rdkit_smiles()
@@ -96,4 +99,31 @@ class TestCheckMolecule(TestCase):
 
         assert_equal(self.molecule.nearest_points_coords, nearest_point_coords)
         
-
+class TestCheckMoleculeRMSF(TestCase):
+    "Tests with two trajectories to draw RMSF results"
+    def setUp(self):
+        self.topology = Topol_Data(TOPOLOGY,[TRAJ_20FR,TRAJ_50FR],None,0)
+        self.u = self.topology.universe
+        self.topology.ligand = self.u.select_atoms("resname UNK")
+        self.topology.ligand_no_H=self.u.select_atoms("resname UNK and not name H*")
+        self.topology.define_ligand(self.topology.ligand)
+        self.topology.find_res_to_plot(3.5)
+        self.topology.get_closest_ligand_atoms()
+        self.rmsf = RMSF_measurements(self.topology,TOPOLOGY, [TRAJ_20FR,TRAJ_50FR], self.ligand, 0, "rmsf")
+        self.molecule = Molecule(self.topology,self.rmsf,test=True)
+    def tearDown(self):
+        del self.topology
+        del self.rmsf
+        del self.molecule
+    def test_molecule_with_rmsf(self):
+        self.molecule.load_molecule_in_rdkit_smiles()
+                self.molecule.load_molecule_in_rdkit_smiles()
+        with open(MOL_SVG_RMSF,"r") as f:
+            lines = f.readlines()
+            self.out_test_svg = " ".join(map(str,lines[2:-1]))
+            f.close()
+        with open("molecule.svg","r") as f:
+            lines = f.readlines()
+            self.out_svg_to_test = " ".join(map(str,lines[2:-1]))
+            f.close()
+        assert_equal(self.out_test_svg,self.out_svg_to_test)

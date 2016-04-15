@@ -83,7 +83,7 @@ class Figure(object):
         if diagram_type=="amino":
             x_dim=self.molecule.x_dim
             y_dim=self.molecule.y_dim+60
-        else:
+        if diagram_type=="clock":
             x_dim=self.molecule.x_dim
             y_dim=self.molecule.y_dim
         start1 = "width='900px' height='450px' >"

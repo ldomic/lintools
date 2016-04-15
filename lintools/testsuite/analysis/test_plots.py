@@ -2,6 +2,7 @@ from numpy.testing import TestCase, assert_equal, assert_almost_equal
 import unittest
 import os
 from lintools.lintools.topol import Topol_Data
+from lintools.lintools.analysis.occurrence import Occurrence_analysis
 from lintools.lintools.plots import Plots
 from lintools.lintools.testsuite.datafiles import *
 import numpy as np
@@ -64,11 +65,12 @@ class TestCheckPlotsWithTrajs(TestCase):
         self.ligand.resname = "LIG"
         self.ligand.resnames = "LIG"
         self.topology.define_ligand(self.ligand)
-        self.topology.find_res_to_plot(3.5)
+        self.occurrence = Occurrence_analysis(TOPOLOGY, [TRAJ_20FR,TRAJ_50FR], self.ligand, 3.5, 0, self.topology)
         self.topology.get_closest_ligand_atoms()
         self.plots = Plots(self.topology)
     def tearDown(self):
         del self.topology
+        del self.occurrence
         del self.plots
     def test_clocks_plots(self):
         self.plots.plot_clock_diagramms()

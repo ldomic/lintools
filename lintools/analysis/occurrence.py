@@ -76,7 +76,6 @@ class Occurrence_analysis(object):
              if len(self.residue_counts)<4:
                  for res in new_res_list:
                      for (index1, value1),(index2, value2) in combinations(enumerate(new_res_list[res]),2):
-                         print index1,index2
                          if value1>frame_cutoff[index1] and value2>frame_cutoff[index2]:
                              if res not in list_of_plotted_res:
                                  list_of_plotted_res.append(res)

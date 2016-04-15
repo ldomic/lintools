@@ -6,7 +6,7 @@ from lintools.lintools.analysis.occurrence import Occurrence_analysis
 from lintools.lintools.testsuite.datafiles import *
 import numpy as np
 
-class TestHBonds(TestCase):
+class TestOccurrence(TestCase):
     def setUp(self):
         self.topology = Topol_Data(TOPOLOGY,[TRAJ_20FR,TRAJ_50FR],None,0)
         self.u = self.topology.universe
@@ -24,3 +24,18 @@ class TestHBonds(TestCase):
         assert_equal(self.occurrence.universe.frame_count,[21, 51])
         assert_equal(self.occurrence.residue_counts[1]["PHE953"],17)
         assert_equal(self.occurrence.residue_counts[2]["PHE953"],43)
+        dict_of_closest_res = {'GLN916': ('916', 7, 17),
+ 'ILE310': ('310', 17, 38),
+ 'LEU35': ('35', 21, 49),
+ 'MET38': ('38', 15, 39),
+ 'MET39': ('39', 12, 29),
+ 'MET919': ('919', 17, 44),
+ 'PHE306': ('306', 18, 48),
+ 'PHE698': ('698', 11, 24),
+ 'PHE702': ('702', 8, 17),
+ 'PHE948': ('948', 12, 29),
+ 'PHE953': ('953', 17, 43),
+ 'TYR280': ('280', 13, 28),
+ 'TYR920': ('920', 7, 18),
+ 'TYR923': ('923', 15, 42)}
+        assert_equal(self.topology.dict_of_plotted_res,dict_of_closest_res)
