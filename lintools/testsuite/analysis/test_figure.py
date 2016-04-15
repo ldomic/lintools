@@ -5,6 +5,8 @@ from lintools.lintools.topol import Topol_Data
 from lintools.lintools.plots import Plots
 from lintools.lintools.molecule import Molecule
 from lintools.lintools.analysis.hbonds import HBonds
+from lintools.lintools.analysis.occurrence import Occurrence_analysis
+from lintools.lintools.analysis.rmsf import RMSF_measurements
 from lintools.lintools.figure import Figure
 from lintools.lintools.testsuite.datafiles import *
 import numpy as np

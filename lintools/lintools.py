@@ -1,3 +1,4 @@
+__version__ = '0.1-dev04.2016'
 if __name__ == '__main__': 
 	from argparse import ArgumentParser
 	import os
