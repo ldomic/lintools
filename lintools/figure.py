@@ -83,7 +83,9 @@ class Figure(object):
         if diagram_type=="amino":
             x_dim=self.molecule.x_dim
             y_dim=self.molecule.y_dim+60
-            #self.molecule.y_dim=self.molecule.y_dim+60
+        else:
+            x_dim=self.molecule.x_dim
+            y_dim=self.molecule.y_dim
         start1 = "width='900px' height='450px' >"
         start2 = "<rect style='opacity:1.0;fill:#FFFFFF;stroke:none' width='900' height='450' x='0' y='0'> </rect>"
         bigger_box ="width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim+60)+"px' > "

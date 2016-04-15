@@ -3,7 +3,6 @@ import unittest
 import os
 from lintools.lintools.topol import Topol_Data
 from lintools.lintools.plots import Plots
-from lintools.lintools.analysis.hbonds import HBonds
 from lintools.lintools.testsuite.datafiles import *
 import numpy as np
 
@@ -16,12 +15,10 @@ class TestCheckPlots(TestCase):
         self.ligand.resnames = "LIG"
         self.topology.define_ligand(self.ligand)
         self.topology.find_res_to_plot(3.5)
-        self.hbonds = HBonds(self.topology,PDB,None,self.ligand,0,30)
-        self.topology.get_closest_ligand_atoms(self.hbonds)
+        self.topology.get_closest_ligand_atoms()
         self.plots = Plots(self.topology)
     def tearDown(self):
         del self.topology
-        del self.hbonds
         del self.plots
     def test_amino_plots(self):
     	self.plots.define_amino_acids()
@@ -58,3 +55,29 @@ class TestCheckPlots(TestCase):
  [3, 'Chain B', '#889DCC', 'Y\n'],
  [3, 'Chain B', '#889DCC', ['Y\n']]]
     	assert_equal(self.plots.plotted_domains,plotted_domains)
+
+class TestCheckPlotsWithTrajs(TestCase):
+    def setUp(self):
+        self.topology = Topol_Data(TOPOLOGY,[TRAJ_20FR,TRAJ_50FR],None,0)
+        self.u = self.topology.universe
+        self.ligand = self.u.select_atoms("resname UNK")
+        self.ligand.resname = "LIG"
+        self.ligand.resnames = "LIG"
+        self.topology.define_ligand(self.ligand)
+        self.topology.find_res_to_plot(3.5)
+        self.topology.get_closest_ligand_atoms()
+        self.plots = Plots(self.topology)
+    def tearDown(self):
+        del self.topology
+        del self.plots
+    def test_clocks_plots(self):
+        self.plots.plot_clock_diagramms()
+        with open(CLOCK_280,"r") as f:
+            lines = f.readlines()
+            self.out_test_svg = " ".join(map(str,lines[2:-1]))
+            f.close()
+        with open("280.svg","r") as f:
+            lines = f.readlines()
+            self.out_svg_to_test = " ".join(map(str,lines[2:-1]))
+            f.close()
+        assert_equal(self.out_test_svg,self.out_svg_to_test)

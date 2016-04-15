@@ -16,7 +16,8 @@ __all__ = [
 	"DOMAIN_DIAGRAM",
 	"TOPOLOGY",
 	"TRAJ_20FR",
-	"TRAJ_50FR"
+	"TRAJ_50FR",
+	"CLOCK_280"
  
 ]
 
@@ -31,5 +32,6 @@ DOMAIN_DIAGRAM = resource_filename(__name__,'data/domain_diagram.svg')
 TOPOLOGY = resource_filename(__name__,'data/topology.gro')
 TRAJ_20FR = resource_filename(__name__,'data/trajectory_20frames.xtc')
 TRAJ_50FR = resource_filename(__name__,'data/trajectory_50frames.xtc')
+CLOCK_280 = resource_filename(__name__,'data/280.svg')
 # This should be the last line: clean up namespace
 del resource_filename
