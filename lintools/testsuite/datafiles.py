@@ -18,7 +18,8 @@ __all__ = [
 	"TRAJ_20FR",
 	"TRAJ_50FR",
 	"CLOCK_280",
-	"MOL_SVG_RMSF"
+	"MOL_SVG_RMSF",
+	"AMINO_RMSF_2TRAJ"
  
 ]
 
@@ -35,5 +36,6 @@ TRAJ_20FR = resource_filename(__name__,'data/trajectory_20frames.xtc')
 TRAJ_50FR = resource_filename(__name__,'data/trajectory_50frames.xtc')
 CLOCK_280 = resource_filename(__name__,'data/280.svg')
 MOL_SVG_RMSF = resource_filename(__name__,'data/molecule_with_rmsf.svg')
+AMINO_RMSF_2TRAJ = resource_filename(__name__,'data/amino_rmsf_2traj.svg')
 # This should be the last line: clean up namespace
 del resource_filename

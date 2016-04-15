@@ -117,7 +117,6 @@ class TestCheckMoleculeRMSF(TestCase):
         del self.molecule
     def test_molecule_with_rmsf(self):
         self.molecule.load_molecule_in_rdkit_smiles()
-        self.molecule.load_molecule_in_rdkit_smiles()
         with open(MOL_SVG_RMSF,"r") as f:
             lines = f.readlines()
             self.out_test_svg = " ".join(map(str,lines[2:-1]))

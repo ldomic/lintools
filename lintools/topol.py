@@ -9,6 +9,7 @@ import numpy as np
 import operator
 from utils import pdb2mol2
 from rdkit import Chem
+import sys
 
 
 
