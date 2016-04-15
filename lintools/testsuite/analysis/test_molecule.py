@@ -109,7 +109,7 @@ class TestCheckMoleculeRMSF(TestCase):
         self.topology.define_ligand(self.topology.ligand)
         self.topology.find_res_to_plot(3.5)
         self.topology.get_closest_ligand_atoms()
-        self.rmsf = RMSF_measurements(self.topology,TOPOLOGY, [TRAJ_20FR,TRAJ_50FR], self.ligand, 0, "rmsf")
+        self.rmsf = RMSF_measurements(self.topology,TOPOLOGY, [TRAJ_20FR,TRAJ_50FR], self.topology.ligand, 0, "rmsf")
         self.molecule = Molecule(self.topology,self.rmsf,test=True)
     def tearDown(self):
         del self.topology
