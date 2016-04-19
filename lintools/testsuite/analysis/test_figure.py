@@ -25,17 +25,17 @@ class TestCheckFigure(TestCase):
         self.molecule = Molecule(self.topology)
         self.plots = Plots(self.topology)
     def tearDown(self):
-    	del self.topology
-    	del self.hbonds
-    	del self.molecule
-    	del self.plots
-    	del self.figure
-    	if os.path.isfile("amino_diagrams.svg")==True:
+        del self.topology
+        del self.hbonds
+        del self.molecule
+        del self.plots
+        del self.figure
+        if os.path.isfile("amino_diagrams.svg")==True:
             os.remove("amino_diagrams.svg")
     def test_plot_amino_diagrams(self):
-    	self.plots.define_amino_acids()
-    	self.plots.plot_amino_diagramms()
-    	self.figure = Figure(self.molecule,"amino",self.topology,self.hbonds,self.plots,tests=True)
+        self.plots.define_amino_acids()
+        self.plots.plot_amino_diagramms()
+        self.figure = Figure(self.molecule,"amino",self.topology,self.hbonds,self.plots,tests=True)
         self.figure.draw_hbonds_in_graph()
         self.figure.draw_white_circles_at_atoms()
         self.figure.put_everything_together()
@@ -69,18 +69,25 @@ class TestCheckFigure(TestCase):
 
 class TestCheckFigure(TestCase):
     def setUp(self):
-        self.topology = Topol_Data(TOPOLOGY,[TRAJ_20FR,TRAJ_50FR],None,0)
+        self.topology = Topol_Data(TOPOLOGY,None,None,0)
         self.u = self.topology.universe
         self.ligand = self.u.select_atoms("resname UNK")
         self.ligand.resname = "LIG"
         self.ligand.resnames = "LIG"
+        self.topology = Topol_Data(TOPOLOGY,None,self.ligand,0)
         self.topology.define_ligand(self.ligand)
-        self.topology.ligand_no_H=self.u.select_atoms("resname UNK and not name H*")
+        #self.topology.ligand_no_H=self.u.select_atoms("resname UNK and not name H*")
         self.occurrence = Occurrence_analysis(TOPOLOGY, [TRAJ_20FR,TRAJ_50FR], self.ligand, 3.5, 0, self.topology)
         self.occurrence.get_closest_residues(30)
+        self.hbonds = HBonds(self.topology,TOPOLOGY,[TRAJ_20FR,TRAJ_50FR],self.ligand,0,30)
+        self.topology.get_closest_ligand_atoms(self.hbonds)
+        
+        self.plots = Plots(self.topology)        
+        self.plots.define_amino_acids()
+        self.plots.plot_amino_diagramms()
+        self.molecule = Molecule(self.topology)
         self.rmsf = RMSF_measurements(self.topology,TOPOLOGY, [TRAJ_20FR,TRAJ_50FR], self.ligand, 0, "amino_rmsf_2traj")
         self.molecule = Molecule(self.topology,self.rmsf)
-        self.plots = Plots(self.topology)
     def tearDown(self):
         del self.topology
         del self.molecule
@@ -88,10 +95,9 @@ class TestCheckFigure(TestCase):
         del self.figure
         del self.occurrence
         del self.rmsf
+        del self.hbonds
     def test_plot_amino_with_rmsf(self):
-        self.plots.define_amino_acids()
-        self.plots.plot_amino_diagramms()
-        self.figure = Figure(self.molecule,"amino",self.topology,plot_object=self.plots,rmsf_object=self.rmsf,tests=True)
+        self.figure = Figure(self.molecule,"amino",self.topology,plot_object=self.plots,rmsf_object=self.rmsf,hbonds_object=self.hbonds, tests=True)
         self.figure.draw_hbonds_in_graph()
         self.figure.draw_white_circles_at_atoms()
         self.figure.put_everything_together()
