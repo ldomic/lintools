@@ -75,24 +75,24 @@ class Figure(object):
     def add_bigger_box(self, diagram_type):
         """Rewrite the molecule.svg file line by line, otherwise it fails."""
         if self.rmsf!=None:
-            x_dim=self.molecule.x_dim
+            self.x_dim=self.molecule.x_dim
             self.molecule.x_dim=self.molecule.x_dim+100
         if diagram_type=="domains":
-            x_dim=self.molecule.x_dim
+            self.x_dim=self.molecule.x_dim
             self.molecule.x_dim=self.molecule.x_dim+300
         if diagram_type=="amino":
-            x_dim=self.molecule.x_dim
-            y_dim=self.molecule.y_dim+60
+            self.x_dim=self.molecule.x_dim
+            self.y_dim=self.molecule.y_dim+60
         if diagram_type=="clock":
-            x_dim=self.molecule.x_dim
-            y_dim=self.molecule.y_dim
+            self.x_dim=self.molecule.x_dim
+            self.y_dim=self.molecule.y_dim
         start1 = "width='900px' height='450px' >"
         start2 = "<rect style='opacity:1.0;fill:#FFFFFF;stroke:none' width='900' height='450' x='0' y='0'> </rect>"
         bigger_box ="width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim+60)+"px' > "
         if self.rmsf!=None:
-            big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim+60)+"px' x='0' y='0'> </rect> <g transform='translate("+str((x_dim-900)/2+100)+","+str((self.molecule.y_dim-450)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='900' height='450' x='0' y='0' /> "
+            big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim+60)+"px' x='0' y='0'> </rect> <g transform='translate("+str((self.x_dim-900)/2+100)+","+str((self.molecule.y_dim-450)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='900' height='450' x='0' y='0' /> "
         else:
-            big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim+60)+"px' x='0' y='0'> </rect> <g transform='translate("+str((x_dim-900)/2)+","+str((self.molecule.y_dim-450)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='900' height='450' x='0' y='0' /> "
+            big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim+60)+"px' x='0' y='0'> </rect> <g transform='translate("+str((self.x_dim-900)/2)+","+str((self.molecule.y_dim-450)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='900' height='450' x='0' y='0' /> "
         self.end_symbol = "</svg>"
         no_end_symbol = "</g>"
         self.change_lines_in_svg("molecule.svg", start1, bigger_box)
@@ -167,12 +167,8 @@ class Figure(object):
             f.close()
         return colorbar
     def draw_white_circles_at_atoms(self):
-        if self.rmsf!=None:
-            for atom in self.molecule.nearest_points_coords:
-                self.white_circles = self.white_circles+"<circle cx='"+str((int(self.molecule.nearest_points_coords[atom][0])+(self.molecule.x_dim-900)/2)+100)+"' cy='"+str(int(self.molecule.nearest_points_coords[atom][1])+(self.molecule.y_dim-450)/2)+"' r='30' fill='white' />"
-        else:
-             for atom in self.molecule.nearest_points_coords:
-                self.white_circles = self.white_circles+"<circle cx='"+str(int(self.molecule.nearest_points_coords[atom][0])+(self.molecule.x_dim-900)/2)+"' cy='"+str(int(self.molecule.nearest_points_coords[atom][1])+(self.molecule.y_dim-450)/2)+"' r='30' fill='white' />"
+         for atom in self.molecule.nearest_points_coords:
+            self.white_circles = self.white_circles+"<circle cx='"+str(int(self.molecule.nearest_points_coords[atom][0])+(self.molecule.x_dim-900)/2)+"' cy='"+str(int(self.molecule.nearest_points_coords[atom][1])+(self.molecule.y_dim-450)/2)+"' r='30' fill='white' />"
     def draw_lines_in_graph(self):
         for residue in self.molecule.nearest_points_coords:
             self.draw_lines=self.draw_lines+"<line x1='"+str(int(self.molecule.nearest_points_coords[residue][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[residue][1]))+"' x2='"+str(float(self.molecule.atom_coords_from_diagramm[residue][0]))+"' y2='"+str(float(self.molecule.atom_coords_from_diagramm[residue][1]))+"' style='stroke:red;stroke-width:2' />"
