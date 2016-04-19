@@ -104,10 +104,10 @@ class TestCheckFigure(TestCase):
         self.figure.write_final_draw_file("amino_rmsf_2traj")
         with open(AMINO_RMSF_2TRAJ,"r") as f:
             lines = f.readlines()
-            self.out_test_svg = " ".join(map(str,lines[2:-1]))
+            self.out_test_svg = " ".join(map(str,lines[2:-150]))
             f.close()
         with open("amino_rmsf_2traj.svg","r") as f:
             lines = f.readlines()
-            self.out_svg_to_test = " ".join(map(str,lines[2:-1]))
+            self.out_svg_to_test = " ".join(map(str,lines[2:-150]))
             f.close()
         assert_equal(self.out_test_svg,self.out_svg_to_test)

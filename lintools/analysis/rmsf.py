@@ -20,7 +20,7 @@ class RMSF_measurements(object):
             rmsf_to_average[i]=[]
             mobile = MDAnalysis.Universe(topology,traj)
             reference = MDAnalysis.Universe(topology)
-            MDAnalysis.analysis.align.rms_fit_trj(mobile, reference, filename='test.xtc',select='segid '+str(ligand_name.segids[0])+' and resid '+str(ligand_name.resids[0]))
+            MDAnalysis.analysis.align.rms_fit_trj(mobile, reference, filename='test.xtc',select='protein')
             md_sim = Topol_Data(topology,"test.xtc",ligand_name,offset)
             ligand_no_H=md_sim.universe.select_atoms('segid '+str(ligand_name.segids[0])+' and resid '+str(ligand_name.resids[0])+" and not name H*")
             R = MDAnalysis.analysis.rms.RMSF(ligand_no_H)
