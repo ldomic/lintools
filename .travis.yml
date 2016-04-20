@@ -12,7 +12,7 @@ before_install:
 install:
   - conda create --yes -q -c https://conda.anaconda.org/rdkit -n my-rdkit-env rdkit python=2.7
   - source activate my-rdkit-env
-  - conda install -y -n my-rdkit-env python=2.7 numpy nose matplotlib geos shapely scipy
+  - conda install -y -n my-rdkit-env python=2.7 numpy nose matplotlib geos
   - pip install MDAnalysis coveralls
   - chmod +x lintools//lintools_nosetests
   - python setup.py build
