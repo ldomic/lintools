@@ -67,7 +67,7 @@ class TestCheckFigure(TestCase):
             f.close()
         assert_equal(self.out_test_svg,self.out_svg_to_test)
 
-class TestCheckFigure(TestCase):
+class TestCheckFigure2(TestCase):
     def setUp(self):
         self.topology = Topol_Data(TOPOLOGY,None,None,0)
         self.u = self.topology.universe
@@ -111,3 +111,38 @@ class TestCheckFigure(TestCase):
             self.out_svg_to_test = " ".join(map(str,lines[2:-150]))
             f.close()
         assert_equal(self.out_test_svg,self.out_svg_to_test)
+
+
+class TestCheckFigureInfo(TestCase):
+    def setUp(self):
+        self.topology = Topol_Data(PDB,None,None,0)
+        self.u = self.topology.universe
+        self.ligand = self.u.select_atoms("resname LDP")
+        self.ligand.resname = "LIG"
+        self.ligand.resnames = "LIG"
+        self.topology.define_ligand(self.ligand)
+        self.topology.find_res_to_plot(3.5)
+        self.hbonds = HBonds(self.topology,PDB,None,self.ligand,0,30)
+        self.topology.get_closest_ligand_atoms(self.hbonds)
+        self.molecule = Molecule(self.topology)
+        self.plots = Plots(self.topology)
+    def tearDown(self):
+        del self.topology
+        del self.hbonds
+        del self.molecule
+        del self.plots
+        del self.figure
+        if os.path.isfile("amino_diagrams.svg")==True:
+            os.remove("amino_diagrams.svg")
+    def test_plot_amino_diagrams_file(self):
+        self.plots.define_amino_acids()
+        self.plots.plot_amino_diagramms()
+        self.figure = Figure(self.molecule,"amino",self.topology,self.hbonds,self.plots,tests=True)
+        self.figure.draw_hbonds_in_graph()
+        self.figure.draw_white_circles_at_atoms()
+        self.figure.put_everything_together()
+        self.figure.write_final_draw_file("amino_diagrams")
+        assert_equal(self.figure.y_dim, 972.3316689981784)
+        assert_equal(self.figure.draw_lines, " <line stroke-dasharray='5,5'  x1='644' y1='565' x2='652.152' y2='386.113' style='stroke:black;stroke-width:4' /><line stroke-dasharray='5,5'  x1='55' y1='79' x2='129.227' y2='238.075' style='stroke:black;stroke-width:4' /><line stroke-dasharray='5,5'  x1='931' y1='291' x2='787.905' y2='191.611' style='stroke:black;stroke-width:4' />"
+)
+        
