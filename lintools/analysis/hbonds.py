@@ -107,7 +107,7 @@ class HBonds(object):
                 atomname = self.h_bonds[i][5]
             else:
                 atomname = self.h_bonds[i][8]
-            if atomname.startswith("O",0):
+            if atomname.startswith("O",0) or atomname.startswith("N",0) :
                 lig_atom=atomname
             else:
                 for atom in ligand_universe.atoms:
