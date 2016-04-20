@@ -1,7 +1,7 @@
 from numpy.testing import TestCase, assert_equal, assert_almost_equal
 import unittest
 import os
-from lintools.lintools.topol import Topol_Data
+from lintools.lintools.topol import Topol_Data, Config
 from lintools.lintools.testsuite.datafiles import *
 import numpy as np
 
