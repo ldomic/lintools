@@ -108,4 +108,4 @@ class TestOccurrence5Traj(TestCase):
  'TYR280': ('280', 13, 28, 13, 13, 28),
  'TYR920': ('920', 7, 18, 7, 7, 18),
  'TYR923': ('923', 15, 42, 15, 15, 42)}
- assert_equal=self.topology.dict_of_closest_res,dict_of_closest_res)
+        assert_equal(self.topology.dict_of_plotted_res,dict_of_closest_res)
