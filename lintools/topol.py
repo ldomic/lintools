@@ -46,22 +46,22 @@ class Topol_Data(object):
     def load_mol2_in_rdkit(self):
         try:
             self.mol2 = Chem.MolFromMol2File(self.mol2_file,removeHs=False)
-            if self.mol2 == None:
-                print "Exiting. No mol2 file was supplied."
-                sys.exit()
-            # Kind of a debug
             mol = Chem.MolFromSmarts('[$([N;!H0;v3]),$([N;!H0;+1;v4]),$([O,S;H1;+0]),$([n;H1;+0])]')
             self.mol2.GetSubstructMatches(mol, uniquify=1)
         except AttributeError:
-            self.mol2 = Chem.MolFromMol2File(self.universe.mol2_file,removeHs=False,sanitize=False)
+            self.mol2 = Chem.MolFromMol2File(self.mol2_file,removeHs=False,sanitize=False)
             self.mol2.UpdatePropertyCache(strict=False)
+        if self.mol2 == None:
+            print "Exiting. No mol2 file was supplied."
+            sys.exit()
+            # Kind of a debug
     def renumber_system(self, offset=0):
         self.protein = self.universe.select_atoms("protein")
         self.protein.set_resids(self.protein.resids+int(offset))
         protein = self.topology.select_atoms("protein")
         protein.set_resids(protein.resids+int(offset))
     def find_res_to_plot(self, cutoff=3.5):
-        self.protein_selection = self.universe.select_atoms('protein and around '+str(cutoff)+' (segid '+str(self.ligand.segids[0])+' and resid '+str(self.ligand.resids[0])+')')
+        self.protein_selection = self.universe.select_atoms('all and around '+str(cutoff)+' (segid '+str(self.ligand.segids[0])+' and resid '+str(self.ligand.resids[0])+')')
         for atom in self.protein_selection:
             if atom.resid  not in self.dict_of_plotted_res.keys():
                 #for non-analysis plots
@@ -84,38 +84,19 @@ class Topol_Data(object):
                 min_values_per_atom[atom.name]=dist_array[i].min()
 
             sorted_min_values = sorted(min_values_per_atom.items(), key=operator.itemgetter(1))     
-            self.closest_atoms[residue]=sorted_min_values[0][0],sorted_min_values[0][1]     
-        if self.hbonds!=None:
-            check_hbonds={}
-            for atom in self.closest_atoms:
-                check_hbonds[atom]=[]
+            self.closest_atoms[residue]=[(sorted_min_values[0][0],sorted_min_values[0][1])]     
+            if self.hbonds!=None:
+                check_hbonds = []
                 i=-1
                 for res in self.hbonds.hbonds_for_drawing:
                     i+=1
-                    if atom ==self.hbonds.hbonds_for_drawing[i][1]:
-                        check_hbonds[atom].append(self.hbonds.hbonds_for_drawing[i][0])
-            
-            for atom in check_hbonds:
-                if len(check_hbonds[atom])==1 and check_hbonds[atom]!=self.closest_atoms[atom][0]:
-                    self.closest_atoms[atom]=check_hbonds[atom][0],self.hbonds.distance
-                if len(check_hbonds[atom])==2:
-                    closest_dist=self.closest_atoms[atom]
-                    if check_hbonds[atom][0]==closest_dist[0]:
-                        self.closest_atoms[atom]=closest_dist[0],closest_dist[1],check_hbonds[atom][1],self.hbonds.distance
-                    else:
-                        self.closest_atoms[atom]=closest_dist[0],closest_dist[1],check_hbonds[atom][0],self.hbonds.distance
-                if len(check_hbonds[atom])==3:
-                    closest_dist=self.closest_atoms[atom]
-                    if check_hbonds[atom][0]==closest_dist[0]:
-                        self.closest_atoms[atom]=closest_dist[0],closest_dist[1],check_hbonds[atom][1],self.hbonds.distance, check_hbonds[atom][2],self.hbonds.distance
-                    if check_hbonds[atom][1]==closest_dist[0]:
-                        self.closest_atoms[atom]=closest_dist[0],closest_dist[1],check_hbonds[atom][0],self.hbonds.distance, check_hbonds[atom][2],self.hbonds.distance
-                    if check_hbonds[atom][2]==closest_dist[0]:
-                        self.closest_atoms[atom]=closest_dist[0],closest_dist[1],check_hbonds[atom][0],self.hbonds.distance, check_hbonds[atom][1],self.hbonds.distance
-
-
-
-
+                    if residue==self.hbonds.hbonds_for_drawing[i][1]:
+                        check_hbonds.append(self.hbonds.hbonds_for_drawing[i][0])
+                if len(check_hbonds) > 0:
+                    self.closest_atoms[residue]=[]
+                    for atom in check_hbonds:
+                        item = atom, min_values_per_atom[atom]
+                        self.closest_atoms[residue].append(item)
 
 class Config(object):
     def __init__(self, topol_object=None):

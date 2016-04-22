@@ -168,13 +168,16 @@ class Figure(object):
         return colorbar
     def draw_white_circles_at_atoms(self):
          for atom in self.molecule.nearest_points_coords:
-            self.white_circles = self.white_circles+"<circle cx='"+str(int(self.molecule.nearest_points_coords[atom][0])+(self.molecule.x_dim-900)/2)+"' cy='"+str(int(self.molecule.nearest_points_coords[atom][1])+(self.molecule.y_dim-450)/2)+"' r='30' fill='white' />"
+            if atom[:3] != "SOL" and atom[:3]!="HOH":
+                print atom[:3]
+                self.white_circles = self.white_circles+"<circle cx='"+str(int(self.molecule.nearest_points_coords[atom][0])+(self.molecule.x_dim-900)/2)+"' cy='"+str(int(self.molecule.nearest_points_coords[atom][1])+(self.molecule.y_dim-450)/2)+"' r='30' fill='white' />"
     def draw_lines_in_graph(self):
         for residue in self.molecule.nearest_points_coords:
             self.draw_lines=self.draw_lines+"<line x1='"+str(int(self.molecule.nearest_points_coords[residue][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[residue][1]))+"' x2='"+str(float(self.molecule.atom_coords_from_diagramm[residue][0]))+"' y2='"+str(float(self.molecule.atom_coords_from_diagramm[residue][1]))+"' style='stroke:red;stroke-width:2' />"
     def draw_hbonds_in_graph(self):
         for bond in self.hbonds.hbonds_for_drawing:
-            self.draw_lines=self.draw_lines+"<line stroke-dasharray='5,5'  x1='"+str(int(self.molecule.nearest_points_coords[bond[1]][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[bond[1]][1]))+"' x2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[0]][0]))+"' y2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[0]][1]))+"' style='stroke:black;stroke-width:4' />"
+            self.draw_lines=self.draw_lines+"<line stroke-dasharray='5,5'  x1='"+str(int(self.molecule.nearest_points_coords[bond[1]][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[bond[1]][1]))+"' x2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[0]][0]))+"' y2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[0]][1]))+"' style='stroke:blue;stroke-width:4' />"
+
     def put_everything_together(self):
         molecule_list = [self.filestart]+[self.draw_lines]+[self.draw_molecule]+[self.white_circles]+[self.draw_plots]+[self.legend]+[self.end_symbol]
         self.final_molecule = "".join(map(str,molecule_list))

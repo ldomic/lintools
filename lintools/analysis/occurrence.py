@@ -36,7 +36,7 @@ class Occurrence_analysis(object):
             frame_dict = {}
             firstframe_ps=None
             for frame in md_sim.trajectory:
-                selection = md_sim.select_atoms('protein and around '+str(cutoff)+' (segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')               
+                selection = md_sim.select_atoms('all and around '+str(cutoff)+' (segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')               
                 residue_list = [atom.resname+str(atom.resid) for atom in selection]
                 residue_list2 = [atom.resid for atom in selection]
                 frame_dict[frame.time]=set(residue_list)
@@ -51,16 +51,22 @@ class Occurrence_analysis(object):
             self.residue_counts[i] = Counter([item for sublist in frame_dict.values() for item in sublist])
        
     
-    def get_closest_residues(self,input_frame_cutoff):
+    def get_closest_residues(self,input_frame_cutoff,water_frame_cutoff_input = 60):
          """Find the list of residues to be plotted using cutoff"""
          frame_cutoff=[]
+         water_frame_cutoff = []
          for traj in self.universe.frame_count:
             frame_cutoff.append((traj)*int(input_frame_cutoff)/100)
+            water_frame_cutoff.append((traj)*int(water_frame_cutoff_input)/100)
          self.universe.dict_of_plotted_res={}
          if len(self.residue_counts)==1:
              for res in self.residue_counts[1].keys():
-                 if self.residue_counts[1][res]>frame_cutoff[0]:
-                     self.universe.dict_of_plotted_res[res]=res[3:],self.residue_counts[1][res]
+                 if  res[:3]=="SOL" or res[:3]=="HOH":
+                     if self.residue_counts[1][res]>water_frame_cutoff[0]:
+                        self.universe.dict_of_plotted_res[res]=res[3:],self.residue_counts[1][res]
+                 else:
+                    if self.residue_counts[1][res]>frame_cutoff[0]:
+                        self.universe.dict_of_plotted_res[res]=res[3:],self.residue_counts[1][res]
          else :
              list_of_plotted_res=[]
              new_res_list={}
@@ -75,16 +81,28 @@ class Occurrence_analysis(object):
                          new_res_list[res].append(0)
              if len(self.residue_counts)<4:
                  for res in new_res_list:
-                     for (index1, value1),(index2, value2) in combinations(enumerate(new_res_list[res]),2):
-                         if value1>frame_cutoff[index1] and value2>frame_cutoff[index2]:
-                             if res not in list_of_plotted_res:
-                                 list_of_plotted_res.append(res)
+                     if res[:3]=="SOL" or res[:3]=="HOH":
+                         for (index1, value1),(index2, value2) in combinations(enumerate(new_res_list[res]),2):
+                             if value1>water_frame_cutoff[index1] and value2>water_frame_cutoff[index2]:
+                                 if res not in list_of_plotted_res:
+                                     list_of_plotted_res.append(res)
+                     else:
+                         for (index1, value1),(index2, value2) in combinations(enumerate(new_res_list[res]),2):
+                             if value1>frame_cutoff[index1] and value2>frame_cutoff[index2]:
+                                 if res not in list_of_plotted_res:
+                                     list_of_plotted_res.append(res)
              else: 
                  for res in new_res_list:
-                     for (index1, value1),(index2, value2),(index3,value3) in combinations(enumerate(new_res_list[res]),3):
-                         if value1>frame_cutoff[index1] and value2>frame_cutoff[index2] and value3>frame_cutoff[index3]:
-                             if res not in list_of_plotted_res:
-                                 list_of_plotted_res.append(res)
+                     if res[:3]=="SOL" or res[:3]=="HOH":
+                         for (index1, value1),(index2, value2),(index3,value3) in combinations(enumerate(new_res_list[res]),3):
+                             if value1>water_frame_cutoff[index1] and value2>water_frame_cutoff[index2] and value3>water_frame_cutoff[index3]:
+                                 if res not in list_of_plotted_res:
+                                     list_of_plotted_res.append(res)
+                     else:
+                         for (index1, value1),(index2, value2),(index3,value3) in combinations(enumerate(new_res_list[res]),3):
+                             if value1>frame_cutoff[index1] and value2>frame_cutoff[index2] and value3>frame_cutoff[index3]:
+                                 if res not in list_of_plotted_res:
+                                     list_of_plotted_res.append(res)
 
          if len(self.residue_counts)>1:
              for residue in list_of_plotted_res:
