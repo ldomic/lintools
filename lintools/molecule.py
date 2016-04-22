@@ -47,7 +47,6 @@ class Molecule(object):
         except ValueError:
             mol2_in_rdkit = Chem.RemoveHs(mol2_in_rdkit, sanitize = False)
             self.smiles = Chem.MolFromSmiles(Chem.MolToSmiles(mol2_in_rdkit), sanitize=False)
-            print "SMILES", self.smiles
         self.atom_identities = {}
         i=0
         for atom in self.smiles.GetAtoms():

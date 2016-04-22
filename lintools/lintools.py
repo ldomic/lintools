@@ -35,7 +35,8 @@ if __name__ == '__main__':
 	
 	### All assertions
 
-	assert len(args.output_name)>0, "Provide a name for output file"
+	if type(args.output_name)!=str:
+		raise IOError,"Provide a name for output file"
 	####################################################################################################################
 	###  Define input specifications:
 	if args.config_file!=None:
@@ -78,7 +79,8 @@ if __name__ == '__main__':
 		else:
 			analysis_cutoff=config_read.analysis_cutoff
 	else:
-		assert len(args.grofile)>0, "Provide an input topology file"
+		if type(args.grofile)!=str:
+			raise IOError, "Provide an input topology file"
 		topology=os.path.abspath(args.grofile)
 		if args.xtcfile!=None:
 			i=0
@@ -131,7 +133,18 @@ if __name__ == '__main__':
 	else:
 		for lig in potential_ligands:			
 			print lig, potential_ligands[lig].resnames[0], potential_ligands[lig].resids[0], potential_ligands[lig].segids[0]
-	ligand_name=potential_ligands[int(raw_input( "Choose a ligand to analyse:"))]
+
+	while True:
+		raw = raw_input( "Choose a ligand to analyse:")
+		try:
+			if int(raw) in [x[0] for x in enumerate(potential_ligands.keys())] :
+				break
+			else:
+				print "Error. No such group "+str(raw)
+		except ValueError:
+			print "Error. No such group "+str(raw)
+			pass
+	ligand_name=potential_ligands[int(raw)]
 	if args.config_file!=None:
 		if ligand_name==potential_ligands[0]:
 			for ligand in potential_ligands.keys()[1:]:
@@ -152,9 +165,17 @@ if __name__ == '__main__':
 				available_diagrams={0:"From config file",1:"amino", 2:"clock"}
 		for diagram in available_diagrams:
 			print diagram, " : ", available_diagrams[diagram]
-		diagram_type=available_diagrams[int(raw_input("Choose diagram type:"))]
-		if diagram_type=="From config file":
-			diagram_type=config_read.diagram_type
+		while True:
+			raw_d = raw_input( "Choose diagram type:")
+			try:
+				if int(raw_d) in [x[0] for x in enumerate(available_diagrams.keys())] :
+					break
+				else:
+					print "Error. No such group "+str(raw_d)
+			except ValueError:
+				print "Error. No such group "+str(raw_d)
+				pass
+		diagram_type=available_diagrams[int(raw_d)]
 	else:
 		if args.domain_file!=None:
 			if  trajectory!=None:
@@ -168,8 +189,18 @@ if __name__ == '__main__':
 				available_diagrams={1:"amino"}
 		for diagram in available_diagrams:
 			print diagram, " : ", available_diagrams[diagram]
-		diagram_type=available_diagrams[int(raw_input("Choose diagram type:"))]
-
+		while True:
+			raw_d = raw_input( "Choose diagram type:")
+			print [x[0] for x in enumerate(available_diagrams.keys())]
+			try:
+				if int(raw_d)-1 in [x[0] for x in enumerate(available_diagrams.keys())] :
+					break
+				else:
+					print "Error. No such group "+str(raw_d)
+			except ValueError:
+				print "Error. No such group "+str(raw_d)
+				pass
+		diagram_type=available_diagrams[int(raw_d)]
 
 	#############################################################################################################
 

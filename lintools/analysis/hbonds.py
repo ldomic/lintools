@@ -40,7 +40,7 @@ class HBonds(object):
             md_sim = Topol_Data(topology,None,ligand_name,offset)
             ligand = md_sim.universe.select_atoms('(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')
             ligand.resnames = "LIG"
-        ligand.resname = "LIG"
+            ligand.resname = "LIG"
             h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(md_sim.universe,prot_sel[:-3],'(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')',distance=distance,acceptors=self.acceptors,donors=self.donors)
             h.run()
             h.generate_table()  

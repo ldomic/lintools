@@ -29,7 +29,7 @@ class Topol_Data(object):
         if trajectory is None:
             self.topology=MDAnalysis.Universe(topology)
             self.universe = MDAnalysis.Universe(topology)
-            self.frame_count = self.universe.trajectory.n_frames
+            self.frame_count = 1
         else:
             self.topology=MDAnalysis.Universe(topology)
             self.universe = MDAnalysis.Universe(topology, trajectory)
@@ -58,10 +58,8 @@ class Topol_Data(object):
     def renumber_system(self, offset=0):
         self.protein = self.universe.select_atoms("protein")
         self.protein.set_resids(self.protein.resids+int(offset))
-        protein = self.topology.select_atoms("protein")
-        protein.set_resids(protein.resids+int(offset))
     def find_res_to_plot(self, cutoff=3.5):
-        self.protein_selection = self.universe.select_atoms('all and around '+str(cutoff)+' (segid '+str(self.ligand.segids[0])+' and resid '+str(self.ligand.resids[0])+')')
+        self.protein_selection = self.universe.select_atoms('all and not resname SOL and not resname HOH and around '+str(cutoff)+' (segid '+str(self.ligand.segids[0])+' and resid '+str(self.ligand.resids[0])+')')
         for atom in self.protein_selection:
             if atom.resid  not in self.dict_of_plotted_res.keys():
                 #for non-analysis plots
