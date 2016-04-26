@@ -1,60 +1,146 @@
 from numpy.testing import TestCase, assert_equal, assert_almost_equal
 import unittest
 import os
-from lintools.lintools.topol import Topol_Data, Config
 from lintools.lintools.testsuite.datafiles import *
 import numpy as np
+import MDAnalysis
+from lintools.lintools.lintools import Lintools
 
-class TestCheckLigand(TestCase):
+############    Test 1 - 4xp1 with LDP amino ###############
+
+class TestBasic1(TestCase):
     def setUp(self):
-        self.filename = PDB
-        self.topology = Topol_Data(self.filename)
+        u =MDAnalysis.Universe(FILE1)
+        lig_name = u.select_atoms("resname LDP")
+        self.output_name ="test1"
+        self.test_svg = TEST1_SVG
+        self.lintools = Lintools(FILE1,None,lig_name,0,3.5,30,"amino",None,False,False,False,"test1")
+        self.lintools.get_info_about_input_and_analyse()
+        self.lintools.plot_residues()
+        self.lintools.draw_molecule_and_figure(tests=True)
+        self.lintools.write_config_file()
     def tearDown(self):
-        del self.topology
-        if os.path.isfile("LIG.pdb")==True:
-            os.remove("LIG.pdb")
-    def test_renumber(self):
-        res1 = self.topology.universe.select_atoms("resid 1")
-        self.topology.renumber_system(60)
-        res61 = self.topology.universe.select_atoms("resid 61")
-        assert_equal(res1.resnames[0],res61.resnames[0])
-    def test_find_residues(self):
-        self.u = self.topology.universe
-        self.topology.ligand = self.u.select_atoms("resname LDP")
-        self.topology.find_res_to_plot()
-        plotted_res = {'ALA117': [117, 1],
-                       'ASP121': [121, 1],
-'ASP46': [46, 1],
- 'PHE325': [325, 1],
- 'PHE43': [43, 1],
- 'SER421': [421, 1],
- 'SER422': [422, 1],
- 'TYR124': [124, 1],
- 'VAL120': [120, 1]}
-        assert_equal(plotted_res,self.topology.dict_of_plotted_res)
-    def test_get_closest_atoms(self):
-        self.u = self.topology.universe
-        self.topology.ligand = self.u.select_atoms("resname LDP")
-        self.topology.find_res_to_plot()
-        self.topology.get_closest_ligand_atoms()
-        closest_res ={'ALA117': ('O2', 2.863625497483675),
- 'ASP121': ('O1', 2.7923072904423361),
- 'ASP46': ('N1', 3.1229403882574975),
- 'PHE325': ('C6', 3.3749625311013798),
- 'PHE43': ('C7', 4.1442749657414888),
- 'SER421': ('C2', 4.0928581319641619),
- 'SER422': ('O1', 3.5110469968840192),
- 'TYR124': ('C8', 3.2547764210794483),
- 'VAL120': ('C4', 3.5782832437246794)}
-        assert_equal(closest_res, self.topology.closest_atoms)
+        self.lintools.remove_files()
+        del self.lintools
+        file_list = ["test1.svg","test1_config.txt"]
+        for f in file_list:
+            if os.path.isfile(f)==True:
+                os.remove(f)
+    def test_4xp1_amino(self):
+        # Is the molecule mol2 file produced?
+        assert_equal(os.path.isfile("LIG_test.mol2"),True)
+        #Is the final svg file produced?
+        assert_equal(os.path.isfile(self.output_name+".svg"),True)
+        if os.path.isfile(self.output_name+".svg") == True:
+            with open(self.test_svg,"r") as test:
+                testlines = test.readlines()
+            with open(self.output_name+".svg","r") as output:
+                lines = output.readlines()
+                i=0
+                for line in lines:
+                    assert_equal(testlines[i],lines[i])
+                    i+=1
 
-class TestCheckTrajectory(TestCase):
+
+
+class TestBasic2(TestCase):
     def setUp(self):
-        self.topology = Topol_Data(TOPOLOGY,TRAJ_20FR)
+        u =MDAnalysis.Universe(FILE1)
+        lig_name = u.select_atoms("resname LDP")
+        self.output_name ="test2"
+        self.test_svg = TEST2_SVG
+        self.lintools = Lintools(FILE1,None,lig_name,0,3.5,30,"domains",DOM_FILE_4XP1,False,False,False,"test2")
+        self.lintools.get_info_about_input_and_analyse()
+        self.lintools.plot_residues()
+        self.lintools.draw_molecule_and_figure(tests=True)
+        self.lintools.write_config_file()
     def tearDown(self):
-        del self.topology
-    def test_loading_trajectory(self):
-        assert_equal(self.topology.universe.trajectory.n_frames,21)
+        self.lintools.remove_files()
+        del self.lintools
+        file_list = ["test2.svg","test2_config.txt"]
+        for f in file_list:
+            if os.path.isfile(f)==True:
+                os.remove(f)
+    def test_4xp1_domains(self):
+        # Is the molecule mol2 file produced?
+        assert_equal(os.path.isfile("LIG_test.mol2"),True)
+        #Is the final svg file produced?
+        assert_equal(os.path.isfile(self.output_name+".svg"),True)
+        if os.path.isfile(self.output_name+".svg") == True:
+            with open(self.test_svg,"r") as test:
+                testlines = test.readlines()
+            with open(self.output_name+".svg","r") as output:
+                lines = output.readlines()
+                i=0
+                for line in lines:
+                    assert_equal(testlines[i],lines[i])
+                    i+=1
 
+class TestBasic3(TestCase):
+    def setUp(self):
+        u =MDAnalysis.Universe(FILE2)
+        lig_name = u.select_atoms("resname UNK")
+        self.output_name ="test3"
+        self.test_svg = TEST3_SVG
+        self.lintools = Lintools(FILE2,[TRAJ_20_FR,TRAJ_50_FR],lig_name,30,3.5,50,"clock",None,False,False,False,"test3")
+        self.lintools.get_info_about_input_and_analyse()
+        self.lintools.plot_residues()
+        self.lintools.draw_molecule_and_figure(tests=True)
+        self.lintools.write_config_file()
+    def tearDown(self):
+        self.lintools.remove_files()
+        del self.lintools
+        file_list = ["test3.svg","test3_config.txt"]
+        for f in file_list:
+            if os.path.isfile(f)==True:
+                os.remove(f)
+    def test_two_trajectories_clock(self):
+        # Is the molecule mol2 file produced?
+        assert_equal(os.path.isfile("LIG_test.mol2"),True)
+        #Is the final svg file produced?
+        assert_equal(os.path.isfile(self.output_name+".svg"),True)
+        if os.path.isfile(self.output_name+".svg") == True:
+            with open(self.test_svg,"r") as test:
+                testlines = test.readlines()
+            with open(self.output_name+".svg","r") as output:
+                lines = output.readlines()
+                i=0
+                for line in lines:
+                    assert_equal(testlines[i],lines[i])
+                    i+=1
 
-
+class TestBasic4(TestCase):
+    def setUp(self):
+        u =MDAnalysis.Universe(FILE2)
+        lig_name = u.select_atoms("resname UNK")
+        self.output_name ="test4"
+        self.test_svg = TEST4_SVG
+        self.lintools = Lintools(FILE2,[TRAJ_20_FR,TRAJ_50_FR],lig_name,30,3.5,50,"clock",None,False,True,False,"test4")
+        self.lintools.get_info_about_input_and_analyse()
+        self.lintools.plot_residues()
+        self.lintools.draw_molecule_and_figure(tests=True)
+        self.lintools.write_config_file()
+    def tearDown(self):
+        self.lintools.remove_files()
+        del self.lintools
+        file_list = ["test34.svg","test4_config.txt"]
+        for f in file_list:
+            if os.path.isfile(f)==True:
+                os.remove(f)
+    def test_two_trajectories_clock(self):
+        # Is the molecule mol2 file produced?
+        assert_equal(os.path.isfile("LIG_test.mol2"),True)
+        #Is the final svg file produced?
+        assert_equal(os.path.isfile(self.output_name+".svg"),True)
+        if os.path.isfile(self.output_name+".svg") == True:
+            with open(self.test_svg,"r") as test:
+                testlines = test.readlines()
+            with open(self.output_name+".svg","r") as output:
+                lines = output.readlines()
+                i=0
+                for line in lines:
+                    if i == 1166: # This line contains an url which changes with every itiaration and cannot be tested
+                        continue
+                    else:
+                        assert_equal(testlines[i],lines[i])
+                    i+=1
