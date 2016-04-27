@@ -194,11 +194,7 @@ class Molecule(object):
             values = [v for v in self.nearest_points_projection.values()]
         #self.x_dim  = max(x[0] for i,x in enumerate(xy_values))-min(x[0] for i,x in enumerate(xy_values))+250.00 
         # do not use the line above - cuts the image short
-        self.x_dim  = max(x[0] for i,x in enumerate(xy_values))+250.00
-        self.y_dim = max(x[1] for i,x in enumerate(xy_values))-min(x[1] for i,x in enumerate(xy_values))+250.00
-        if self.x_dim<900:
-            self.x_dim=900+250
-        if self.y_dim<450:
-            self.y_dim=450+250
+        self.x_dim  = max(x[0] for i,x in enumerate(xy_values))+600.00
+        self.y_dim = max(x[1] for i,x in enumerate(xy_values))-min(x[1] for i,x in enumerate(xy_values))+300.00
 
     

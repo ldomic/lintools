@@ -4,8 +4,8 @@
                        xmlns:rdkit='http://www.rdkit.org/xml'
                        xmlns:xlink='http://www.w3.org/1999/xlink'
                    xml:space='preserve'
- width='1148.46964375px' height='1068.48927191px' > 
- <rect style='opacity:1.0;fill:white;stroke:none' width='1148.46964375px' height='1068.48927191px' x='0' y='0'> </rect> <g transform='translate(124.234821874,279.244635953)'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='900' height='450' x='0' y='0' /> 
+ width='1498.46964375px' height='1118.48927191px' > 
+ <rect style='opacity:1.0;fill:white;stroke:none' width='1498.46964375px' height='1118.48927191px' x='0' y='0'> </rect> <g transform='translate(299.234821874,304.244635953)'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='900' height='450' x='0' y='0' /> 
  <line stroke-dasharray='5,5'  x1='630' y1='614' x2='652.152' y2='386.113' style='stroke:blue;stroke-width:4' /><line stroke-dasharray='5,5'  x1='41' y1='51' x2='129.227' y2='238.075' style='stroke:blue;stroke-width:4' /><line stroke-dasharray='5,5'  x1='898' y1='33' x2='787.905' y2='191.611' style='stroke:blue;stroke-width:4' /><ellipse cx='129.227' cy='238.075' rx='31.6256' ry='31.6256' style='fill:#FFFFFF;fill-rule:evenoddstroke:#FFFFFF;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
 <ellipse cx='247.387' cy='248.232' rx='31.6256' ry='31.6256' style='fill:#FFFFFF;fill-rule:evenoddstroke:#FFFFFF;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
 <ellipse cx='315.264' cy='150.981' rx='31.6256' ry='31.6256' style='fill:#FFFFFF;fill-rule:evenoddstroke:#FFFFFF;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
@@ -37,7 +37,7 @@
 <text x='616.559' y='401.447' style='font-size:39px;font-style:normal;font-weight:normal;fill-opacity:1;stroke:none;font-family:sans-serif;text-anchor:start;fill:#FF0000' ><tspan>OH</tspan></text>
 <text x='752.312' y='206.945' style='font-size:39px;font-style:normal;font-weight:normal;fill-opacity:1;stroke:none;font-family:sans-serif;text-anchor:start;fill:#FF0000' ><tspan>OH</tspan></text>
 </g>
-<circle cx='754.234821874' cy='893.244635953' r='30' fill='white' /><circle cx='958.234821874' cy='225.244635953' r='30' fill='white' /><circle cx='165.234821874' cy='330.244635953' r='30' fill='white' /><circle cx='307.234821874' cy='753.244635953' r='30' fill='white' /><circle cx='684.234821874' cy='836.244635953' r='30' fill='white' /><circle cx='520.234821874' cy='857.244635953' r='30' fill='white' /><circle cx='588.234821874' cy='135.244635953' r='30' fill='white' /><circle cx='1022.23482187' cy='312.244635953' r='30' fill='white' /><circle cx='330.234821874' cy='198.244635953' r='30' fill='white' /> <g transform='translate(700,839)'>
+<circle cx='929.234821874' cy='918.244635953' r='30' fill='white' /><circle cx='1133.23482187' cy='250.244635953' r='30' fill='white' /><circle cx='340.234821874' cy='355.244635953' r='30' fill='white' /><circle cx='482.234821874' cy='778.244635953' r='30' fill='white' /><circle cx='859.234821874' cy='861.244635953' r='30' fill='white' /><circle cx='695.234821874' cy='882.244635953' r='30' fill='white' /><circle cx='763.234821874' cy='160.244635953' r='30' fill='white' /><circle cx='1197.23482187' cy='337.244635953' r='30' fill='white' /><circle cx='505.234821874' cy='223.244635953' r='30' fill='white' /> <g transform='translate(875,864)'>
  <g id="figure_1">
   <g id="patch_1">
    <path d="M 0 108 
@@ -97,7 +97,7 @@ z
   </g>
  </g>
 </g>
- <g transform='translate(904,170)'>
+ <g transform='translate(1079,195)'>
  <g id="figure_1">
   <g id="patch_1">
    <path d="M 0 108 
@@ -157,7 +157,7 @@ z
   </g>
  </g>
 </g>
- <g transform='translate(112,276)'>
+ <g transform='translate(287,301)'>
  <g id="figure_1">
   <g id="patch_1">
    <path d="M 0 108 
@@ -217,7 +217,7 @@ z
   </g>
  </g>
 </g>
- <g transform='translate(253,699)'>
+ <g transform='translate(428,724)'>
  <g id="figure_1">
   <g id="patch_1">
    <path d="M 0 108 
@@ -277,7 +277,7 @@ z
   </g>
  </g>
 </g>
- <g transform='translate(631,782)'>
+ <g transform='translate(806,807)'>
  <g id="figure_1">
   <g id="patch_1">
    <path d="M 0 108 
@@ -337,7 +337,7 @@ z
   </g>
  </g>
 </g>
- <g transform='translate(466,803)'>
+ <g transform='translate(641,828)'>
  <g id="figure_1">
   <g id="patch_1">
    <path d="M 0 108 
@@ -397,7 +397,7 @@ z
   </g>
  </g>
 </g>
- <g transform='translate(534,81)'>
+ <g transform='translate(709,106)'>
  <g id="figure_1">
   <g id="patch_1">
    <path d="M 0 108 
@@ -457,7 +457,7 @@ z
   </g>
  </g>
 </g>
- <g transform='translate(968,258)'>
+ <g transform='translate(1143,283)'>
  <g id="figure_1">
   <g id="patch_1">
    <path d="M 0 108 
@@ -517,7 +517,7 @@ z
   </g>
  </g>
 </g>
- <g transform='translate(276,143)'>
+ <g transform='translate(451,168)'>
  <g id="figure_1">
   <g id="patch_1">
    <path d="M 0 108 
@@ -577,7 +577,7 @@ z
   </g>
  </g>
 </g>
-<g transform='translate(0,1028.48927191)'>  <circle
+<g transform='translate(0,1078.48927191)'>  <circle
      cx="20"
      cy="20"
      r="15"

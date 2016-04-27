@@ -26,11 +26,9 @@ class Topol_Data(object):
         self.renumber_system(offset)
     def load_system(self, topology, trajectory):
         if trajectory is None:
-            self.topology=MDAnalysis.Universe(topology)
             self.universe = MDAnalysis.Universe(topology)
             self.frame_count = 1
         else:
-            self.topology=MDAnalysis.Universe(topology)
             self.universe = MDAnalysis.Universe(topology, trajectory)
             self.frame_count = self.universe.trajectory.n_frames
     def define_ligand(self,ligand_name):
@@ -71,7 +69,7 @@ class Topol_Data(object):
         self.ligand_no_H = self.ligand.select_atoms("not name H*")
         lig_pos = self.ligand_no_H.positions
         for residue in self.dict_of_plotted_res:
-            residue_select= self.topology.select_atoms("resid "+str(self.dict_of_plotted_res[residue][0]))
+            residue_select= self.universe.select_atoms("resid "+str(self.dict_of_plotted_res[residue][0]))
             res_pos = residue_select.positions
             dist_array = MDAnalysis.analysis.distances.distance_array(lig_pos, res_pos)
             min_values_per_atom={}
@@ -79,7 +77,6 @@ class Topol_Data(object):
             for atom in self.ligand_no_H:
                 i+=1
                 min_values_per_atom[atom.name]=dist_array[i].min()
-
             sorted_min_values = sorted(min_values_per_atom.items(), key=operator.itemgetter(1))     
             self.closest_atoms[residue]=[(sorted_min_values[0][0],sorted_min_values[0][1])]     
             if self.hbonds!=None:

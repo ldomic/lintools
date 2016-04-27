@@ -3,7 +3,7 @@ from argparse import ArgumentParser
 import os
 import sys
 import MDAnalysis
-from topol import Topol_Data, Config
+from topol import Topol_Data
 from plots import Plots
 from molecule import Molecule
 from figure import Figure
@@ -70,7 +70,7 @@ class Lintools(object):
 	def remove_files(self):
             file_list = ["molecule.svg","LIG.pdb","LIG_test.mol2","test.xtc","rmsf_colorbar.svg"]
             for residue in self.topol_data.dict_of_plotted_res.keys():
-            file_list.append(str(residue[3:])+".svg")
+                file_list.append(str(residue[3:])+".svg")
                 for f in file_list:
                     if os.path.isfile(f)==True:
                         os.remove(f)
@@ -98,12 +98,8 @@ if __name__ == '__main__':
 	def find_ligand_name():
 		gro = MDAnalysis.Universe(args.topology)
 		list_of_non_ligands=["SOL","NA","CL","HOH","ARG","LYS","HIS","ASP","GLU","SER","THR", "ASN","GLN","PHE","TYR","TRP","CYS","GLY","PRO","ALA","VAL","ILE","LEU","MET"]
-		if args.config_file!=None:
-			potential_ligands={0:"Ligand molecule from config file"}
-			i=1
-		else:
-			potential_ligands={}
-			i=0
+		potential_ligands={}
+		i=0
 		for residue in gro.residues:
 		    if residue.resnames[0] not in list_of_non_ligands:
 		    	if residue.altLocs[0]==str("") or  residue.altLocs[0]==None:
@@ -131,11 +127,6 @@ if __name__ == '__main__':
 				print "Error. No such group "+str(raw)
 				pass
 		ligand_name=potential_ligands[int(raw)]
-		if args.config_file!=None:
-			if ligand_name==potential_ligands[0]:
-				for ligand in potential_ligands.keys()[1:]:
-					if potential_ligands[ligand].resnames[0]==config_read.ligand_name[0] and potential_ligands[ligand].resids[0]==int(config_read.ligand_name[1]) and potential_ligands[ligand].segids[0]==config_read.ligand_name[2]:
-						ligand_name=potential_ligands[ligand]
 		return ligand_name
 
 	def find_diagram_type():
