@@ -11,7 +11,7 @@ import colorsys
 import operator
 
 class Molecule(object):
-    def __init__(self,  topol_object, rmsf_object=None,test=False):
+    def __init__(self,  topol_object, rmsf_object=None):
         self.svg = None
         self.universe = topol_object
         self.rmsf = rmsf_object
@@ -23,10 +23,9 @@ class Molecule(object):
         self.coefficient ={}
         self.ligand_atom_coords = []
         self.arc_coords=None
-        if test == False:
-            self.load_molecule_in_rdkit_smiles()
-            self.convex_hull()
-            self.make_new_projection_values()
+        self.load_molecule_in_rdkit_smiles()
+        self.convex_hull()
+        self.make_new_projection_values()
     def pseudocolor(self,val, minval, maxval):
         # convert val in range minval..maxval to the range 0..120 degrees which
         # correspond to the colors red..green in the HSV colorspace

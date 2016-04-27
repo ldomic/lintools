@@ -57,25 +57,23 @@ class Lintools(object):
 		self.plots.plot_clock_diagramms()
 
 	def draw_molecule_and_figure(self):
-	    molecule = Molecule(self.topol_data, self.rmsf)
-            figure=Figure(molecule, self.diagram_type,self.topol_data,self.hbonds,self.plots,self.rmsf)
-            figure.draw_hbonds_in_graph()
-            figure.draw_white_circles_at_atoms()
+	    self.molecule = Molecule(self.topol_data, self.rmsf)
+            self.figure=Figure(self.molecule, self.diagram_type,self.topol_data,self.hbonds,self.plots,self.rmsf)
+            self.figure.draw_hbonds_in_graph()
+            self.figure.draw_white_circles_at_atoms()
             if self.debug_flag==True:
-		figure.draw_lines_in_graph() #a function for debugging purposes
-            figure.put_everything_together()
-            figure.write_final_draw_file(self.output_name)
+		self.figure.draw_lines_in_graph() #a function for debugging purposes
+            self.figure.put_everything_together()
+            self.figure.write_final_draw_file(self.output_name)
 
 
 	def remove_files(self):
-	    config_write = Config(self.topol_data)
-            config_write.write_config_file(self.output_name, self.topology, self.trajectory, self.offset, self.diagram_type, self.cutoff, self.domain_file, self.analysis_cutoff)
-            file_list = ["molecule.svg","LIG.pdb","LIG_test.mol2","test.xtc"]
+            file_list = ["molecule.svg","LIG.pdb","LIG_test.mol2","test.xtc","rmsf_colorbar.svg"]
             for residue in self.topol_data.dict_of_plotted_res.keys():
-	        file_list.append(str(residue[3:])+".svg")
-            for f in file_list:
-                if os.path.isfile(f)==True:
-                    os.remove(f)
+            file_list.append(str(residue[3:])+".svg")
+                for f in file_list:
+                    if os.path.isfile(f)==True:
+                        os.remove(f)
 
 
 if __name__ == '__main__': 
@@ -90,7 +88,6 @@ if __name__ == '__main__':
 	parser.add_argument('-ro', '--residueoffset', dest = "offset", default = 0, help='Input the number of offset residues for the protein. (Optional, default is 0)')
 	parser.add_argument('-ac', '--analysis_cutoff', dest = "analysis_cutoff", default=30, help='Analysis cutoff - a feature has to appear for at least a third of the simulation to be counted. Default: 30')
 	parser.add_argument('-df', '--domain_file', dest = "domain_file", default=None, help='Input file for domains of your protein. To see the required format, check README or our GitHub page')
-	parser.add_argument('-conf', '--config_file', dest = "config_file", default=None, help="Input the name of the config file.")
 	parser.add_argument('--no_hbonds', dest='hydr_bonds', action="store_true", help="The hydrogen bonds will not be detected.")
 	parser.add_argument('--debug', dest='debug', action="store_true", help="Functions for debugging.")
 
@@ -120,15 +117,8 @@ if __name__ == '__main__':
 		        i+=1
 
 		print "# Nr  # Name   # Resnumber  # Chain ID"
-		if args.config_file!=None:
-			for lig in potential_ligands:
-				if lig==0:
-					print lig, potential_ligands[lig]
-				else:
-					print lig, potential_ligands[lig].resnames[0], potential_ligands[lig].resids[0], potential_ligands[lig].segids[0]
-		else:
-			for lig in potential_ligands:			
-				print lig, potential_ligands[lig].resnames[0], potential_ligands[lig].resids[0], potential_ligands[lig].segids[0]
+		for lig in potential_ligands:			
+			print lig, potential_ligands[lig].resnames[0], potential_ligands[lig].resids[0], potential_ligands[lig].segids[0]
 
 		while True:
 			raw = raw_input( "Choose a ligand to analyse:")
@@ -149,54 +139,29 @@ if __name__ == '__main__':
 		return ligand_name
 
 	def find_diagram_type():
-		if args.config_file!=None:
-			if args.domain_file!=None:
-				if args.trajectory!=None:
-					available_diagrams={0:"From config file",1:"amino", 2:"domains",3:"clock"}
-				if args.trajectory==None:
-					available_diagrams={0:"From config file", 1:"amino", 2:"domains"}
-			else:
-				if args.trajectory!=None:
-					available_diagrams={0:"From config file",1:"amino", 2:"clock"}
-				if args.trajectory==None:
-					available_diagrams={0:"From config file",1:"amino", 2:"clock"}
-			for diagram in available_diagrams:
-				print diagram, " : ", available_diagrams[diagram]
-			while True:
-				raw_d = raw_input( "Choose diagram type:")
-				try:
-					if int(raw_d) in [x[0] for x in enumerate(available_diagrams.keys())] :
-						break
-					else:
-						print "Error. No such group "+str(raw_d)
-				except ValueError:
-					print "Error. No such group "+str(raw_d)
-					pass
-			diagram_type=available_diagrams[int(raw_d)]
+		if args.domain_file!=None:
+			if  args.trajectory!=None:
+				available_diagrams={1:"amino", 2:"domains",3:"clock"}
+			if args.trajectory==None:
+				available_diagrams={1:"amino", 2:"domains"}
 		else:
-			if args.domain_file!=None:
-				if  args.trajectory!=None:
-					available_diagrams={1:"amino", 2:"domains",3:"clock"}
-				if args.trajectory==None:
-					available_diagrams={1:"amino", 2:"domains"}
-			else:
-				if  args.trajectory!=None:
-					available_diagrams={1:"amino", 2:"clock"}
-				if args.trajectory==None:
-					available_diagrams={1:"amino"}
-			for diagram in available_diagrams:
-				print diagram, " : ", available_diagrams[diagram]
-			while True:
-				raw_d = raw_input( "Choose diagram type:")
-				try:
-					if int(raw_d)-1 in [x[0] for x in enumerate(available_diagrams.keys())] :
-						break
-					else:
-						print "Error. No such group "+str(raw_d)
-				except ValueError:
+			if  args.trajectory!=None:
+				available_diagrams={1:"amino", 2:"clock"}
+			if args.trajectory==None:
+				available_diagrams={1:"amino"}
+		for diagram in available_diagrams:
+			print diagram, " : ", available_diagrams[diagram]
+		while True:
+			raw_d = raw_input( "Choose diagram type:")
+			try:
+				if int(raw_d)-1 in [x[0] for x in enumerate(available_diagrams.keys())] :
+					break
+				else:
 					print "Error. No such group "+str(raw_d)
-					pass
-			diagram_type=available_diagrams[int(raw_d)]
+			except ValueError:
+				print "Error. No such group "+str(raw_d)
+				pass
+		diagram_type=available_diagrams[int(raw_d)]
 		return diagram_type
 
 			###################################################################################################################

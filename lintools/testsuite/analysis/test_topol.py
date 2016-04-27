@@ -90,7 +90,7 @@ class TestBasic3(TestCase):
     def tearDown(self):
         self.lintools.remove_files()
         del self.lintools
-        file_list = ["test3.svg","test3_config.txt"]
+        file_list = ["test32.svg","test3_config.txt"]
         for f in file_list:
             if os.path.isfile(f)==True:
                 os.remove(f)
