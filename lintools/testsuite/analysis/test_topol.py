@@ -18,7 +18,6 @@ class TestBasic1(TestCase):
         self.lintools.get_info_about_input_and_analyse()
         self.lintools.plot_residues()
         self.lintools.draw_molecule_and_figure(tests=True)
-        self.lintools.write_config_file()
     def tearDown(self):
         self.lintools.remove_files()
         del self.lintools
@@ -53,7 +52,6 @@ class TestBasic2(TestCase):
         self.lintools.get_info_about_input_and_analyse()
         self.lintools.plot_residues()
         self.lintools.draw_molecule_and_figure(tests=True)
-        self.lintools.write_config_file()
     def tearDown(self):
         self.lintools.remove_files()
         del self.lintools
@@ -86,7 +84,6 @@ class TestBasic3(TestCase):
         self.lintools.get_info_about_input_and_analyse()
         self.lintools.plot_residues()
         self.lintools.draw_molecule_and_figure(tests=True)
-        self.lintools.write_config_file()
     def tearDown(self):
         self.lintools.remove_files()
         del self.lintools
@@ -119,7 +116,6 @@ class TestBasic4(TestCase):
         self.lintools.get_info_about_input_and_analyse()
         self.lintools.plot_residues()
         self.lintools.draw_molecule_and_figure(tests=True)
-        self.lintools.write_config_file()
     def tearDown(self):
         self.lintools.remove_files()
         del self.lintools

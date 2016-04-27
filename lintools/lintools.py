@@ -56,9 +56,9 @@ class Lintools(object):
 	    if self.diagram_type=="clock":
 		self.plots.plot_clock_diagramms()
 
-	def draw_molecule_and_figure(self):
+	def draw_molecule_and_figure(self,tests=False):
 	    self.molecule = Molecule(self.topol_data, self.rmsf)
-            self.figure=Figure(self.molecule, self.diagram_type,self.topol_data,self.hbonds,self.plots,self.rmsf)
+            self.figure=Figure(self.molecule, self.diagram_type,self.topol_data,self.hbonds,self.plots,self.rmsf, tests)
             self.figure.draw_hbonds_in_graph()
             self.figure.draw_white_circles_at_atoms()
             if self.debug_flag==True:
