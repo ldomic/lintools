@@ -51,22 +51,16 @@ class Occurrence_analysis(object):
             self.residue_counts[i] = Counter([item for sublist in frame_dict.values() for item in sublist])
        
     
-    def get_closest_residues(self,input_frame_cutoff,water_frame_cutoff_input = 60):
+    def get_closest_residues(self,input_frame_cutoff):
          """Find the list of residues to be plotted using cutoff"""
          frame_cutoff=[]
-         water_frame_cutoff = []
          for traj in self.universe.frame_count:
             frame_cutoff.append((traj)*int(input_frame_cutoff)/100)
-            water_frame_cutoff.append((traj)*int(water_frame_cutoff_input)/100)
          self.universe.dict_of_plotted_res={}
          if len(self.residue_counts)==1:
              for res in self.residue_counts[1].keys():
-                 if  res[:3]=="SOL" or res[:3]=="HOH":
-                     if self.residue_counts[1][res]>water_frame_cutoff[0]:
-                        self.universe.dict_of_plotted_res[res]=res[3:],self.residue_counts[1][res]
-                 else:
-                    if self.residue_counts[1][res]>frame_cutoff[0]:
-                        self.universe.dict_of_plotted_res[res]=res[3:],self.residue_counts[1][res]
+                if self.residue_counts[1][res]>frame_cutoff[0]:
+                    self.universe.dict_of_plotted_res[res]=res[3:],self.residue_counts[1][res]
          else :
              list_of_plotted_res=[]
              new_res_list={}
@@ -81,28 +75,16 @@ class Occurrence_analysis(object):
                          new_res_list[res].append(0)
              if len(self.residue_counts)<4:
                  for res in new_res_list:
-                     if res[:3]=="SOL" or res[:3]=="HOH":
-                         for (index1, value1),(index2, value2) in combinations(enumerate(new_res_list[res]),2):
-                             if value1>water_frame_cutoff[index1] and value2>water_frame_cutoff[index2]:
-                                 if res not in list_of_plotted_res:
-                                     list_of_plotted_res.append(res)
-                     else:
-                         for (index1, value1),(index2, value2) in combinations(enumerate(new_res_list[res]),2):
-                             if value1>frame_cutoff[index1] and value2>frame_cutoff[index2]:
-                                 if res not in list_of_plotted_res:
-                                     list_of_plotted_res.append(res)
+                     for (index1, value1),(index2, value2) in combinations(enumerate(new_res_list[res]),2):
+                         if value1>frame_cutoff[index1] and value2>frame_cutoff[index2]:
+                             if res not in list_of_plotted_res:
+                                 list_of_plotted_res.append(res)
              else: 
                  for res in new_res_list:
-                     if res[:3]=="SOL" or res[:3]=="HOH":
-                         for (index1, value1),(index2, value2),(index3,value3) in combinations(enumerate(new_res_list[res]),3):
-                             if value1>water_frame_cutoff[index1] and value2>water_frame_cutoff[index2] and value3>water_frame_cutoff[index3]:
-                                 if res not in list_of_plotted_res:
-                                     list_of_plotted_res.append(res)
-                     else:
-                         for (index1, value1),(index2, value2),(index3,value3) in combinations(enumerate(new_res_list[res]),3):
-                             if value1>frame_cutoff[index1] and value2>frame_cutoff[index2] and value3>frame_cutoff[index3]:
-                                 if res not in list_of_plotted_res:
-                                     list_of_plotted_res.append(res)
+                     for (index1, value1),(index2, value2),(index3,value3) in combinations(enumerate(new_res_list[res]),3):
+                         if value1>frame_cutoff[index1] and value2>frame_cutoff[index2] and value3>frame_cutoff[index3]:
+                             if res not in list_of_plotted_res:
+                                 list_of_plotted_res.append(res)
 
          if len(self.residue_counts)>1:
              for residue in list_of_plotted_res:
