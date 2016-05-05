@@ -34,8 +34,8 @@ class Lintools(object):
 		if self.trajectory==None:
 			self.topol_data.find_res_to_plot(self.cutoff)
 		else:
-			occurrence = Occurrence_analysis(self.topology, self.trajectory, self.ligand_name, self.cutoff, self.offset, self.topol_data)
-			occurrence.get_closest_residues(self.analysis_cutoff)
+			self.occurrence = Occurrence_analysis(self.topology, self.trajectory, self.ligand_name, self.cutoff, self.offset, self.topol_data)
+			self.occurrence.get_closest_residues(self.analysis_cutoff)
 		if self.HB_flag!=True:
 			self.hbonds = HBonds(self.topol_data, self.topology, self.trajectory, self.ligand_name, self.offset,self.analysis_cutoff)
 			self.topol_data.get_closest_ligand_atoms(self.hbonds)

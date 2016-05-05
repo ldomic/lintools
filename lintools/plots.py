@@ -103,7 +103,7 @@ class Plots(object):
         """Uses matplotlib to plot clock diagramms used for data analysis of trajectories, for example, occurrence time  over timecourse of simulation"""
         colors = [['#00441b','white'], ['#1b7837','white'],['#5aae61','white'], ['#9970ab','white'], ['#762a83','white'],['#40004b',"white"]]
         for res in self.universe.dict_of_plotted_res.keys():
-            plt.figure(figsize=(1.55, 1.55))
+            plt.figure(figsize=(1.9, 1.9))
             ring_number=[sum(1 for x in v if x) for k,v in self.universe.dict_of_plotted_res.items()][0]
             width=0.75/ring_number
             rings=[]
@@ -111,6 +111,6 @@ class Plots(object):
                 ring,_=plt.pie([self.universe.dict_of_plotted_res[res][ring],self.universe.frame_count[ring-1]-self.universe.dict_of_plotted_res[res][ring]],  radius=0.65+width*ring, startangle=90, colors=colors[ring-1], counterclock=False)
                 rings=rings+ring
             plt.setp(rings, width=width)
-            plt.text(0,-0.3,res[0:3]+"\n"+res[3::],ha='center',size=13, fontweight='bold')
-            pylab.savefig(str(res[3::])+".svg", dpi=100, transparent=True)
+            plt.text(-0.04,-0.45,res[0:3]+"\n"+res[3::],ha='center',size=20, fontweight='bold')
+            pylab.savefig(str(res[3::])+".svg", dpi=300, transparent=True)
 

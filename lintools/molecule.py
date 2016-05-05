@@ -181,7 +181,7 @@ class Molecule(object):
         coeff_value = [v for v in self.b_for_all.values()]
         energy = 100
         while energy > 0.2:
-            values, energy = self.do_step(values,xy_values,coeff_value, width=90)
+            values, energy = self.do_step(values,xy_values,coeff_value, width=110)
             i=0
             xy_values =[]
             for residue in  self.nearest_points_coords:

@@ -27,8 +27,10 @@ class Topol_Data(object):
     def load_system(self, topology, trajectory):
         if trajectory is None:
             self.universe = MDAnalysis.Universe(topology)
+            self.topology = MDAnalysis.Universe(topology)
             self.frame_count = 1
         else:
+            self.topology = MDAnalysis.Universe(topology)
             self.universe = MDAnalysis.Universe(topology, trajectory)
             self.frame_count = self.universe.trajectory.n_frames
     def define_ligand(self,ligand_name):
@@ -55,6 +57,8 @@ class Topol_Data(object):
     def renumber_system(self, offset=0):
         self.protein = self.universe.select_atoms("protein")
         self.protein.set_resids(self.protein.resids+int(offset))
+        protein = self.topology.select_atoms("protein")
+        protein.set_resids(protein.resids+int(offset))
     def find_res_to_plot(self, cutoff=3.5):
         self.protein_selection = self.universe.select_atoms('protein and around '+str(cutoff)+' (segid '+str(self.ligand.segids[0])+' and resid '+str(self.ligand.resids[0])+')')
         for atom in self.protein_selection:
@@ -69,7 +73,7 @@ class Topol_Data(object):
         self.ligand_no_H = self.ligand.select_atoms("not name H*")
         lig_pos = self.ligand_no_H.positions
         for residue in self.dict_of_plotted_res:
-            residue_select= self.universe.select_atoms("resid "+str(self.dict_of_plotted_res[residue][0]))
+            residue_select= self.topology.select_atoms("resid "+str(self.dict_of_plotted_res[residue][0]))
             res_pos = residue_select.positions
             dist_array = MDAnalysis.analysis.distances.distance_array(lig_pos, res_pos)
             min_values_per_atom={}

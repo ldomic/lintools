@@ -87,7 +87,7 @@ class TestBasic3(TestCase):
     def tearDown(self):
         self.lintools.remove_files()
         del self.lintools
-        file_list = ["test32.svg","test3_config.txt"]
+        file_list = ["test3.svg","test3_config.txt"]
         for f in file_list:
             if os.path.isfile(f)==True:
                 os.remove(f)
@@ -119,11 +119,11 @@ class TestBasic4(TestCase):
     def tearDown(self):
         self.lintools.remove_files()
         del self.lintools
-        file_list = ["test34.svg","test4_config.txt"]
+        file_list = ["test4.svg","test4_config.txt"]
         for f in file_list:
             if os.path.isfile(f)==True:
                 os.remove(f)
-    def test_two_trajectories_clock(self):
+    def test_two_trajectories_clock2(self):
         # Is the molecule mol2 file produced?
         assert_equal(os.path.isfile("LIG_test.mol2"),True)
         #Is the final svg file produced?
