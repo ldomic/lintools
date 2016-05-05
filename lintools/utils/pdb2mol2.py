@@ -1,7 +1,7 @@
 __author__ = 'tparamo'
 
 import numpy
-
+from operator import itemgetter
 
 valence = {"H":1, "C":4, "O":2, "N": 3, "S": 2, "P":5, "F":1,"B":3, "I":1, "BR":1, "SI":4, "CL": 1}
 #Bond distances from Pyykko and Atsumi 2009
@@ -102,11 +102,15 @@ def calculate_bonds(coordinates, dist):
 
 
 def sanitise_charge(coordinates, dist):
-    #Final sanitisation - add more rules id there is more you can think of...
+    #Final sanitisation - add more rules id there are more you can think of...
+
+    correct = True
+
     for i in range(0, len(coordinates)):
 
         if get_atom_name(coordinates[i].name) == "P" and coordinates[i].charge == 1:
             #phosphate
+            correct = False
             for bond in coordinates[i].bonds:
                 candidate = bond.b
                 if bond.type==2:
@@ -115,20 +119,32 @@ def sanitise_charge(coordinates, dist):
                     coordinates[i].charge = coordinates[i].num_bonds - valence[get_atom_name(coordinates[i].name)]
                     coordinates[candidate].num_bonds = coordinates[candidate].num_bonds - 1
                     coordinates[candidate].charge = coordinates[candidate].num_bonds - valence[get_atom_name(coordinates[candidate].name)]
+                    correct = True
                     break
 
         if get_atom_name(coordinates[i].name) == "S" and coordinates[i].charge == 2:
-            #sulphate
+            #sulphate: I migh need other two double bonds,valence is 6
+            correct = False
             cont = 2
-            for bond in coordinates[i].bonds:
-                candidate = bond.b
-                if bond.type == 1 and cont>0:
-                    bond.type = 2
-                    coordinates[i].num_bonds = coordinates[i].num_bonds + 1
-                    coordinates[i].charge = coordinates[i].num_bonds - valence[get_atom_name(coordinates[i].name)]
-                    coordinates[candidate].num_bonds = coordinates[candidate].num_bonds + 1
-                    coordinates[candidate].charge = coordinates[candidate].num_bonds - valence[get_atom_name(coordinates[candidate].name)]
+
+            dists = []
+            for index, bond in enumerate(coordinates[i].bonds):
+                if (get_atom_name(coordinates[bond.b].name) == "O" and coordinates[bond.b].charge == -1):
+                    dists.append((bond.b, dist[bond.a, bond.b]))
+
+            if len(dists)>=2:
+                sorted(dists, key=itemgetter(1))
+                cont = 2
+                for candidate,d in dists:
                     cont = cont - 1
+                    if bond.type == 1 and get_atom_name(coordinates[bond.b].name) == "O" and cont>0:
+                        bond.type = 2
+                        coordinates[i].num_bonds = coordinates[i].num_bonds + 1
+                        coordinates[i].charge = coordinates[i].num_bonds - 6
+                        coordinates[candidate].num_bonds = coordinates[candidate].num_bonds + 1
+                        coordinates[candidate].charge = coordinates[candidate].num_bonds - valence[get_atom_name(coordinates[candidate].name)]
+                        cont = cont - 1
+                correct = True
 
         if get_atom_name(coordinates[i].name) == "N" and coordinates[i].charge == 0:
             # nitrate
@@ -137,6 +153,7 @@ def sanitise_charge(coordinates, dist):
                 if get_atom_name(coordinates[bond.b].name) == "O":
                     charge = charge + coordinates[bond.b].charge
             if charge==-2:
+                correct = False
                 for bond in coordinates[i].bonds:
                     candidate = bond.b
                     if get_atom_name(coordinates[bond.b].name) == "O":
@@ -146,7 +163,10 @@ def sanitise_charge(coordinates, dist):
                         coordinates[candidate].num_bonds = coordinates[candidate].num_bonds + 1
                         coordinates[candidate].charge = coordinates[candidate].num_bonds - valence[
                         get_atom_name(coordinates[candidate].name)]
+                        correct = True
                         break
+    if correct==False:
+        raise AssertionError("Could not determine structure correctly.")
 
 
 def sanitise_aromaticity(coordinates, dist):
@@ -174,7 +194,7 @@ def sanitise_aromaticity(coordinates, dist):
                 coordinates[coordinates[i].bonds[min_bond].b].num_bonds = coordinates[coordinates[i].bonds[min_bond].b].num_bonds + 1
                 coordinates[coordinates[i].bonds[min_bond].b].charge = coordinates[coordinates[i].bonds[min_bond].b].num_bonds -valence[get_atom_name(coordinates[coordinates[i].bonds[min_bond].b].name)]
             else:
-                print "Could not determine the structure correctly- check your input file?\n"
+                raise AssertionError("Could not determine structure correctly.")
 
 
 
