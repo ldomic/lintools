@@ -10,7 +10,7 @@ before_install:
   - export PATH=$(pwd)/miniconda/bin:$PATH
   - conda update --yes conda
 install:
-  - conda create --yes -q -c https://conda.anaconda.org/rdkit -n my-rdkit-env rdkit=2015.09.2 python=2.7
+  - conda create --yes -q -c https://conda.anaconda.org/rdkit -n my-rdkit-env rdkit python=2.7
   - source activate my-rdkit-env
   - conda install -y -n my-rdkit-env python=2.7 numpy nose matplotlib geos shapely scipy
   - pip install MDAnalysis coveralls

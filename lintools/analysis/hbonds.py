@@ -118,10 +118,17 @@ class HBonds(object):
                     neigh_atom_id = neigh.GetIdx()
                 lig_atom = ligand_universe.atoms[neigh_atom_id].name
                 #find the idx of this atomname 
+            #check whether the hydrogen bond is formed with side chain or backbone of residue
             if self.h_bonds[i][3]==ligand.resnames[0]:
-                results_tuple = lig_atom,self.h_bonds[i][6]+str(self.h_bonds[i][7])
+                if self.h_bonds[i][8]=="O" or self.h_bonds[i][8]=="N":
+                    results_tuple = lig_atom,self.h_bonds[i][6]+str(self.h_bonds[i][7]),"backbone"
+                else:
+                    results_tuple = lig_atom,self.h_bonds[i][6]+str(self.h_bonds[i][7]),"sidechain"
             else:
-                results_tuple = lig_atom,self.h_bonds[i][3]+str(self.h_bonds[i][4])
+                if self.h_bonds[i][5]=="O" or self.h_bonds[i][5]=="N":
+                    results_tuple = lig_atom,self.h_bonds[i][3]+str(self.h_bonds[i][4]),"backbone"
+                else:
+                    results_tuple = lig_atom,self.h_bonds[i][3]+str(self.h_bonds[i][4]),"sidechain"
             if results_tuple not in self.hbond_frequency[traj].keys():
                 self.hbond_frequency[traj][results_tuple]=1
             else:
