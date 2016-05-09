@@ -34,12 +34,6 @@ lintools -t my_top_file.pdb -x my_traj.xtc -o my_output
 (Optional: same as above + -rmsf [for ligand atom RMSF analysis])
 ```
 
-With configuration file (written after every run):
-```
-python lintools.py -conf file_config.txt -o outname 
-(Optional: if you want a repeat of the same graph you produced, use just -conf flag, but if you want to change something e.g. cutoff or diagram type, use the respective flag with new value).
-```
-
 Domain representation
 
 The domains can be represented as circles of particular color. The domain can be anything you define  - transmembrane helix, specific chain, known binding site. Any range can be specified - see example below.
@@ -53,6 +47,3 @@ Example domain file:
 3;61-100;Chain B;#889DCC;Y 
 4;34,56,78;Binding site;None;Y    #This will make a dashed circle regardless of the original assignment, always has to come last in the domain file.
 ```
-The test.pdf and new_domains.pdf files were produced using crystal structure with PDB ID 4XP1 and displays the LDP residue.
-
-Please post an issue if you have suggestions for improvements.
