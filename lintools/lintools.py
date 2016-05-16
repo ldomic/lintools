@@ -6,13 +6,13 @@ import MDAnalysis
 from topol import Topol_Data
 from plots import Plots
 from molecule import Molecule
-from figure import Figure
+from figure import Figure, Residue_Info
 from analysis.hbonds import HBonds
 from analysis.rmsf import RMSF_measurements
 from analysis.occurrence import Occurrence_analysis
 
 class Lintools(object):
-	def __init__(self, topology,trajectory,ligand_name,offset,cutoff,analysis_cutoff,diagram_type,domain_file,HB_flag,RMSF_flag,debug_flag,output_name):
+	def __init__(self, topology,trajectory,ligand_name,offset,cutoff,analysis_cutoff,diagram_type,domain_file,HB_flag,RMSF_flag,debug_flag,resinfo_flag,output_name):
 		self.topology = topology
 		self.trajectory = trajectory
 		self.ligand_name  = ligand_name
@@ -24,6 +24,7 @@ class Lintools(object):
 		self.HB_flag = HB_flag
 		self.RMSF_flag = RMSF_flag
 		self.debug_flag = debug_flag
+		self.resinfo_flag = resinfo_flag
 		self.output_name = output_name
 		self.rmsf = None
 		self.hbonds = None
@@ -43,7 +44,8 @@ class Lintools(object):
 			self.topol_data.get_closest_ligand_atoms()
 		if self.RMSF_flag==True:
 			self.rmsf = RMSF_measurements(self.topol_data,self.topology, self.trajectory, self.ligand_name, self.offset, self.output_name)
-
+		self.topol_data.get_prot_residue_distance_matrix()
+		
 	def plot_residues(self):
 	    self.plots = Plots(self.topol_data)
             if self.diagram_type=="amino":
@@ -65,6 +67,8 @@ class Lintools(object):
 		self.figure.draw_lines_in_graph() #a function for debugging purposes
             self.figure.put_everything_together()
             self.figure.write_final_draw_file(self.output_name)
+            if self.trajectory!=None and self.resinfo_flag!=True:
+            	self.res_info = Residue_Info(self.topol_data,self.occurrence,self.figure)
 
 
 	def remove_files(self):
@@ -90,6 +94,7 @@ if __name__ == '__main__':
 	parser.add_argument('-df', '--domain_file', dest = "domain_file", default=None, help='Input file for domains of your protein. To see the required format, check README or our GitHub page')
 	parser.add_argument('--no_hbonds', dest='hydr_bonds', action="store_true", help="The hydrogen bonds will not be detected.")
 	parser.add_argument('--debug', dest='debug', action="store_true", help="Functions for debugging.")
+	parser.add_argument('--no_resinfo', dest='resinfo', action="store_true", help="The residue information files will not be produced.")
 
 
 	args = parser.parse_args()
@@ -160,7 +165,7 @@ if __name__ == '__main__':
 		raise IOError,"Provide a name for output file"
 	ligand_name = find_ligand_name()
 	diagram_type = find_diagram_type()
-	lintools = Lintools(args.topology, args.trajectory, ligand_name, args.offset, args.cutoff, args.analysis_cutoff, diagram_type, args.domain_file, args.hydr_bonds, args.rmsf, args.debug, args.output_name)
+	lintools = Lintools(args.topology, args.trajectory, ligand_name, args.offset, args.cutoff, args.analysis_cutoff, diagram_type, args.domain_file, args.hydr_bonds, args.rmsf, args.debug,args.resinfo, args.output_name)
 	lintools.get_info_about_input_and_analyse()
 	lintools.plot_residues()
 	lintools.draw_molecule_and_figure()

@@ -10,6 +10,8 @@ import operator
 from utils import pdb2mol2
 from rdkit import Chem
 import sys
+import operator
+from itertools import combinations
 
 
 
@@ -95,6 +97,20 @@ class Topol_Data(object):
                     for atom in check_hbonds:
                         item = atom, min_values_per_atom[atom]
                         self.closest_atoms[residue].append(item)
+    def get_prot_residue_distance_matrix(self):
+        self.residue_dist_matrix={}
+        for res in self.dict_of_plotted_res:
+            self.residue_dist_matrix[res]={}
+        for residue1,residue2 in combinations(enumerate(self.dict_of_plotted_res),2):
+            residue_select1= self.universe.select_atoms("resid "+str(self.dict_of_plotted_res[residue1[1]][0])+" and name CA")
+            res_pos1 = residue_select1.positions            
+            residue_select2= self.universe.select_atoms("resid "+str(self.dict_of_plotted_res[residue2[1]][0])+" and name CA")
+            res_pos2 = residue_select2.positions
+            dist_array = MDAnalysis.analysis.distances.distance_array(res_pos1, res_pos2)
+            self.residue_dist_matrix[residue1[1]][residue2[1]]=dist_array[0][0]
+            self.residue_dist_matrix[residue2[1]][residue1[1]]=dist_array[0][0]
+        for res in self.dict_of_plotted_res:
+            self.residue_dist_matrix[res]=sorted(self.residue_dist_matrix[res].items(), key=operator.itemgetter(1))
 
 
 

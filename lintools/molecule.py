@@ -107,14 +107,33 @@ class Molecule(object):
                 point =geometry.Point((self.ligand_atom_coords_from_diagr[atom[0]][0],self.ligand_atom_coords_from_diagr[atom[0]][1]))
                 projection.append(abs(b.boundary.project(point) % b.boundary.length))
                 projection_init.append(abs(self.b.boundary.project(point) % self.b.boundary.length))
+            # Check whether projections are not crossing the boundary point (i.e. end of circle) - is one number in the projection very different from any other?
+            for (index1,number1), (index2,number2) in combinations(enumerate(projection),2):
+                if abs(number1-number2)>b.boundary.length/2:
+                    proj =[]
+                    for atom in projection:
+                        if atom == max([number1,number2]):
+                            proj.append(atom-b.boundary.length)
+                        else:
+                            proj.append(atom)
+                    projection = proj
+            for (index1,number1), (index2,number2) in combinations(enumerate(projection_init),2):
+                if abs(number1-number2)>self.b.boundary.length/2:
+                    proj =[]
+                    for atom in projection_init:
+                        if atom == max([number1,number2]):
+                            proj.append(atom-self.b.boundary.length)
+                        else:
+                            proj.append(atom)
+                    projection_init = proj
             self.nearest_points_projection[residue] = np.array(projection).mean()
             self.b_for_all[residue] = np.array(projection_init).mean()
             self.nearest_points[residue] = b.boundary.interpolate(self.nearest_points_projection[residue] % b.boundary.length)
             self.nearest_points_coords[residue]=self.nearest_points[residue].x,self.nearest_points[residue].y
 
-         
 
-        
+   
+
     def calc_2d_forces(self,x1,y1,x2,y2,width):
         """Calculate overlap in 2D space"""
         #calculate a

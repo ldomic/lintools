@@ -2,15 +2,15 @@ from topol import Topol_Data
 import MDAnalysis
 import rdkit
 from rdkit import Chem
-from collections import Counter
+from collections import Counter,OrderedDict
 from itertools import combinations
 
 class Occurrence_analysis(object): 
-    def __init__(self, topology, trajectory, ligand_name, cutoff, offset, topol_object):
+    def __init__(self, topology, trajectory, ligand_name, cutoff,  offset, topol_object,cutoff_expanded=1):
         self.residue_counts = {}
         self.universe = topol_object
         self.occurence_count(topology,trajectory,ligand_name, cutoff, offset)
-    def occurence_count(self, topology, trajectory, ligand_name, cutoff, offset):
+    def occurence_count(self, topology, trajectory, ligand_name, cutoff, offset, cutoff_expanded=1):
         """Counts the occurence of protein residues within a specified cutoff from a ligand and calculates which residues have been within cutoff for more than 50 ns (by default).
             :Arguments:
                 *grofile*
@@ -27,6 +27,7 @@ class Occurrence_analysis(object):
                     a dictionary of residues and how many times during the simulation they are within
                     a cutoff value from the ligand"""
         self.residue_counts={}
+        self.residue_counts_on_off={}
         self.universe.frame_count=[]
         i=0
         for traj in trajectory:
@@ -34,23 +35,39 @@ class Occurrence_analysis(object):
             topol_data = Topol_Data(topology,traj,ligand_name, offset)
             md_sim = topol_data.universe
             frame_dict = {}
+            frame_dict2 = {}
             firstframe_ps=None
             for frame in md_sim.trajectory:
                 selection = md_sim.select_atoms('all and around '+str(cutoff)+' (segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')               
+                selection2 = md_sim.select_atoms('all and around '+str(cutoff+cutoff_expanded)+' (segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')               
                 residue_list = [atom.resname+str(atom.resid) for atom in selection]
-                residue_list2 = [atom.resid for atom in selection]
+                residue_list2 = [atom.resname+str(atom.resid) for atom in selection2]
                 frame_dict[frame.time]=set(residue_list)
-
+                frame_dict2[frame.time]=set(residue_list2)
                 if firstframe_ps == None:
                     firstframe_ps = frame.time
             
-
+            unique_res = {item for sublist in frame_dict.values() for item in sublist}
             lastframe_time = max([f for f in frame_dict.keys()])
+            self.residue_counts_on_off[i]={}
+            self.residue_counts_on_off[i]["lastframe_time"]=lastframe_time
+            self.residue_counts_on_off[i]["frame_count"] = len(frame_dict)
+            self.residue_counts_on_off[i]["cutoff"] = cutoff
+            self.residue_counts_on_off[i]["cutoff_expanded"] = cutoff_expanded
             self.universe.frame_count.append(len(frame_dict))
-
+            for res in unique_res:
+                self.residue_counts_on_off[i][res]=[]
+            for frame in frame_dict:
+                for res in unique_res:
+                    if res in frame_dict[frame]:
+                        self.residue_counts_on_off[i][res].append(1)
+                    if res in frame_dict2[frame] and res not in frame_dict[frame]:
+                        self.residue_counts_on_off[i][res].append(0.5)
+                    if res not in frame_dict[frame] and res not in frame_dict2[frame]:
+                        self.residue_counts_on_off[i][res].append(0)
             self.residue_counts[i] = Counter([item for sublist in frame_dict.values() for item in sublist])
-       
-    
+
+
     def get_closest_residues(self,input_frame_cutoff):
          """Find the list of residues to be plotted using cutoff"""
          frame_cutoff=[]

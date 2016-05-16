@@ -1,4 +1,6 @@
-
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 import fileinput
 import sys
 import os
@@ -7,6 +9,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 from matplotlib import pylab
 import numpy as np
+from colors import *
 
 class Figure(object):
     def __init__(self, molecule_object, diagram_type,topol_object, hbonds_object=None, plot_object=None, rmsf_object=None,tests=False):
@@ -186,3 +189,109 @@ class Figure(object):
         finalsvg = open(output_name+".svg","w")
         finalsvg.writelines(self.final_molecule)
         finalsvg.close()
+
+
+class Residue_Info(object):
+    def __init__(self, topol_object,occurrence, figure):
+        self.residue_info = None
+        self.universe = topol_object
+        self.occurrence = occurrence
+        self.figure = figure
+        self.legend = ""
+        self.gather_information()
+        self.clean_up()
+    def gather_information(self):
+        self.plot_residue_on_off_rates()
+        for residue in self.universe.dict_of_plotted_res:
+            self.start_drawing(residue)
+            self.write_final_draw_file(residue)
+    def plot_residue_on_off_rates(self):
+        self.colors = EarthSea[len(self.occurrence.residue_counts_on_off)]
+        for res in self.universe.dict_of_plotted_res:
+            for traj in self.occurrence.residue_counts_on_off:
+                frame_count = int(self.occurrence.residue_counts_on_off[traj]["frame_count"])
+                try:
+                    Z=np.array([self.occurrence.residue_counts_on_off[traj][res]])
+                except KeyError:
+                    continue
+                G = np.zeros((1,frame_count,3))
+                G[Z>0.6] = [float(x)/256 for x in self.colors[traj-1][0]]
+                G[Z==0.5] = [float(x)/256 for x in self.colors[traj-1][1]]
+                G[Z<0.5] = [float(x)/256 for x in self.colors[traj-1][2]]
+                fig, ax = plt.subplots(figsize=(4,0.35))
+                ax = plt.imshow(G,interpolation='nearest',aspect="auto")
+                ax.axes.get_yaxis().set_ticks([])
+                if traj==1:
+                    ax.axes.set_title(res, fontsize = 20)
+                percent =str(int(float(self.occurrence.residue_counts[traj][res])/float(self.occurrence.residue_counts_on_off[traj]["frame_count"])*100))+"%"
+                ax.axes.yaxis.set_label_position("right")
+                ax.axes.set_ylabel(percent, rotation = "horizontal",fontsize = 20, labelpad = 35, va= "center",ha="center")
+                div = int(len(ax.axes.get_xaxis().get_majorticklabels()))-3
+                ns = int(self.occurrence.residue_counts_on_off[traj]["lastframe_time"])/1000
+                step_by = ns/div
+                end_value = ns+step_by
+                ns_labels=[x for x in range(0,end_value,step_by)] 
+                frame_count = int(self.occurrence.residue_counts_on_off[traj]["frame_count"])
+                step_by_exist = frame_count/div
+                existing_labels = [x for x in range(0,frame_count, step_by_exist)]
+                plt.xticks(existing_labels,ns_labels)
+                plt.axis("off")
+                pylab.savefig(str(res)+"_"+str(traj)+".svg")
+
+    def start_drawing(self, residue):
+        file_width = 320
+        self.end_symbol = "</svg>"
+        self.on_off_plots = ""
+        resname_svg = "<text style='font-family:Times New Roman;font-size:24.0px;' x='45' y='20'>" +str(residue)+  "</text>"
+        
+        y=25
+        y_for_text = 42
+        for traj in self.occurrence.residue_counts_on_off:
+            try:
+                with open(str(residue)+"_"+str(traj)+".svg", "r") as f:
+                    lines = f.readlines()
+                    self.on_off_plots = self.on_off_plots+ "<g  transform='translate(0,"+str(y)+")'>\n"+"".join(map(str,lines[22:24]))+"\n</g>\n"
+                    percent =str(int(float(self.occurrence.residue_counts[traj][residue])/float(self.occurrence.residue_counts_on_off[traj]["frame_count"])*100))+"%"
+                    self.on_off_plots = self.on_off_plots + "<text style='font-family:Monospace;font-size:14.0px;' x='260' y='"+str(y_for_text)+"'> "+percent+" </text>"
+                    f.close()
+                y+=25
+                y_for_text+=25
+            except IOError:
+                continue
+        #make a legend
+        self.legend = "<g transform='translate(0,"+str(y+10)+")'> "
+        x=35
+        for traj in self.occurrence.residue_counts_on_off:
+            self.legend = self.legend+"<rect style='opacity:1.0;fill:rgb("+",".join(str(i) for i in self.colors[traj-1][0])+");stroke:none' width='15' height='15' x='"+str(x)+"' y='0' /> "
+            x+=15
+        self.legend = self.legend + "<text style='font-family:Monospace;font-size:10.0px;' x='"+str(x)+"' y='10'>"+"&lt;"+str(self.occurrence.residue_counts_on_off[traj]["cutoff"])+u"\u212B"+"</text>"
+        self.legend = self.legend + "</g>"
+        x+=40
+        self.legend = self.legend +"<g transform='translate(0,"+str(y+10)+")'> "
+        for traj in self.occurrence.residue_counts_on_off:
+            self.legend = self.legend+"<rect style='opacity:1.0;fill:rgb("+",".join(str(i) for i in self.colors[traj-1][1])+");stroke:none' width='15' height='15' x='"+str(x)+"' y='0' /> "
+            x+=15
+        self.legend = self.legend + "<text style='font-family:Monospace;font-size:10.0px;' x='"+str(x-5)+"' y='10'> "+str(self.occurrence.residue_counts_on_off[traj]["cutoff"])+"-"+str(self.occurrence.residue_counts_on_off[traj]["cutoff"]+self.occurrence.residue_counts_on_off[traj]["cutoff_expanded"])+u"\u212B"+"</text>"
+        self.legend = self.legend + "</g>"
+
+        self.filestart = "<svg version='1.1' baseProfile='full' xmlns:svg='http://www.w3.org/2000/svg' xmlns:rdkit='http://www.rdkit.org/xml' xmlns:xlink='http://www.w3.org/1999/xlink' xml:space='preserve' width='"+str(file_width)+"' height='"+str(y+60)+"' > "
+        big_box = "<rect style='opacity:1.0;fill:#ffffff;stroke:black;stroke-width:3' width='280' height='"+str(y+20)+"' x='25' y='10' /> "
+        small_box = "<rect style='opacity:1.0;fill:#ffffff;stroke:white;stroke-width:3' width='95' height='30' x='40' y='0' /> "
+        self.filestart = self.filestart + big_box + small_box + resname_svg
+        #deal with 2D molecule
+        #self.molecule = "<g  transform='scale(0.3) translate(0,"+str(y+225)+")'>\n"+ self.figure.draw_molecule
+
+    def write_final_draw_file(self, residue):
+        file_list = [self.filestart]+[self.on_off_plots]+[self.legend]+[self.end_symbol]
+        self.final_residue_file = "".join(map(str,file_list))
+        finalsvg = open(str(residue)+".svg","w")
+        finalsvg.writelines(self.final_residue_file)
+        finalsvg.close()
+        
+
+    def clean_up(self):
+        for res in self.universe.dict_of_plotted_res:
+            for traj in self.occurrence.residue_counts_on_off:
+                if os.path.isfile(str(res)+"_"+str(traj)+".svg")==True:
+                    os.remove(str(res)+"_"+str(traj)+".svg")
+
