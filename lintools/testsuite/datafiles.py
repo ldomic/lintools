@@ -16,7 +16,8 @@ __all__ = [
 	"DOM_FILE_4XP1",
 	"TEST2_SVG",
 	"TEST3_SVG",
-	"TEST4_SVG"
+	"TEST4_SVG",
+	"RESINFO_ILE340"
 ]
 
 from pkg_resources import resource_filename
@@ -30,5 +31,6 @@ TRAJ_20_FR = resource_filename(__name__,'data/trajectory_20frames.xtc')
 TRAJ_50_FR = resource_filename(__name__,'data/trajectory_50frames.xtc')
 TEST3_SVG = resource_filename(__name__,'data/clock_diagram_test3.svg')
 TEST4_SVG = resource_filename(__name__,'data/clock_rmsf_test4.svg')
+RESINFO_ILE340 = resource_filename(__name__,'data/ILE340.svg')
 # This should be the last line: clean up namespace
 del resource_filename

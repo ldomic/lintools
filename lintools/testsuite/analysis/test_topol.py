@@ -14,7 +14,7 @@ class TestBasic1(TestCase):
         lig_name = u.select_atoms("resname LDP")
         self.output_name ="test1"
         self.test_svg = TEST1_SVG
-        self.lintools = Lintools(FILE1,None,lig_name,0,3.5,30,"amino",None,False,False,False,"test1")
+        self.lintools = Lintools(FILE1,None,lig_name,0,3.5,30,"amino",None,False,False,False,True,"test1")
         self.lintools.get_info_about_input_and_analyse()
         self.lintools.plot_residues()
         self.lintools.draw_molecule_and_figure(tests=True)
@@ -48,7 +48,7 @@ class TestBasic2(TestCase):
         lig_name = u.select_atoms("resname LDP")
         self.output_name ="test2"
         self.test_svg = TEST2_SVG
-        self.lintools = Lintools(FILE1,None,lig_name,0,3.5,30,"domains",DOM_FILE_4XP1,False,False,False,"test2")
+        self.lintools = Lintools(FILE1,None,lig_name,0,3.5,30,"domains",DOM_FILE_4XP1,False,False,False,True,"test2")
         self.lintools.get_info_about_input_and_analyse()
         self.lintools.plot_residues()
         self.lintools.draw_molecule_and_figure(tests=True)
@@ -80,7 +80,7 @@ class TestBasic3(TestCase):
         lig_name = u.select_atoms("resname UNK")
         self.output_name ="test3"
         self.test_svg = TEST3_SVG
-        self.lintools = Lintools(FILE2,[TRAJ_20_FR,TRAJ_50_FR],lig_name,30,3.5,50,"clock",None,False,False,False,"test3")
+        self.lintools = Lintools(FILE2,[TRAJ_20_FR,TRAJ_50_FR],lig_name,30,3.5,50,"clock",None,False,False,False,True,"test3")
         self.lintools.get_info_about_input_and_analyse()
         self.lintools.plot_residues()
         self.lintools.draw_molecule_and_figure(tests=True)
@@ -112,7 +112,7 @@ class TestBasic4(TestCase):
         lig_name = u.select_atoms("resname UNK")
         self.output_name ="test4"
         self.test_svg = TEST4_SVG
-        self.lintools = Lintools(FILE2,[TRAJ_20_FR,TRAJ_50_FR],lig_name,30,3.5,50,"clock",None,False,True,False,"test4")
+        self.lintools = Lintools(FILE2,[TRAJ_20_FR,TRAJ_50_FR],lig_name,30,3.5,50,"clock",None,False,True,False,False,"test4")
         self.lintools.get_info_about_input_and_analyse()
         self.lintools.plot_residues()
         self.lintools.draw_molecule_and_figure(tests=True)
@@ -140,3 +140,20 @@ class TestBasic4(TestCase):
                     else:
                         assert_equal(testlines[i],lines[i])
                     i+=1
+            test.close()
+            output.close()
+        #Is the residue info file produced?
+        self.resinfo_file = RESINFO_ILE340
+        assert_equal(os.path.isfile("ILE340.svg"),True)
+        #Compare
+        with open(self.resinfo_file,"r") as test:
+            testlines2 = test.readlines()
+        with open("ILE340.svg","r") as output:
+            lines2 = output.readlines()
+            i=0
+            for line in lines:
+                if i == 1 or i==6: # This line contains an url which changes with every itiaration and cannot be tested
+                    continue
+                else:
+                    assert_equal(testlines2[i],lines2[i])
+                i+=1

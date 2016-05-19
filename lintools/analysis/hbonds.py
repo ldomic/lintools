@@ -98,37 +98,40 @@ class HBonds(object):
             i+=1
 
     def count_hbond_freq(self,traj):
+        #Has been upgraded to work with changes in MDAnalysis 0.15.0
         ligand_universe = MDAnalysis.Universe(self.universe.pdb)
         ligand = self.universe.universe.select_atoms('(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')
         ligand.resnames = "LIG"   
         ligand.resname = "LIG"
         for i in range(np.prod(self.h_bonds.shape)):
-            if self.h_bonds[i][3]==ligand.resnames[0]:
-                atomname = self.h_bonds[i][5]
+            print self.h_bonds
+            if self.h_bonds[i][5]==ligand.resnames[0]:
+                atomname = self.h_bonds[i][7]
             else:
-                atomname = self.h_bonds[i][8]
+                atomname = self.h_bonds[i][10]
             if atomname.startswith("O",0) or atomname.startswith("N",0):
                 lig_atom=atomname
             else:
                 for atom in ligand_universe.atoms:
                     if atomname == atom.name:
-                        atom_id = atom.id
+                        print atomname, atom.id
+                        atom_id = int(atom.id)-1
                 rdkit_atom = self.universe.mol2.GetAtomWithIdx(atom_id)
                 for neigh in rdkit_atom.GetNeighbors():
                     neigh_atom_id = neigh.GetIdx()
                 lig_atom = ligand_universe.atoms[neigh_atom_id].name
                 #find the idx of this atomname 
             #check whether the hydrogen bond is formed with side chain or backbone of residue
-            if self.h_bonds[i][3]==ligand.resnames[0]:
-                if self.h_bonds[i][8]=="O" or self.h_bonds[i][8]=="N" or self.h_bonds[i][5]=="H":
-                    results_tuple = lig_atom,self.h_bonds[i][6]+str(self.h_bonds[i][7]),"backbone"
+            if self.h_bonds[i][5]==ligand.resnames[0]:
+                if self.h_bonds[i][10]=="O" or self.h_bonds[i][10]=="N" or self.h_bonds[i][7]=="H":
+                    results_tuple = lig_atom,self.h_bonds[i][8]+str(self.h_bonds[i][9]),"backbone"
                 else:
-                    results_tuple = lig_atom,self.h_bonds[i][6]+str(self.h_bonds[i][7]),"sidechain"
+                    results_tuple = lig_atom,self.h_bonds[i][8]+str(self.h_bonds[i][9]),"sidechain"
             else:
-                if self.h_bonds[i][5]=="O" or self.h_bonds[i][5]=="N" or self.h_bonds[i][5]=="H":
-                    results_tuple = lig_atom,self.h_bonds[i][3]+str(self.h_bonds[i][4]),"backbone"
+                if self.h_bonds[i][5]=="O" or self.h_bonds[i][7]=="N" or self.h_bonds[i][7]=="H":
+                    results_tuple = lig_atom,self.h_bonds[i][5]+str(self.h_bonds[i][6]),"backbone"
                 else:
-                    results_tuple = lig_atom,self.h_bonds[i][3]+str(self.h_bonds[i][4]),"sidechain"
+                    results_tuple = lig_atom,self.h_bonds[i][5]+str(self.h_bonds[i][6]),"sidechain"
             if results_tuple not in self.hbond_frequency[traj].keys():
                 self.hbond_frequency[traj][results_tuple]=1
             else:
