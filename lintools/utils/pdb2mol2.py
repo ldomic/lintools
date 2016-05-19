@@ -2,6 +2,7 @@ __author__ = 'tparamo'
 
 import numpy
 from operator import itemgetter
+import copy
 
 valence = {"H":1, "C":4, "O":2, "N": 3, "S": 2, "P":5, "F":1,"B":3, "I":1, "BR":1, "SI":4, "CL": 1}
 #Bond distances from Pyykko and Atsumi 2009
@@ -72,13 +73,17 @@ def calculate_bonds(coordinates, dist):
                     db = double_bond[get_atom_name(coordinates[i].name)] + double_bond[get_atom_name(coordinates[j].name)]
 
                     # For aromatic rings
-                    if get_atom_name(coordinates[i].name) == "C" and get_atom_name(
-                        coordinates[j].name) == "C" and not (coordinates[i].aromatic or coordinates[j].aromatic) and dist[i][j] < 1.40:
-                        coordinates[i].num_bonds = coordinates[i].num_bonds + 1
-                        coordinates[j].num_bonds = coordinates[j].num_bonds + 1
-                        coordinates[i].aromatic = True
-                        coordinates[j].aromatic = True
-                        bond.type = 2
+                    if get_atom_name(coordinates[i].name) == "C" and get_atom_name(coordinates[j].name) == "C" and not (coordinates[i].aromatic or coordinates[j].aromatic) and dist[i][j] < 1.40:
+                        double = True
+                        for k in range(j, len(coordinates)-1):
+                            if k!=i and get_atom_name(coordinates[k].name) != "H" and dist[i][k]<dist[i][j]:
+                                double = False
+                        if double:
+                            coordinates[i].num_bonds = coordinates[i].num_bonds + 1
+                            coordinates[j].num_bonds = coordinates[j].num_bonds + 1
+                            coordinates[i].aromatic = True
+                            coordinates[j].aromatic = True
+                            bond.type = 2
                     elif dist[i][j]>= (db - 0.02) and  dist[i][j]<= (db + 0.02) and coordinates[i].num_bonds<=(valence[get_atom_name(coordinates[i].name)]-1) and coordinates[j].num_bonds<=(valence[get_atom_name(coordinates[j].name)]-1):
                         coordinates[i].num_bonds = coordinates[i].num_bonds + 1
                         coordinates[j].num_bonds = coordinates[j].num_bonds + 1
@@ -96,9 +101,28 @@ def calculate_bonds(coordinates, dist):
                     coordinates[i].bonds.append(bond)
 
                     #Debug
-                    #print coordinates[i].name + " " + coordinates[j].name + " " + str(dist[i][j]) + " " + str(db) + " " + str(coordinates[i].num_bonds) + " " + str(coordinates[j].num_bonds)
+                    #print coordinates[i].name + " " + coordinates[j].name + " " + str(dist[i][j]) + " " + str(db) + " " + str(coordinates[i].num_bonds) + " " + str(coordinates[j].num_bonds) + " " + str(bond.type)
 
     return num_bonds
+
+
+def get_all_bonds(coordinates, name):
+    bonds = []
+    for i in range(0, len(coordinates)):
+        for bond in coordinates[i].bonds:
+            if coordinates[bond.a].name == name or coordinates[bond.b].name == name:
+                bonds = bonds + [bond]
+    return bonds
+
+
+
+def reassign_bond(coordinates, bond, type):
+    correction = type - bond.type
+    bond.type = type
+    coordinates[bond.a].num_bonds = coordinates[bond.a].num_bonds + correction
+    coordinates[bond.a].charge = coordinates[bond.a].num_bonds - valence[get_atom_name(coordinates[bond.a].name)]
+    coordinates[bond.b].num_bonds = coordinates[bond.b].num_bonds + correction
+    coordinates[bond.b].charge = coordinates[bond.b].num_bonds - valence[get_atom_name(coordinates[bond.b].name)]
 
 
 def sanitise_charge(coordinates, dist):
@@ -111,91 +135,179 @@ def sanitise_charge(coordinates, dist):
         if get_atom_name(coordinates[i].name) == "P" and coordinates[i].charge == 1:
             #phosphate
             correct = False
-            for bond in coordinates[i].bonds:
-                candidate = bond.b
+            for bond in get_all_bonds(coordinates, coordinates[i].name):
                 if bond.type==2:
-                    bond.type = 1
-                    coordinates[i].num_bonds = coordinates[i].num_bonds - 1
-                    coordinates[i].charge = coordinates[i].num_bonds - valence[get_atom_name(coordinates[i].name)]
-                    coordinates[candidate].num_bonds = coordinates[candidate].num_bonds - 1
-                    coordinates[candidate].charge = coordinates[candidate].num_bonds - valence[get_atom_name(coordinates[candidate].name)]
+                    reassign_bond(coordinates, bond, 1)
                     correct = True
                     break
 
-        if get_atom_name(coordinates[i].name) == "S" and coordinates[i].charge == 2:
-            #sulphate: I migh need other two double bonds,valence is 6
+        elif get_atom_name(coordinates[i].name) == "S" and coordinates[i].charge>0:
+            #sulphate: I migh need other one or two double bonds
             correct = False
             cont = 2
 
             dists = []
-            for index, bond in enumerate(coordinates[i].bonds):
-                if (get_atom_name(coordinates[bond.b].name) == "O" and coordinates[bond.b].charge == -1):
-                    dists.append((bond.b, dist[bond.a, bond.b]))
+            for bond in get_all_bonds(coordinates, coordinates[i].name):
+                if (get_atom_name(coordinates[bond.a].name) == "O" and coordinates[bond.a].charge == -1) or (get_atom_name(coordinates[bond.b].name) == "O" and coordinates[bond.b].charge == -1):
+                    dists.append((bond, dist[bond.a, bond.b]))
 
-            if len(dists)>=2:
+            if len(dists)>=1:
                 sorted(dists, key=itemgetter(1))
                 cont = 2
-                for candidate,d in dists:
-                    cont = cont - 1
-                    if bond.type == 1 and get_atom_name(coordinates[bond.b].name) == "O" and cont>0:
-                        bond.type = 2
-                        coordinates[i].num_bonds = coordinates[i].num_bonds + 1
-                        coordinates[i].charge = coordinates[i].num_bonds - 6
-                        coordinates[candidate].num_bonds = coordinates[candidate].num_bonds + 1
-                        coordinates[candidate].charge = coordinates[candidate].num_bonds - valence[get_atom_name(coordinates[candidate].name)]
+                for bond,d in dists:
+                    if bond.type == 1 and cont>0:
+                        reassign_bond(coordinates, bond, 2)
                         cont = cont - 1
-                correct = True
 
-        if get_atom_name(coordinates[i].name) == "N" and coordinates[i].charge == 0:
+                if cont==0:
+                    #Valence is 6
+                    coordinates[i].charge = coordinates[i].num_bonds - 6
+                    correct = True
+                elif cont==1:
+                    #Valence is 4
+                    coordinates[i].charge = coordinates[i].num_bonds - 4
+                    correct = True
+
+        elif get_atom_name(coordinates[i].name) == "N" and coordinates[i].charge == 0:
             # nitrate
             charge = 0
-            for bond in coordinates[i].bonds:
-                if get_atom_name(coordinates[bond.b].name) == "O":
+            bonds = []
+            for bond in get_all_bonds(coordinates, coordinates[i].name):
+                if get_atom_name(coordinates[bond.a].name) == "O":
+                    charge = charge + coordinates[bond.a].charge
+                    bonds = bonds + [bond]
+                elif get_atom_name(coordinates[bond.b].name) == "O":
                     charge = charge + coordinates[bond.b].charge
+                    bonds = bonds + [bond]
+
             if charge==-2:
                 correct = False
-                for bond in coordinates[i].bonds:
-                    candidate = bond.b
-                    if get_atom_name(coordinates[bond.b].name) == "O":
-                        bond.type = 2
-                        coordinates[i].num_bonds = coordinates[i].num_bonds + 1
-                        coordinates[i].charge = coordinates[i].num_bonds - valence[get_atom_name(coordinates[i].name)]
-                        coordinates[candidate].num_bonds = coordinates[candidate].num_bonds + 1
-                        coordinates[candidate].charge = coordinates[candidate].num_bonds - valence[
-                        get_atom_name(coordinates[candidate].name)]
-                        correct = True
-                        break
-    if correct==False:
-        raise AssertionError("Could not determine structure correctly.")
+                for bond in bonds:
+                    reassign_bond(coordinates, bond, 2)
+                    correct = True
+                    break
+
+        elif get_atom_name(coordinates[i].name) == "C" and coordinates[i].charge == 1:
+            correct = False
+            dists = []
+            for bond in get_all_bonds(coordinates, coordinates[i].name):
+                if (get_atom_name(coordinates[bond.a].name) in ["N", "C"] and coordinates[bond.a].charge == 1) or (get_atom_name(coordinates[bond.b].name) in ["N", "C"] and coordinates[bond.b].charge == 1):
+                    dists.append((bond, dist[bond.a, bond.b]))
+
+            if len(dists) >= 1:
+                sorted(dists, key=itemgetter(1), reverse=True)
+                reassign_bond(coordinates, dists[0][0], 1)
+                correct = True
+
+        elif get_atom_name(coordinates[i].name)=="C" and coordinates[i].charge == -1:
+            dists = []
+            aromatic =  False
+
+            for bond in get_all_bonds(coordinates, coordinates[i].name):
+                if coordinates[bond.a].aromatic or coordinates[bond.b].aromatic:
+                    aromatic = True
+                    break
+            if not aromatic:
+                for bond in get_all_bonds(coordinates, coordinates[i].name):
+                    if (get_atom_name(coordinates[bond.a].name) == "N" and coordinates[bond.a].charge <= 0) or (get_atom_name(coordinates[bond.b].name) == "N" and coordinates[bond.b].charge <= 0):
+                        dists.append((bond, dist[bond.a, bond.b]))
+
+                if len(dists) >= 1:
+                    sorted(dists, key=itemgetter(1))
+                    reassign_bond(coordinates, dists[0][0], 2)
+
+
+        if correct==False:
+            raise AssertionError("Could not determine the structure correctly.")
+
+
+def reset_ring(coordinates):
+    ring_bonds = []
+
+    for i in range(0, len(coordinates)):
+        for bond in coordinates[i].bonds:
+            if get_atom_name(coordinates[bond.a].name) in ["C","N"] and get_atom_name(coordinates[bond.b].name) in ["C","N"]:
+                if (coordinates[bond.a].aromatic or coordinates[bond.a].charge != 0) or (coordinates[bond.b].aromatic or coordinates[bond.b].charge != 0):
+                    ring_bonds = ring_bonds + [bond]
+
+
+    # purge non-cyclic bonds
+    for bond in ring_bonds:
+        cont_i = 0
+        cont_j = 0
+        for subbond in ring_bonds:
+            if coordinates[bond.a].name in [coordinates[subbond.a].name, coordinates[subbond.b].name]:
+                cont_i = cont_i + 1
+            if coordinates[bond.b].name in [coordinates[subbond.a].name, coordinates[subbond.b].name]:
+                cont_j = cont_j + 1
+        if not (cont_i>=2 and cont_j>=2):
+            ring_bonds.remove(bond)
+
+    for bond in ring_bonds:
+        neg_charge = coordinates[bond.a].charge == -1 or coordinates[bond.b].charge == -1
+        #pos_charge = (get_atom_name(coordinates[bond.a].name) == "C" and coordinates[bond.a].charge == 1) or (get_atom_name(coordinates[bond.b].name) == "C" and coordinates[bond.b].charge == 1)
+        if neg_charge: #or pos_charge:
+
+            start = True
+            stop = False
+            current_bond = bond
+            odd = True
+
+            ring_bonds_buffer = ring_bonds
+
+            while (current_bond.id != bond.id or start) and not stop:
+                print coordinates[current_bond.a].name + " " + coordinates[current_bond.b].name
+                start = False
+                if odd:
+                    reassign_bond(coordinates, current_bond, 2)
+                else:
+                    reassign_bond(coordinates, current_bond, 1)
+
+                odd = not odd
+
+                stop = True
+                candidate = ""
+
+                for next_bond in ring_bonds_buffer:
+                    if current_bond.id != next_bond.id:
+                        righthand = (coordinates[current_bond.b].name == coordinates[next_bond.a].name)
+                        lefthand = (coordinates[current_bond.b].name == coordinates[next_bond.b].name)
+                        if righthand:
+                            current_bond = next_bond
+                            stop = False
+                            break
+                        elif lefthand:
+                            candidate = next_bond
+
+                if stop==True and candidate!="":
+                    a = candidate.a
+                    b = candidate.b
+                    current_bond = candidate
+                    current_bond.a = b
+                    current_bond.b = a
+                    stop = False
+
+                if not stop:
+                    ring_bonds_buffer.remove(current_bond)
 
 
 def sanitise_aromaticity(coordinates, dist):
+
     for i in range(0, len(coordinates)):
-        if (get_atom_name(coordinates[i].name) == "C" or get_atom_name(coordinates[i].name) == "N") and coordinates[i].charge == -1:
+        if get_atom_name(coordinates[i].name) in ["C","N"] and coordinates[i].charge == -1:
             min_dist = 100000
-            min_bond = -1
-            for index, bond in enumerate(coordinates[i].bonds):
-                if (get_atom_name(coordinates[bond.b].name) == "C" or get_atom_name(coordinates[bond.b].name) == "N") and coordinates[bond.b].charge == -1 and coordinates[i].charge == -1:
+            min_bond = []
+
+            for bond in get_all_bonds(coordinates, coordinates[i].name):
+                lefthand = get_atom_name(coordinates[bond.a].name) in ["C","N","O"] and coordinates[bond.a].charge == -1
+                righthand = get_atom_name(coordinates[bond.b].name) in ["C","N","O"] and coordinates[bond.b].charge == -1
+                if lefthand and righthand:
                     if dist[bond.a, bond.b] < min_dist:
-                        min_bond = index
+                        min_bond = bond
                         min_dist = dist[bond.a, bond.b]
 
-            if min_bond < 0:
-                #let's charge something
-                for index, bond in enumerate(coordinates[i].bonds):
-                    if get_atom_name(coordinates[bond.b].name) == "N" and coordinates[bond.b].charge==0 and coordinates[i].charge == -1:
-                        if dist[bond.a, bond.b] < min_dist:
-                            min_bond = index
-                            min_dist = dist[bond.a, bond.b]
-            if min_bond >=0:
-                coordinates[i].bonds[min_bond].type = 2
-                coordinates[i].num_bonds = coordinates[i].num_bonds + 1
-                coordinates[i].charge = coordinates[i].num_bonds - valence[get_atom_name(coordinates[i].name)]
-                coordinates[coordinates[i].bonds[min_bond].b].num_bonds = coordinates[coordinates[i].bonds[min_bond].b].num_bonds + 1
-                coordinates[coordinates[i].bonds[min_bond].b].charge = coordinates[coordinates[i].bonds[min_bond].b].num_bonds -valence[get_atom_name(coordinates[coordinates[i].bonds[min_bond].b].name)]
-            else:
-                raise AssertionError("Could not determine structure correctly.")
-
+            if min_bond != []:
+                reassign_bond(coordinates, min_bond, 2)
 
 
 
@@ -206,6 +318,10 @@ def calculate_formal_charge(coordinates, dist):
     #Sanitise non standard bonds
     sanitise_aromaticity(coordinates, dist)
     sanitise_charge(coordinates, dist)
+
+    for i in range(0, len(coordinates)):
+        if get_atom_name(coordinates[i].name) in ["C", "N"] and coordinates[i].charge == -1:
+            reset_ring(coordinates)
 
 
 def read_PDB(pdb):
