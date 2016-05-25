@@ -82,16 +82,16 @@ class Lintools(object):
 
 if __name__ == '__main__': 
 	#################################################################################################################
-
-	parser = ArgumentParser(description='Analysis and visualisation tool for protein ligand interactions. Requires rdkit, shapely, MDAnalysis modules.')
-	parser.add_argument('-t', '--topology', dest = 'topology', default=None, help='Input File name of topology file. Accepts gro, pdb files')
-	parser.add_argument('-x', '--trajectory', dest = "trajectory", nargs="*", default=None, help='Input File name of trajectory file(s). Accepts up to 3 xtc files (Optional. Default: None)')
-	parser.add_argument('-o', '--outname', dest = "output_name", help='Name of the output files.')
+	
+	parser = ArgumentParser(description='Analysis and visualisation tool for protein ligand interactions. Requires rdkit, shapely, MDAnalysis.')
+	parser.add_argument('-t', '--topology', dest = 'topology', default=None, help='[Input File] Name of topology file. Accepts gro, pdb files')
+	parser.add_argument('-x', '--trajectory', dest = "trajectory", nargs="*", default=None, help='[Input File] Name of trajectory file(s). (Optional. Default: None)')
+	parser.add_argument('-o', '--outname', dest = "output_name", help='[Output file] Name of the output files.')
 	parser.add_argument('-rmsf', '--rmsf', dest = "rmsf", action="store_true", help="Analysis of ligand root mean square fluctuations.")
-	parser.add_argument('-c', '--cutoff', dest = "cutoff", default = 3.5, help='Input cutoff distance from the ligand that is taken into account in angstroms (Example: 3.5).')
-	parser.add_argument('-ro', '--residueoffset', dest = "offset", default = 0, help='Input the number of offset residues for the protein. (Optional, default is 0)')
-	parser.add_argument('-ac', '--analysis_cutoff', dest = "analysis_cutoff", default=30, help='Analysis cutoff - a feature has to appear for at least a third of the simulation to be counted. Default: 30')
-	parser.add_argument('-df', '--domain_file', dest = "domain_file", default=None, help='Input file for domains of your protein. To see the required format, check README or our GitHub page')
+	parser.add_argument('-c', '--cutoff', dest = "cutoff", default = 3.5, help='Cutoff distance from the ligand that is taken into account in angstroms (Example: 3.5).')
+	parser.add_argument('-ro', '--residueoffset', dest = "offset", default = 0, help='Number of offset residues for the protein. (Optional, default is 0)')
+	parser.add_argument('-ac', '--analysis_cutoff', dest = "analysis_cutoff", default=30, help='Analysis cutoff - a feature has to appear for at least a fraction of the simulation to be counted. Default: 30')
+	parser.add_argument('-df', '--domain_file', dest = "domain_file", default=None, help='Input file for domains of your protein. To see the required format, see wiki on GitHub page')
 	parser.add_argument('--no_hbonds', dest='hydr_bonds', action="store_true", help="The hydrogen bonds will not be detected.")
 	parser.add_argument('--debug', dest='debug', action="store_true", help="Functions for debugging.")
 	parser.add_argument('--no_resinfo', dest='resinfo', action="store_true", help="The residue information files will not be produced.")
