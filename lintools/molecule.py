@@ -95,7 +95,7 @@ class Molecule(object):
 
         self.ligand_atom_coords=np.array(self.ligand_atom_coords)  
         self.a = geometry.MultiPoint(self.ligand_atom_coords).convex_hull
-        self.b = self.a.boundary.parallel_offset(120,"left",join_style=2).convex_hull
+        self.b = self.a.boundary.buffer(120).convex_hull
         self.b_for_all ={}
         self.b_lenght = self.b.boundary.length
         for residue in self.universe.closest_atoms:
