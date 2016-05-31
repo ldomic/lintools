@@ -12,7 +12,7 @@ from analysis.rmsf import RMSF_measurements
 from analysis.occurrence import Occurrence_analysis
 
 class Lintools(object):
-	def __init__(self, topology,trajectory,ligand_name,offset,cutoff,analysis_cutoff,diagram_type,domain_file,HB_flag,RMSF_flag,debug_flag,resinfo_flag,output_name):
+	def __init__(self, topology,trajectory,ligand_name,offset,cutoff,analysis_cutoff,diagram_type,domain_file,HB_flag,RMSF_flag,debug_flag,resinfo_flag,mol2_file,output_name):
 		self.topology = topology
 		self.trajectory = trajectory
 		self.ligand_name  = ligand_name
@@ -25,13 +25,14 @@ class Lintools(object):
 		self.RMSF_flag = RMSF_flag
 		self.debug_flag = debug_flag
 		self.resinfo_flag = resinfo_flag
+		self.mol2_file =mol2_file
 		self.output_name = output_name
 		self.rmsf = None
 		self.hbonds = None
 	def get_info_about_input_and_analyse(self):
 		"""This function loads all input files and decides which residues to plot"""
-		self.topol_data = Topol_Data(self.topology, self.trajectory, self.ligand_name, self.offset)
-		self.topol_data.define_ligand(self.ligand_name)
+		self.topol_data = Topol_Data(self.topology, self.trajectory, self.ligand_name, self.offset, self.mol2_file)
+		self.topol_data.define_ligand(self.ligand_name,self.mol2_file)
 		if self.trajectory==None:
 			self.topol_data.find_res_to_plot(self.cutoff)
 		else:
@@ -82,7 +83,7 @@ class Lintools(object):
 
 if __name__ == '__main__': 
 	#################################################################################################################
-	
+
 	parser = ArgumentParser(description='Analysis and visualisation tool for protein ligand interactions. Requires rdkit, shapely, MDAnalysis.')
 	parser.add_argument('-t', '--topology', dest = 'topology', default=None, help='[Input File] Name of topology file. Accepts gro, pdb files')
 	parser.add_argument('-x', '--trajectory', dest = "trajectory", nargs="*", default=None, help='[Input File] Name of trajectory file(s). (Optional. Default: None)')
@@ -95,6 +96,8 @@ if __name__ == '__main__':
 	parser.add_argument('--no_hbonds', dest='hydr_bonds', action="store_true", help="The hydrogen bonds will not be detected.")
 	parser.add_argument('--debug', dest='debug', action="store_true", help="Functions for debugging.")
 	parser.add_argument('--no_resinfo', dest='resinfo', action="store_true", help="The residue information files will not be produced.")
+	parser.add_argument('-mol2', dest='mol2', default=None, help="Optional - Submit mol2 file of the ligand.")
+
 
 
 	args = parser.parse_args()
@@ -165,7 +168,7 @@ if __name__ == '__main__':
 		raise IOError,"Provide a name for output file"
 	ligand_name = find_ligand_name()
 	diagram_type = find_diagram_type()
-	lintools = Lintools(args.topology, args.trajectory, ligand_name, args.offset, args.cutoff, args.analysis_cutoff, diagram_type, args.domain_file, args.hydr_bonds, args.rmsf, args.debug,args.resinfo, args.output_name)
+	lintools = Lintools(args.topology, args.trajectory, ligand_name, args.offset, args.cutoff, args.analysis_cutoff, diagram_type, args.domain_file, args.hydr_bonds, args.rmsf, args.debug,args.resinfo,args.mol2, args.output_name)
 	lintools.get_info_about_input_and_analyse()
 	lintools.plot_residues()
 	lintools.draw_molecule_and_figure()

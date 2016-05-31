@@ -151,7 +151,6 @@ class Figure(object):
             pylab.savefig("rmsf_colorbar.svg", dpi=100, transparent=True)
             self.legend=self.legend+self.manage_the_rmsf_colorbar()
 
-
     def truncate_colormap(self, cmap, minval=0.0, maxval=1.0, n=100):
         new_cmap = colors.LinearSegmentedColormap.from_list(
             'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval),
@@ -169,9 +168,10 @@ class Figure(object):
             colorbar = "<g transform='translate(10,"+str(y_dim)+")'> "+"".join(map(str,lines))
             f.close()
         return colorbar
-    def draw_white_circles_at_atoms(self):
-         for atom in self.molecule.nearest_points_coords:
-            self.white_circles = self.white_circles+"<circle cx='"+str(int(self.molecule.nearest_points_coords[atom][0])+(self.molecule.x_dim-900)/2)+"' cy='"+str(int(self.molecule.nearest_points_coords[atom][1])+(self.molecule.y_dim-450)/2)+"' r='30' fill='white' />"
+    def draw_white_circles_at_atoms(self,diagram_type):
+         if diagram_type=="clock":
+            for atom in self.molecule.nearest_points_coords:
+                self.white_circles = self.white_circles+"<circle cx='"+str(int(self.molecule.nearest_points_coords[atom][0])+(self.molecule.x_dim-900)/2+15)+"' cy='"+str(int(self.molecule.nearest_points_coords[atom][1])+(self.molecule.y_dim-450)/2+15)+"' r='30' fill='white' />"
     def draw_lines_in_graph(self):
         for residue in self.molecule.nearest_points_coords:
             self.draw_lines=self.draw_lines+"<line x1='"+str(int(self.molecule.nearest_points_coords[residue][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[residue][1]))+"' x2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[self.topol.closest_atoms[residue][0][0]][0]))+"' y2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[self.topol.closest_atoms[residue][0][0]][1]))+"' style='stroke:red;stroke-width:2' />"

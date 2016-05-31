@@ -60,7 +60,7 @@ class HBonds(object):
             except AttributeError:
                 i=0
                 for traj in trajectory:
-                    md_sim = MDAnalysis.Universe(topology,trajectory[i])
+                    md_sim = Topol_Data(topology,trajectory[i],offset=offset)
                     ligand = md_sim.universe.select_atoms('(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')
                     ligand.resnames = "LIG"
                     ligand.resname = "LIG"
@@ -73,7 +73,7 @@ class HBonds(object):
             except ValueError:
                 i=0
                 for traj in trajectory:
-                    md_sim = MDAnalysis.Universe(topology,trajectory[i])
+                    md_sim = Topol_Data(topology,trajectory[i],offset=offset)
                     ligand = md_sim.universe.select_atoms('(segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')
                     ligand.resnames = "LIG"
                     ligand.resname = "LIG"
@@ -104,7 +104,6 @@ class HBonds(object):
         ligand.resnames = "LIG"   
         ligand.resname = "LIG"
         for i in range(np.prod(self.h_bonds.shape)):
-            print self.h_bonds
             if self.h_bonds[i]['donor_resnm']==ligand.resnames[0]:
                 atomname = self.h_bonds[i]['donor_atom']
             else:

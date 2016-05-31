@@ -16,7 +16,7 @@ from itertools import combinations
 
 
 class Topol_Data(object):
-    def __init__(self, topology, trajectory=None, ligand_name=None, offset=0):
+    def __init__(self, topology, trajectory=None, ligand_name=None, offset=0, mol2_file=None):
         self.universe = None
         self.ligand = None
         self.ligand_no_H =None
@@ -35,14 +35,17 @@ class Topol_Data(object):
             self.topology = MDAnalysis.Universe(topology)
             self.universe = MDAnalysis.Universe(topology, trajectory)
             self.frame_count = self.universe.trajectory.n_frames
-    def define_ligand(self,ligand_name):
+    def define_ligand(self,ligand_name,mol2_file=None):
         self.ligand = ligand_name
         self.ligand.resnames = "LIG"
         self.ligand.resname = "LIG"
         self.ligand.write(str("LIG.pdb"))
         self.pdb = "LIG.pdb"
-        pdb2mol2.pdb2mol2(self.pdb)
-        self.mol2_file = "LIG_test.mol2"
+        if mol2_file==None:
+            pdb2mol2.pdb2mol2(self.pdb)
+            self.mol2_file = "LIG_test.mol2"
+        else:
+            self.mol2_file = mol2_file
         self.load_mol2_in_rdkit()
     def load_mol2_in_rdkit(self):
         try:
