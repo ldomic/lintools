@@ -256,7 +256,7 @@ def reset_ring(coordinates):
             ring_bonds_buffer = ring_bonds
 
             while (current_bond.id != bond.id or start) and not stop:
-                print coordinates[current_bond.a].name + " " + coordinates[current_bond.b].name
+                #print coordinates[current_bond.a].name + " " + coordinates[current_bond.b].name
                 start = False
                 if odd:
                     reassign_bond(coordinates, current_bond, 2)
