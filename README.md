@@ -15,7 +15,7 @@ To install LINTools and all the dependencies on a [Linux computer] (https://gith
 LINTools require these packages:
 * RDKit (installation instructions with Anaconda available from RDKit GitHub account: https://github.com/rdkit/conda-rdkit)
 * Shapely (available on GitHub https://github.com/Toblerity/Shapely) and GEOS library
-* MDAnalysis (available on GitHub https://github.com/MDAnalysis/mdanalysis)
+* MDAnalysis ==<0.15 (available on GitHub https://github.com/MDAnalysis/mdanalysis) (Need version 0.15 or higher)
 
 If this is a problem for your computer's architecture, a Dockerfile has also been provided.
 
