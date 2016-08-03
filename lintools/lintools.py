@@ -13,19 +13,30 @@ from analysis.occurrence import Occurrence_analysis
 
 class Lintools(object):
 	def __init__(self, topology,trajectory,ligand_name,offset,cutoff,analysis_cutoff,diagram_type,domain_file,HB_flag,RMSF_flag,debug_flag,resinfo_flag,mol2_file,output_name):
-		self.topology = topology
-		self.trajectory = trajectory
+		self.topology = os.path.abspath(topology)
+		try:
+			self.trajectory=[]
+			for traj in trajectory:
+				self.trajectory.append(os.path.abspath(traj))
+		except Exception:
+			self.trajectory = trajectory
 		self.ligand_name  = ligand_name
 		self.offset = offset
 		self.cutoff = cutoff
 		self.analysis_cutoff = analysis_cutoff
 		self.diagram_type = diagram_type
-		self.domain_file = domain_file
+		try:
+			self.domain_file = os.path.abspath(domain_file)
+		except Exception:
+			self.domain_file = domain_file
 		self.HB_flag = HB_flag
 		self.RMSF_flag = RMSF_flag
 		self.debug_flag = debug_flag
 		self.resinfo_flag = resinfo_flag
-		self.mol2_file =mol2_file
+		try:
+			self.mol2_file = os.path.abspath(mol2_file)
+		except Exception:
+			self.mol2_file = mol2_file
 		self.output_name = output_name
 		self.rmsf = None
 		self.hbonds = None
@@ -45,7 +56,6 @@ class Lintools(object):
 			self.topol_data.get_closest_ligand_atoms()
 		if self.RMSF_flag==True:
 			self.rmsf = RMSF_measurements(self.topol_data,self.topology, self.trajectory, self.ligand_name, self.offset, self.output_name)
-		self.topol_data.get_prot_residue_distance_matrix()
 		
 	def plot_residues(self):
 	    self.plots = Plots(self.topol_data)
@@ -71,9 +81,15 @@ class Lintools(object):
             if self.trajectory!=None and self.resinfo_flag!=True:
             	self.res_info = Residue_Info(self.topol_data,self.occurrence,self.figure)
 
+ 	def save_files(self):
+		"""Saves all output from LINTools run in a single directory named after the output name."""
+ 		os.system("mkdir "+self.output_name)
+ 		self.workdir = os.getcwd()
+ 		os.chdir(self.workdir+"/"+self.output_name)
+
 
 	def remove_files(self):
-            file_list = ["molecule.svg","LIG.pdb","LIG_test.mol2","test.xtc","rmsf_colorbar.svg"]
+            file_list = ["molecule.svg","LIG.pdb","test.xtc","rmsf_colorbar.svg"]
             for residue in self.topol_data.dict_of_plotted_res.keys():
                 file_list.append(str(residue[3:])+".svg")
                 for f in file_list:
@@ -169,6 +185,7 @@ if __name__ == '__main__':
 	ligand_name = find_ligand_name()
 	diagram_type = find_diagram_type()
 	lintools = Lintools(args.topology, args.trajectory, ligand_name, args.offset, args.cutoff, args.analysis_cutoff, diagram_type, args.domain_file, args.hydr_bonds, args.rmsf, args.debug,args.resinfo,args.mol2, args.output_name)
+	lintools.save_files()
 	lintools.get_info_about_input_and_analyse()
 	lintools.plot_residues()
 	lintools.draw_molecule_and_figure()

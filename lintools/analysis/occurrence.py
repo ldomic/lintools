@@ -1,4 +1,5 @@
 from topol import Topol_Data
+from utils.progress import ProgressBar
 import MDAnalysis
 import rdkit
 from rdkit import Chem
@@ -34,10 +35,14 @@ class Occurrence_analysis(object):
             i+=1
             topol_data = Topol_Data(topology,traj,ligand_name, offset)
             md_sim = topol_data.universe
+            progress = ProgressBar("Occurence")
             frame_dict = {}
             frame_dict2 = {}
             firstframe_ps=None
+            progress_counter = 0
             for frame in md_sim.trajectory:
+                progress.update(progress_counter)
+                progress_counter+=1/float(md_sim.trajectory.n_frames)
                 selection = md_sim.select_atoms('all and around '+str(cutoff)+' (segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')               
                 selection2 = md_sim.select_atoms('all and around '+str(cutoff+cutoff_expanded)+' (segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')               
                 residue_list = [atom.resname+str(atom.resid) for atom in selection]
@@ -46,7 +51,7 @@ class Occurrence_analysis(object):
                 frame_dict2[frame.time]=set(residue_list2)
                 if firstframe_ps == None:
                     firstframe_ps = frame.time
-            
+            progress.finish()
             unique_res = {item for sublist in frame_dict.values() for item in sublist}
             lastframe_time = max([f for f in frame_dict.keys()])
             self.residue_counts_on_off[i]={}
