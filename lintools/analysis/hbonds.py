@@ -5,6 +5,7 @@ from rdkit import Chem
 from MDAnalysis.analysis import hbonds
 import numpy as np
 
+
 class HBonds(object):
     def __init__(self,topol_object, topology, trajectory, ligand_name,offset,frame_cutoff,tests=False):
         self.HDonorSmarts = Chem.MolFromSmarts('[$([N;!H0;v3]),$([N;!H0;+1;v4]),$([O,S;H1;+0]),$([n;H1;+0])]')
@@ -114,10 +115,11 @@ class HBonds(object):
                 for atom in ligand_universe.atoms:
                     if atomname == atom.name:
                         #Basically checking which version of MDAnalysis this is - 0 or 1 based index
-                        if ligand.universe.atoms[0].id ==0:
-                            atom_id = int(atom.id)
-                        else:
-                            atom_id = int(atom.id)-1
+                        #if ligand.universe.atoms[0].id ==0:
+                        #    atom_id = int(atom.id)
+                        #else:
+                        #    atom_id = int(atom.id)-1
+                        atom_id = int(atom.id)-1
                 rdkit_atom = self.universe.mol2.GetAtomWithIdx(atom_id)
                 for neigh in rdkit_atom.GetNeighbors():
                     neigh_atom_id = neigh.GetIdx()

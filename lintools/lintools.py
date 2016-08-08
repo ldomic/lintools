@@ -72,7 +72,8 @@ class Lintools(object):
 	def draw_molecule_and_figure(self,tests=False):
 	    self.molecule = Molecule(self.topol_data, self.rmsf)
             self.figure=Figure(self.molecule, self.diagram_type,self.topol_data,self.hbonds,self.plots,self.rmsf, tests)
-            self.figure.draw_hbonds_in_graph()
+            if self.HB_flag!=True:
+            	self.figure.draw_hbonds_in_graph()
             self.figure.draw_white_circles_at_atoms(self.diagram_type)
             if self.debug_flag==True:
 		self.figure.draw_lines_in_graph() #a function for debugging purposes
