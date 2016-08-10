@@ -1,7 +1,10 @@
+__author__ = "Laura Domicevica"
+__date__ = "10.08.2016"
 import sys
 
 
 class ProgressBar(object):
+    """Shows the progress of analysis in frame rate and percentage. In August 2016, used for occurrance analysis, since others are shown by MDAnalysis."""
     def __init__(self, title):
         self.title = title
     def update(self, frame_n, total_n_frames):

@@ -254,7 +254,13 @@ class Residue_Info(object):
             try:
                 with open(str(residue)+"_"+str(traj)+".svg", "r") as f:
                     lines = f.readlines()
-                    self.on_off_plots = self.on_off_plots+ "<g  transform='translate(0,"+str(y)+")'>\n"+"".join(map(str,lines[22:24]))+"\n</g>\n"
+                    if lines[22].startswith("    <image"):
+                        id_1 = 22
+                        id_2 =24
+                    else:
+                        id_1 = 21
+                        id_2 = 23
+                    self.on_off_plots = self.on_off_plots+ "<g  transform='translate(0,"+str(y)+")'>\n"+"".join(map(str,lines[id_1:id_2]))+"\n</g>\n"
                     percent =str(int(float(self.occurrence.residue_counts[traj][residue])/float(self.occurrence.residue_counts_on_off[traj]["frame_count"])*100))+"%"
                     self.on_off_plots = self.on_off_plots + "<text style='font-family:Monospace;font-size:14.0px;' x='260' y='"+str(y_for_text)+"'> "+percent+" </text>"
                     f.close()
