@@ -175,12 +175,16 @@ class Figure(object):
     def draw_lines_in_graph(self):
         for residue in self.molecule.nearest_points_coords:
             self.draw_lines=self.draw_lines+"<line x1='"+str(int(self.molecule.nearest_points_coords[residue][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[residue][1]))+"' x2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[self.topol.closest_atoms[residue][0][0]][0]))+"' y2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[self.topol.closest_atoms[residue][0][0]][1]))+"' style='stroke:red;stroke-width:2' />"
-    def draw_hbonds_in_graph(self):
+    def draw_hbonds_in_graph(self,diagram_type):
         for bond in self.hbonds.hbonds_for_drawing:
-            if bond[2]=="backbone":
-                self.draw_lines=self.draw_lines+"<line x1='"+str(int(self.molecule.nearest_points_coords[bond[1]][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[bond[1]][1]))+"' x2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[0]][0]))+"' y2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[0]][1]))+"' style='stroke:blue;stroke-width:4' />"
+            if diagram_type=="clock":
+                extra_space=15
             else:
-                self.draw_lines=self.draw_lines+"<line stroke-dasharray='5,5'  x1='"+str(int(self.molecule.nearest_points_coords[bond[1]][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[bond[1]][1]))+"' x2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[0]][0]))+"' y2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[0]][1]))+"' style='stroke:blue;stroke-width:4' />"
+                extra_space=0
+            if bond[2]=="backbone":
+                self.draw_lines=self.draw_lines+"<line x1='"+str(int(self.molecule.nearest_points_coords[bond[1]][0])+extra_space)+"' y1='"+str(int(self.molecule.nearest_points_coords[bond[1]][1])+extra_space)+"' x2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[0]][0]))+"' y2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[0]][1]))+"' style='stroke:blue;stroke-width:4' />"
+            else:
+                self.draw_lines=self.draw_lines+"<line stroke-dasharray='5,5'  x1='"+str(int(self.molecule.nearest_points_coords[bond[1]][0])+extra_space)+"' y1='"+str(int(self.molecule.nearest_points_coords[bond[1]][1])+extra_space)+"' x2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[0]][0]))+"' y2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[0]][1]))+"' style='stroke:blue;stroke-width:4' />"
 
     def put_everything_together(self):
         molecule_list = [self.filestart]+[self.draw_lines]+[self.draw_molecule]+[self.white_circles]+[self.draw_plots]+[self.legend]+[self.end_symbol]
