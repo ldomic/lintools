@@ -1,3 +1,3 @@
 #!/usr/bin/env python
-import testsuite as Tests
+import testdata as Tests
 Tests.run()
