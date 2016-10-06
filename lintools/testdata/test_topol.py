@@ -23,7 +23,6 @@ class TestBasic1(TestCase):
         del self.lintools
 
     def test_ami_amino(self):
-
         #Is the final svg file produced?
         assert_equal(os.path.isfile(self.output_name+"/"+self.output_name+".svg"),True)
         if os.path.isfile(self.output_name+"/"+self.output_name+".svg") == True:
