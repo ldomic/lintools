@@ -7,15 +7,27 @@ from rdkit.Chem import rdDepictor
 from shapely import geometry
 import numpy as np
 from itertools import combinations
-import colorsys
 import operator
 
 class Molecule(object):
-    def __init__(self,  topol_object, rmsf_object=None):
-        self.svg = None
-        self.universe = topol_object
-        self.rmsf = rmsf_object
-        self.final_svg = None
+    """
+    This class deals with the drawing of the 2D molecule in RDkit environment. Once the data has been imported and 2D
+    representation drawn, the coordinates of each atom are obtained from the drawing. Since it is known, which atom 
+    is close to each plotted residue, the residues are placed in vicinity of that atom and the overlap treated by 
+    minimising distances in 2D. The resulting 2D coordinates where each residue should be placed in the final image 
+    are inherited by Figure class.
+
+    Takes:
+        * topology_data_object * - information about the system (lintools.Data object)
+
+    Initializing the object will lead to execution of the functions present in the class 
+    providing necessary material for next steps, namely assembly of figure. This was done
+    since it is very unlikely that the process would ever have to be done seperately step 
+    by step. 
+    """
+    __version__= "09.2016"
+    def __init__(self, topology_data_object):
+        self.topology_data = topology_data_object
         self.ligand_atom_coords_from_diagr={}
         self.nearest_points ={}
         self.nearest_points_projection = {}
@@ -26,20 +38,23 @@ class Molecule(object):
         self.load_molecule_in_rdkit_smiles()
         self.convex_hull()
         self.make_new_projection_values()
-    def pseudocolor(self,val, minval, maxval):
-        # convert val in range minval..maxval to the range 0..120 degrees which
-        # correspond to the colors red..green in the HSV colorspace
-        h1 = float(val-minval) / (maxval-minval)
-        #reverse the colormap
-        h = float(1-h1) * 120
-        # convert hsv color (h,1,1) to its rgb equivalent
-        # note: the hsv_to_rgb() function expects h to be in the range 0..1 not 0..360
-        r, g, b = colorsys.hsv_to_rgb(h/360, 1., 1.)
-        return (r, g, b)
     def load_molecule_in_rdkit_smiles(self, molSize=(900,450),kekulize=True):
+        """
+        Loads mol2 file in rdkit without the hydrogens - they do not have to appear in the final
+        figure. Once loaded, the molecule is converted to SMILES format which RDKit appears to 
+        draw best - since we do not care about the actual coordinates of the original molecule, it
+        is sufficient to have just 2D information. 
+
+        Some molecules can be problematic to import and steps such as stopping sanitize function can
+        be taken. This is done automatically if problems are observed. However, better solutions can
+        also be implemented and need more research.
+
+        The molecule is then drawn from SMILES in 2D representation without hydrogens. The drawing is 
+        saved as an SVG file.
+        """
         highlight=[]
         colors={}
-        mol2_in_rdkit = self.universe.mol2 #need to reload without hydrogens
+        mol2_in_rdkit = self.topology_data.mol2 #need to reload without hydrogens
         try:
             mol2_in_rdkit = Chem.RemoveHs(mol2_in_rdkit)
             self.smiles = Chem.MolFromSmiles(Chem.MolToSmiles(mol2_in_rdkit))
@@ -59,28 +74,30 @@ class Molecule(object):
                 mc = Chem.Mol(self.smiles.ToBinary())
         if not mc.GetNumConformers():
             rdDepictor.Compute2DCoords(mc)
-        if self.rmsf is not None:
-            for i in range(mol2_in_rdkit.GetNumAtoms()):
-                for atom_id in self.atom_identities:
-                    if i == self.atom_identities[atom_id]:
-                        highlight.append(i)
-                        colors[i] = self.pseudocolor(self.rmsf.ligand_rmsf[int(atom_id)], self.rmsf.min_value, self.rmsf.max_value)
-        else:
-            for i in range(mol2_in_rdkit.GetNumAtoms()):
-                highlight.append(i)
-                colors[i]=(1,1,1)
+        for i in range(mol2_in_rdkit.GetNumAtoms()):
+            highlight.append(i)
+            colors[i]=(1,1,1)
         drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0],molSize[1])
         drawer.DrawMolecule(mc,highlightAtoms=highlight,highlightBonds=[], highlightAtomColors=colors)
         drawer.FinishDrawing()
         self.svg = drawer.GetDrawingText().replace('svg:','')
         filesvg = open("molecule.svg", "w+")
         filesvg.write(self.svg)
-
     def convex_hull(self):
-        """Draws a convex hull around ligand atoms and expands it, giving space to put diagramms on"""
+        """
+        Draws a convex hull around ligand atoms and expands it, giving space to put diagramms on.
+        This is done with the help of Shapely.geometry class. The initial convex hull the residue 
+        coordinates are inserted on, determines the order the coordinates are going to be moved, i.e.
+        if the residue 1 is on the right side of residue 2, it will be pushed to the right, while 
+        residue 2 will be moved to the left.
+
+
+        Also determines the 2D coordinates of all atoms in drawing and makes a list with those.
+
+        """
         #Get coordinates of ligand atoms (needed to draw the convex hull around)
         
-        ligand_atoms = [x.name for x in self.universe.ligand_no_H.atoms]
+        ligand_atoms = [x.name for x in self.topology_data.universe.ligand_noH.atoms]
         with open ("molecule.svg", "r") as f:
             lines = f.readlines()
             i=0
@@ -92,18 +109,17 @@ class Molecule(object):
                             self.ligand_atom_coords_from_diagr[ligand_atoms[int(atom_id)]]=[float(line.rsplit("'",10)[1]), float(line.rsplit("'",10)[3])]
                     i+=1
                     
-
         self.ligand_atom_coords=np.array(self.ligand_atom_coords)  
         self.a = geometry.MultiPoint(self.ligand_atom_coords).convex_hull
         self.b = self.a.boundary.buffer(120).convex_hull
         self.b_for_all ={}
         self.b_lenght = self.b.boundary.length
-        for residue in self.universe.closest_atoms:
-            mean_distance =np.array([x[1] for x in self.universe.closest_atoms[residue]]).mean()
+        for residue in self.topology_data.closest_atoms:
+            mean_distance =np.array([x[1] for x in self.topology_data.closest_atoms[residue]]).mean()
             b = self.a.boundary.parallel_offset(mean_distance*50+50,"left",join_style=2).convex_hull
             projection =[]
             projection_init = []
-            for atom in self.universe.closest_atoms[residue]:
+            for atom in self.topology_data.closest_atoms[residue]:
                 point =geometry.Point((self.ligand_atom_coords_from_diagr[atom[0]][0],self.ligand_atom_coords_from_diagr[atom[0]][1]))
                 projection.append(abs(b.boundary.project(point) % b.boundary.length))
                 projection_init.append(abs(self.b.boundary.project(point) % self.b.boundary.length))
@@ -193,27 +209,51 @@ class Molecule(object):
   
     
 
-    def make_new_projection_values(self):
-        """Run do_step function until the diagramms have diverged from each other"""
+    def make_new_projection_values(self,width=160):
+        """Run do_step function until the diagramms have diverged from each other.
+        Also determines how big the figure is going to be by calculating the borders 
+        from new residue coordinates. These are then added some buffer space.
+
+        """
+        #Make gap between residues bigger if plots have a lot of rings - each ring after the 4th
+        #give extra 12.5px space
+        if self.topology_data.ring_number>4:
+            width = width + (self.topology_data.ring_number-4)*12.5
         values = [v for v in self.nearest_points_projection.values()]
         xy_values = [v for v in self.nearest_points_coords.values()]
         coeff_value = [v for v in self.b_for_all.values()]
         energy = 100
         while energy > 0.2:
-            values, energy = self.do_step(values,xy_values,coeff_value, width=110)
+            values, energy = self.do_step(values,xy_values,coeff_value, width)
             i=0
             xy_values =[]
             for residue in  self.nearest_points_coords:
-                b = self.a.boundary.parallel_offset(self.universe.closest_atoms[residue][0][1]*50+50,"left",join_style=2).convex_hull
+                b = self.a.boundary.parallel_offset(self.topology_data.closest_atoms[residue][0][1]*50+50,"left",join_style=2).convex_hull
                 self.nearest_points_projection[residue] = values[i]
                 self.nearest_points[residue] = b.boundary.interpolate(self.nearest_points_projection[residue] % b.boundary.length)
                 self.nearest_points_coords[residue] = self.nearest_points[residue].x, self.nearest_points[residue].y
                 xy_values.append(self.nearest_points_coords[residue])
                 i+=1
             values = [v for v in self.nearest_points_projection.values()]
-        #self.x_dim  = max(x[0] for i,x in enumerate(xy_values))-min(x[0] for i,x in enumerate(xy_values))+250.00 
-        # do not use the line above - cuts the image short
-        self.x_dim  = max(x[0] for i,x in enumerate(xy_values))+600.00
-        self.y_dim = max(x[1] for i,x in enumerate(xy_values))-min(x[1] for i,x in enumerate(xy_values))+300.00
-
-    
+        
+        #Calculate the borders of the final image
+        max_x = max(v[0] for k,v in self.nearest_points_coords.items())
+        min_x = min(v[0] for k,v in self.nearest_points_coords.items())
+        min_y = min(v[1] for k,v in self.nearest_points_coords.items())
+        max_y = max(v[1] for k,v in self.nearest_points_coords.items())
+        if min_x<0:
+            self.x_dim = (max_x-min_x)+600 #600 acts as buffer
+        elif max_x<900 and min_x<0: #In case all residues are grouped on one end of the molecule
+            self.x_dim = (900-min_x)+600
+        elif max_x<900 and min_x>0:
+            self.x_dim = 900+600
+        else:
+            self.x_dim = max_x+600
+        if min_y<0:
+            self.y_dim = (max_y-min_y)+400 #400 acts as buffer
+        elif max_y<450 and min_y<0:
+            self.y_dim = (450-min_y)+400
+        elif max_y<450 and min_y>0:
+            self.y_dim = 450+400
+        else:
+            self.y_dim = max_y+400
