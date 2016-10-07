@@ -1,7 +1,9 @@
 import matplotlib
-import numpy
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib import pylab
+import numpy
+
 
 class Plots(object):
     """

@@ -237,10 +237,10 @@ class Molecule(object):
             values = [v for v in self.nearest_points_projection.values()]
         
         #Calculate the borders of the final image
-        max_x = max(v[0] for k,v in self.nearest_points_coords.items())
-        min_x = min(v[0] for k,v in self.nearest_points_coords.items())
-        min_y = min(v[1] for k,v in self.nearest_points_coords.items())
-        max_y = max(v[1] for k,v in self.nearest_points_coords.items())
+        max_x = int(max(v[0] for k,v in self.nearest_points_coords.items()))
+        min_x = int(min(v[0] for k,v in self.nearest_points_coords.items()))
+        min_y = int(min(v[1] for k,v in self.nearest_points_coords.items()))
+        max_y = int(max(v[1] for k,v in self.nearest_points_coords.items()))
         if min_x<0:
             self.x_dim = (max_x-min_x)+600 #600 acts as buffer
         elif max_x<900 and min_x<0: #In case all residues are grouped on one end of the molecule
