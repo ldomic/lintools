@@ -1,7 +1,7 @@
 import MDAnalysis
 from collections import Counter
 from timeit import default_timer as timer
-from utils.progressbar import ProgressBar
+from lintools.utils.progressbar import ProgressBar
 import sys
 
 

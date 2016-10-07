@@ -3,10 +3,5 @@
 /lintools/.DS_Store
 
 lintools/topol.ipynb
-lintools/data.pyc
-lintools/figure.pyc
-lintools/plots.pyc
-lintools/lintools.pyc
-lintools/molecule.pyc
-lintools/analysis/hbonds.py
-lintools/analysis/residence_time.py
+
+*.pyc

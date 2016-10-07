@@ -4,7 +4,7 @@ import os
 import numpy as np
 import MDAnalysis
 from lintools.lintools import Lintools
-from lintools.lintools.testdata.datafiles import *
+from lintools.testdata.datafiles import *
 
 ################ AMI in P-gp with -ro 30 #################
 
