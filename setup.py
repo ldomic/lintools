@@ -8,5 +8,5 @@ setup(name='lintools',
       author='Laura Domicevica',
       author_email='ldomicevica@gmail.com',
       license='GPL',
-      packages=['lintools','lintools.analysis','lintools.utils'],
+      packages=['lintools','lintools.analysis'],
       zip_safe=False)
