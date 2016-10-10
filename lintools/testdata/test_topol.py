@@ -44,7 +44,7 @@ class TestBasic2(TestCase):
         lig_name = u.select_atoms("resname UNK")
         self.test_svg = TEST2
         self.output_name = "test2_1"
-        self.lintools = Lintools(AMI_GRO,[AMI_XTC],AMI_MOL2,lig_name,30,3.5,[1],[None],[None],0.3,"clocks",self.output_name)
+        self.lintools = Lintools(AMI_GRO,[AMI_XTC],AMI_MOL2,lig_name,30,3.5,[1],[None],[None],0.3,"clock",self.output_name)
         self.lintools.save_files()
         self.lintools.data_input_and_res_time_analysis()
         self.lintools.analysis_of_prot_lig_interactions()
