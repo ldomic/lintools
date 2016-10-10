@@ -1,0 +1,581 @@
+<?xml version='1.0' encoding='iso-8859-1'?>
+ <svg version='1.1' baseProfile='full'
+               xmlns:svg='http://www.w3.org/2000/svg'
+                       xmlns:rdkit='http://www.rdkit.org/xml'
+                       xmlns:xlink='http://www.w3.org/1999/xlink'
+                   xml:space='preserve'
+ width='1500px' height='1094.42207923px' > 
+ <rect style='opacity:1.0;fill:white;stroke:none' width='1500px' height='1094.42207923px' x='0' y='0'> </rect> <g transform='translate(300,322.211039613)'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='900' height='450' x='0' y='0' /> 
+<line stroke-dasharray='5,5'  x1='704' y1='-86' x2='786.91' y2='131.521' style='stroke:black;stroke-width:4' /><line stroke-dasharray='5,5'  x1='76' y1='424' x2='123.773' y2='223.932' style='stroke:black;stroke-width:4' /><circle cx='268' cy='521' r='55' fill='white' /><circle cx='762' cy='604' r='55' fill='white' /><circle cx='461' cy='564' r='55' fill='white' /><circle cx='177' cy='-14' r='55' fill='white' /><circle cx='76' cy='424' r='55' fill='white' /><circle cx='704' cy='-86' r='55' fill='white' /><circle cx='618' cy='533' r='55' fill='white' /><circle cx='864' cy='-85' r='55' fill='white' /><circle cx='405' cy='-90' r='55' fill='white' /><ellipse cx='123.773' cy='223.932' rx='32.0677' ry='32.0677' style='fill:#FFFFFF;fill-rule:evenoddstroke:#FFFFFF;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<ellipse cx='238.845' cy='189.011' rx='32.0677' ry='32.0677' style='fill:#FFFFFF;fill-rule:evenoddstroke:#FFFFFF;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<ellipse cx='326.623' cy='271.205' rx='32.0677' ry='32.0677' style='fill:#FFFFFF;fill-rule:evenoddstroke:#FFFFFF;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<ellipse cx='441.695' cy='236.284' rx='32.0677' ry='32.0677' style='fill:#FFFFFF;fill-rule:evenoddstroke:#FFFFFF;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<ellipse cx='468.988' cy='119.169' rx='32.0677' ry='32.0677' style='fill:#FFFFFF;fill-rule:evenoddstroke:#FFFFFF;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<ellipse cx='584.06' cy='84.2478' rx='32.0677' ry='32.0677' style='fill:#FFFFFF;fill-rule:evenoddstroke:#FFFFFF;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<ellipse cx='671.838' cy='166.442' rx='32.0677' ry='32.0677' style='fill:#FFFFFF;fill-rule:evenoddstroke:#FFFFFF;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<ellipse cx='786.91' cy='131.521' rx='32.0677' ry='32.0677' style='fill:#FFFFFF;fill-rule:evenoddstroke:#FFFFFF;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<ellipse cx='644.545' cy='283.558' rx='32.0677' ry='32.0677' style='fill:#FFFFFF;fill-rule:evenoddstroke:#FFFFFF;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<ellipse cx='732.323' cy='365.752' rx='32.0677' ry='32.0677' style='fill:#FFFFFF;fill-rule:evenoddstroke:#FFFFFF;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<ellipse cx='529.473' cy='318.479' rx='32.0677' ry='32.0677' style='fill:#FFFFFF;fill-rule:evenoddstroke:#FFFFFF;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path d='M 165.205,211.358 202.025,200.185' style='fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:5px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path d='M 202.025,200.185 238.845,189.011' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:5px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path d='M 238.845,189.011 326.623,271.205' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:5px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path d='M 326.623,271.205 441.695,236.284' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:5px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path d='M 441.695,236.284 468.988,119.169' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:5px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path d='M 469.212,224.176 488.317,142.195' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:5px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path d='M 441.695,236.284 529.473,318.479' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:5px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path d='M 468.988,119.169 584.06,84.2478' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:5px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path d='M 584.06,84.2478 671.838,166.442' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:5px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path d='M 580.788,114.133 642.232,171.669' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:5px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path d='M 671.838,166.442 711.329,154.458' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:5px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path d='M 711.329,154.458 750.819,142.474' style='fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:5px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path d='M 671.838,166.442 644.545,283.558' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:5px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path d='M 644.545,283.558 677.732,314.634' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:5px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path d='M 677.732,314.634 710.919,345.71' style='fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:5px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path d='M 644.545,283.558 529.473,318.479' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:5px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path d='M 620.3,265.782 539.75,290.226' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:5px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<text x='82.3411' y='245.978' style='font-size:40px;font-style:normal;font-weight:normal;fill-opacity:1;stroke:none;font-family:sans-serif;text-anchor:start;fill:#0000FF' ><tspan>H</tspan><tspan style='baseline-shift:sub;font-size:30px;'>2</tspan><tspan>N</tspan></text>
+<text x='750.819' y='151.563' style='font-size:40px;font-style:normal;font-weight:normal;fill-opacity:1;stroke:none;font-family:sans-serif;text-anchor:start;fill:#FF0000' ><tspan>OH</tspan></text>
+<text x='696.233' y='385.795' style='font-size:40px;font-style:normal;font-weight:normal;fill-opacity:1;stroke:none;font-family:sans-serif;text-anchor:start;fill:#FF0000' ><tspan>OH</tspan></text>
+</g>
+ <g transform='translate(478,753)'>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="
+M0 180
+L180 180
+L180 0
+L0 0
+L0 180" style="fill:none;"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="
+M162 90
+C162 80.8405 160.196 71.7701 156.691 63.3078
+C153.185 54.8456 148.047 47.156 141.571 40.6793
+C135.094 34.2026 127.404 29.0646 118.942 25.5594
+C110.48 22.0542 101.409 20.25 92.25 20.25
+C83.0905 20.25 74.0201 22.0542 65.5578 25.5594
+C57.0956 29.0646 49.406 34.2026 42.9293 40.6793
+C36.4526 47.156 31.3146 54.8456 27.8094 63.3078
+C24.3042 71.7701 22.5 80.8405 22.5 90
+C22.5 99.1595 24.3042 108.23 27.8094 116.692
+C31.3146 125.154 36.4526 132.844 42.9293 139.321
+C49.406 145.797 57.0956 150.935 65.5578 154.441
+C74.0201 157.946 83.0905 159.75 92.25 159.75
+C101.409 159.75 110.48 157.946 118.942 154.441
+C127.404 150.935 135.094 145.797 141.571 139.321
+C148.047 132.844 153.185 125.154 156.691 116.692
+C160.196 108.23 162 99.1595 162 90
+M144.562 90
+C144.562 96.8696 143.209 103.672 140.58 110.019
+C137.952 116.366 134.098 122.133 129.241 126.991
+C124.383 131.848 118.616 135.702 112.269 138.33
+C105.922 140.959 99.1196 142.312 92.25 142.312
+C85.3804 142.312 78.5776 140.959 72.2309 138.33
+C65.8842 135.702 60.117 131.848 55.2595 126.991
+C50.4019 122.133 46.5484 116.366 43.9196 110.019
+C41.2907 103.672 39.9375 96.8696 39.9375 90
+C39.9375 83.1304 41.2907 76.3276 43.9196 69.9809
+C46.5484 63.6342 50.4019 57.867 55.2595 53.0095
+C60.117 48.1519 65.8842 44.2984 72.2309 41.6696
+C78.5776 39.0407 85.3804 37.6875 92.25 37.6875
+C99.1196 37.6875 105.922 39.0407 112.269 41.6696
+C118.616 44.2984 124.383 48.1519 129.241 53.0095
+C134.098 57.867 137.952 63.6342 140.58 69.9809
+C143.209 76.3276 144.562 83.1304 144.562 90
+M162 90
+z
+" style="fill:#333399;"/>
+   </g>
+   <g id="matplotlib.axis_1"/>
+   <g id="matplotlib.axis_2"/>
+   <g id="text_1">
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;" transform="translate(63.020625 77.827375)">PHE</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;" transform="translate(57.1275 109.18125)">43 A</text>
+   </g>
+  </g>
+ </g>
+</g>
+ <g transform='translate(972,836)'>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="
+M0 180
+L180 180
+L180 0
+L0 0
+L0 180" style="fill:none;"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="
+M162 90
+C162 80.8405 160.196 71.7701 156.691 63.3078
+C153.185 54.8456 148.047 47.156 141.571 40.6793
+C135.094 34.2026 127.404 29.0646 118.942 25.5594
+C110.48 22.0542 101.409 20.25 92.25 20.25
+C83.0905 20.25 74.0201 22.0542 65.5578 25.5594
+C57.0956 29.0646 49.406 34.2026 42.9293 40.6793
+C36.4526 47.156 31.3146 54.8456 27.8094 63.3078
+C24.3042 71.7701 22.5 80.8405 22.5 90
+C22.5 99.1595 24.3042 108.23 27.8094 116.692
+C31.3146 125.154 36.4526 132.844 42.9293 139.321
+C49.406 145.797 57.0956 150.935 65.5578 154.441
+C74.0201 157.946 83.0905 159.75 92.25 159.75
+C101.409 159.75 110.48 157.946 118.942 154.441
+C127.404 150.935 135.094 145.797 141.571 139.321
+C148.047 132.844 153.185 125.154 156.691 116.692
+C160.196 108.23 162 99.1595 162 90
+M144.562 90
+C144.562 96.8696 143.209 103.672 140.58 110.019
+C137.952 116.366 134.098 122.133 129.241 126.991
+C124.383 131.848 118.616 135.702 112.269 138.33
+C105.922 140.959 99.1196 142.312 92.25 142.312
+C85.3804 142.312 78.5776 140.959 72.2309 138.33
+C65.8842 135.702 60.117 131.848 55.2595 126.991
+C50.4019 122.133 46.5484 116.366 43.9196 110.019
+C41.2907 103.672 39.9375 96.8696 39.9375 90
+C39.9375 83.1304 41.2907 76.3276 43.9196 69.9809
+C46.5484 63.6342 50.4019 57.867 55.2595 53.0095
+C60.117 48.1519 65.8842 44.2984 72.2309 41.6696
+C78.5776 39.0407 85.3804 37.6875 92.25 37.6875
+C99.1196 37.6875 105.922 39.0407 112.269 41.6696
+C118.616 44.2984 124.383 48.1519 129.241 53.0095
+C134.098 57.867 137.952 63.6342 140.58 69.9809
+C143.209 76.3276 144.562 83.1304 144.562 90
+M162 90
+z
+" style="fill:#333399;"/>
+   </g>
+   <g id="matplotlib.axis_1"/>
+   <g id="matplotlib.axis_2"/>
+   <g id="text_1">
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;" transform="translate(63.108125 77.827375)">SER</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;" transform="translate(47.3865625 109.18125)">422 A</text>
+   </g>
+  </g>
+ </g>
+</g>
+ <g transform='translate(671,796)'>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="
+M0 180
+L180 180
+L180 0
+L0 0
+L0 180" style="fill:none;"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="
+M162 90
+C162 80.8405 160.196 71.7701 156.691 63.3078
+C153.185 54.8456 148.047 47.156 141.571 40.6793
+C135.094 34.2026 127.404 29.0646 118.942 25.5594
+C110.48 22.0542 101.409 20.25 92.25 20.25
+C83.0905 20.25 74.0201 22.0542 65.5578 25.5594
+C57.0956 29.0646 49.406 34.2026 42.9293 40.6793
+C36.4526 47.156 31.3146 54.8456 27.8094 63.3078
+C24.3042 71.7701 22.5 80.8405 22.5 90
+C22.5 99.1595 24.3042 108.23 27.8094 116.692
+C31.3146 125.154 36.4526 132.844 42.9293 139.321
+C49.406 145.797 57.0956 150.935 65.5578 154.441
+C74.0201 157.946 83.0905 159.75 92.25 159.75
+C101.409 159.75 110.48 157.946 118.942 154.441
+C127.404 150.935 135.094 145.797 141.571 139.321
+C148.047 132.844 153.185 125.154 156.691 116.692
+C160.196 108.23 162 99.1595 162 90
+M144.562 90
+C144.562 96.8696 143.209 103.672 140.58 110.019
+C137.952 116.366 134.098 122.133 129.241 126.991
+C124.383 131.848 118.616 135.702 112.269 138.33
+C105.922 140.959 99.1196 142.312 92.25 142.312
+C85.3804 142.312 78.5776 140.959 72.2309 138.33
+C65.8842 135.702 60.117 131.848 55.2595 126.991
+C50.4019 122.133 46.5484 116.366 43.9196 110.019
+C41.2907 103.672 39.9375 96.8696 39.9375 90
+C39.9375 83.1304 41.2907 76.3276 43.9196 69.9809
+C46.5484 63.6342 50.4019 57.867 55.2595 53.0095
+C60.117 48.1519 65.8842 44.2984 72.2309 41.6696
+C78.5776 39.0407 85.3804 37.6875 92.25 37.6875
+C99.1196 37.6875 105.922 39.0407 112.269 41.6696
+C118.616 44.2984 124.383 48.1519 129.241 53.0095
+C134.098 57.867 137.952 63.6342 140.58 69.9809
+C143.209 76.3276 144.562 83.1304 144.562 90
+M162 90
+z
+" style="fill:#333399;"/>
+   </g>
+   <g id="matplotlib.axis_1"/>
+   <g id="matplotlib.axis_2"/>
+   <g id="text_1">
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;" transform="translate(63.108125 77.827375)">SER</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;" transform="translate(47.3865625 109.18125)">421 A</text>
+   </g>
+  </g>
+ </g>
+</g>
+ <g transform='translate(387,217)'>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="
+M0 180
+L180 180
+L180 0
+L0 0
+L0 180" style="fill:none;"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="
+M162 90
+C162 80.8405 160.196 71.7701 156.691 63.3078
+C153.185 54.8456 148.047 47.156 141.571 40.6793
+C135.094 34.2026 127.404 29.0646 118.942 25.5594
+C110.48 22.0542 101.409 20.25 92.25 20.25
+C83.0905 20.25 74.0201 22.0542 65.5578 25.5594
+C57.0956 29.0646 49.406 34.2026 42.9293 40.6793
+C36.4526 47.156 31.3146 54.8456 27.8094 63.3078
+C24.3042 71.7701 22.5 80.8405 22.5 90
+C22.5 99.1595 24.3042 108.23 27.8094 116.692
+C31.3146 125.154 36.4526 132.844 42.9293 139.321
+C49.406 145.797 57.0956 150.935 65.5578 154.441
+C74.0201 157.946 83.0905 159.75 92.25 159.75
+C101.409 159.75 110.48 157.946 118.942 154.441
+C127.404 150.935 135.094 145.797 141.571 139.321
+C148.047 132.844 153.185 125.154 156.691 116.692
+C160.196 108.23 162 99.1595 162 90
+M144.562 90
+C144.562 96.8696 143.209 103.672 140.58 110.019
+C137.952 116.366 134.098 122.133 129.241 126.991
+C124.383 131.848 118.616 135.702 112.269 138.33
+C105.922 140.959 99.1196 142.312 92.25 142.312
+C85.3804 142.312 78.5776 140.959 72.2309 138.33
+C65.8842 135.702 60.117 131.848 55.2595 126.991
+C50.4019 122.133 46.5484 116.366 43.9196 110.019
+C41.2907 103.672 39.9375 96.8696 39.9375 90
+C39.9375 83.1304 41.2907 76.3276 43.9196 69.9809
+C46.5484 63.6342 50.4019 57.867 55.2595 53.0095
+C60.117 48.1519 65.8842 44.2984 72.2309 41.6696
+C78.5776 39.0407 85.3804 37.6875 92.25 37.6875
+C99.1196 37.6875 105.922 39.0407 112.269 41.6696
+C118.616 44.2984 124.383 48.1519 129.241 53.0095
+C134.098 57.867 137.952 63.6342 140.58 69.9809
+C143.209 76.3276 144.562 83.1304 144.562 90
+M162 90
+z
+" style="fill:#333399;"/>
+   </g>
+   <g id="matplotlib.axis_1"/>
+   <g id="matplotlib.axis_2"/>
+   <g id="text_1">
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;" transform="translate(62.1303125 77.827375)">TYR</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;" transform="translate(47.3865625 109.18125)">124 A</text>
+   </g>
+  </g>
+ </g>
+</g>
+ <g transform='translate(286,656)'>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="
+M0 180
+L180 180
+L180 0
+L0 0
+L0 180" style="fill:none;"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="
+M162 90
+C162 80.8405 160.196 71.7701 156.691 63.3078
+C153.185 54.8456 148.047 47.156 141.571 40.6793
+C135.094 34.2026 127.404 29.0646 118.942 25.5594
+C110.48 22.0542 101.409 20.25 92.25 20.25
+C83.0905 20.25 74.0201 22.0542 65.5578 25.5594
+C57.0956 29.0646 49.406 34.2026 42.9293 40.6793
+C36.4526 47.156 31.3146 54.8456 27.8094 63.3078
+C24.3042 71.7701 22.5 80.8405 22.5 90
+C22.5 99.1595 24.3042 108.23 27.8094 116.692
+C31.3146 125.154 36.4526 132.844 42.9293 139.321
+C49.406 145.797 57.0956 150.935 65.5578 154.441
+C74.0201 157.946 83.0905 159.75 92.25 159.75
+C101.409 159.75 110.48 157.946 118.942 154.441
+C127.404 150.935 135.094 145.797 141.571 139.321
+C148.047 132.844 153.185 125.154 156.691 116.692
+C160.196 108.23 162 99.1595 162 90
+M144.562 90
+C144.562 96.8696 143.209 103.672 140.58 110.019
+C137.952 116.366 134.098 122.133 129.241 126.991
+C124.383 131.848 118.616 135.702 112.269 138.33
+C105.922 140.959 99.1196 142.312 92.25 142.312
+C85.3804 142.312 78.5776 140.959 72.2309 138.33
+C65.8842 135.702 60.117 131.848 55.2595 126.991
+C50.4019 122.133 46.5484 116.366 43.9196 110.019
+C41.2907 103.672 39.9375 96.8696 39.9375 90
+C39.9375 83.1304 41.2907 76.3276 43.9196 69.9809
+C46.5484 63.6342 50.4019 57.867 55.2595 53.0095
+C60.117 48.1519 65.8842 44.2984 72.2309 41.6696
+C78.5776 39.0407 85.3804 37.6875 92.25 37.6875
+C99.1196 37.6875 105.922 39.0407 112.269 41.6696
+C118.616 44.2984 124.383 48.1519 129.241 53.0095
+C134.098 57.867 137.952 63.6342 140.58 69.9809
+C143.209 76.3276 144.562 83.1304 144.562 90
+M162 90
+z
+" style="fill:#333399;"/>
+   </g>
+   <g id="matplotlib.axis_1"/>
+   <g id="matplotlib.axis_2"/>
+   <g id="text_1">
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;" transform="translate(61.7146875 77.827375)">ASP</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;" transform="translate(57.1275 109.18125)">46 A</text>
+   </g>
+  </g>
+ </g>
+</g>
+ <g transform='translate(914,146)'>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="
+M0 180
+L180 180
+L180 0
+L0 0
+L0 180" style="fill:none;"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="
+M162 90
+C162 80.8405 160.196 71.7701 156.691 63.3078
+C153.185 54.8456 148.047 47.156 141.571 40.6793
+C135.094 34.2026 127.404 29.0646 118.942 25.5594
+C110.48 22.0542 101.409 20.25 92.25 20.25
+C83.0905 20.25 74.0201 22.0542 65.5578 25.5594
+C57.0956 29.0646 49.406 34.2026 42.9293 40.6793
+C36.4526 47.156 31.3146 54.8456 27.8094 63.3078
+C24.3042 71.7701 22.5 80.8405 22.5 90
+C22.5 99.1595 24.3042 108.23 27.8094 116.692
+C31.3146 125.154 36.4526 132.844 42.9293 139.321
+C49.406 145.797 57.0956 150.935 65.5578 154.441
+C74.0201 157.946 83.0905 159.75 92.25 159.75
+C101.409 159.75 110.48 157.946 118.942 154.441
+C127.404 150.935 135.094 145.797 141.571 139.321
+C148.047 132.844 153.185 125.154 156.691 116.692
+C160.196 108.23 162 99.1595 162 90
+M144.562 90
+C144.562 96.8696 143.209 103.672 140.58 110.019
+C137.952 116.366 134.098 122.133 129.241 126.991
+C124.383 131.848 118.616 135.702 112.269 138.33
+C105.922 140.959 99.1196 142.312 92.25 142.312
+C85.3804 142.312 78.5776 140.959 72.2309 138.33
+C65.8842 135.702 60.117 131.848 55.2595 126.991
+C50.4019 122.133 46.5484 116.366 43.9196 110.019
+C41.2907 103.672 39.9375 96.8696 39.9375 90
+C39.9375 83.1304 41.2907 76.3276 43.9196 69.9809
+C46.5484 63.6342 50.4019 57.867 55.2595 53.0095
+C60.117 48.1519 65.8842 44.2984 72.2309 41.6696
+C78.5776 39.0407 85.3804 37.6875 92.25 37.6875
+C99.1196 37.6875 105.922 39.0407 112.269 41.6696
+C118.616 44.2984 124.383 48.1519 129.241 53.0095
+C134.098 57.867 137.952 63.6342 140.58 69.9809
+C143.209 76.3276 144.562 83.1304 144.562 90
+M162 90
+z
+" style="fill:#333399;"/>
+   </g>
+   <g id="matplotlib.axis_1"/>
+   <g id="matplotlib.axis_2"/>
+   <g id="text_1">
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;" transform="translate(61.795625 77.827375)">ALA</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;" transform="translate(47.3865625 109.18125)">117 A</text>
+   </g>
+  </g>
+ </g>
+</g>
+ <g transform='translate(828,766)'>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="
+M0 180
+L180 180
+L180 0
+L0 0
+L0 180" style="fill:none;"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="
+M162 90
+C162 80.8405 160.196 71.7701 156.691 63.3078
+C153.185 54.8456 148.047 47.156 141.571 40.6793
+C135.094 34.2026 127.404 29.0646 118.942 25.5594
+C110.48 22.0542 101.409 20.25 92.25 20.25
+C83.0905 20.25 74.0201 22.0542 65.5578 25.5594
+C57.0956 29.0646 49.406 34.2026 42.9293 40.6793
+C36.4526 47.156 31.3146 54.8456 27.8094 63.3078
+C24.3042 71.7701 22.5 80.8405 22.5 90
+C22.5 99.1595 24.3042 108.23 27.8094 116.692
+C31.3146 125.154 36.4526 132.844 42.9293 139.321
+C49.406 145.797 57.0956 150.935 65.5578 154.441
+C74.0201 157.946 83.0905 159.75 92.25 159.75
+C101.409 159.75 110.48 157.946 118.942 154.441
+C127.404 150.935 135.094 145.797 141.571 139.321
+C148.047 132.844 153.185 125.154 156.691 116.692
+C160.196 108.23 162 99.1595 162 90
+M144.562 90
+C144.562 96.8696 143.209 103.672 140.58 110.019
+C137.952 116.366 134.098 122.133 129.241 126.991
+C124.383 131.848 118.616 135.702 112.269 138.33
+C105.922 140.959 99.1196 142.312 92.25 142.312
+C85.3804 142.312 78.5776 140.959 72.2309 138.33
+C65.8842 135.702 60.117 131.848 55.2595 126.991
+C50.4019 122.133 46.5484 116.366 43.9196 110.019
+C41.2907 103.672 39.9375 96.8696 39.9375 90
+C39.9375 83.1304 41.2907 76.3276 43.9196 69.9809
+C46.5484 63.6342 50.4019 57.867 55.2595 53.0095
+C60.117 48.1519 65.8842 44.2984 72.2309 41.6696
+C78.5776 39.0407 85.3804 37.6875 92.25 37.6875
+C99.1196 37.6875 105.922 39.0407 112.269 41.6696
+C118.616 44.2984 124.383 48.1519 129.241 53.0095
+C134.098 57.867 137.952 63.6342 140.58 69.9809
+C143.209 76.3276 144.562 83.1304 144.562 90
+M162 90
+z
+" style="fill:#333399;"/>
+   </g>
+   <g id="matplotlib.axis_1"/>
+   <g id="matplotlib.axis_2"/>
+   <g id="text_1">
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;" transform="translate(61.7146875 77.827375)">ASP</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;" transform="translate(47.3865625 109.18125)">121 A</text>
+   </g>
+  </g>
+ </g>
+</g>
+ <g transform='translate(1074,146)'>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="
+M0 180
+L180 180
+L180 0
+L0 0
+L0 180" style="fill:none;"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="
+M162 90
+C162 80.8405 160.196 71.7701 156.691 63.3078
+C153.185 54.8456 148.047 47.156 141.571 40.6793
+C135.094 34.2026 127.404 29.0646 118.942 25.5594
+C110.48 22.0542 101.409 20.25 92.25 20.25
+C83.0905 20.25 74.0201 22.0542 65.5578 25.5594
+C57.0956 29.0646 49.406 34.2026 42.9293 40.6793
+C36.4526 47.156 31.3146 54.8456 27.8094 63.3078
+C24.3042 71.7701 22.5 80.8405 22.5 90
+C22.5 99.1595 24.3042 108.23 27.8094 116.692
+C31.3146 125.154 36.4526 132.844 42.9293 139.321
+C49.406 145.797 57.0956 150.935 65.5578 154.441
+C74.0201 157.946 83.0905 159.75 92.25 159.75
+C101.409 159.75 110.48 157.946 118.942 154.441
+C127.404 150.935 135.094 145.797 141.571 139.321
+C148.047 132.844 153.185 125.154 156.691 116.692
+C160.196 108.23 162 99.1595 162 90
+M144.562 90
+C144.562 96.8696 143.209 103.672 140.58 110.019
+C137.952 116.366 134.098 122.133 129.241 126.991
+C124.383 131.848 118.616 135.702 112.269 138.33
+C105.922 140.959 99.1196 142.312 92.25 142.312
+C85.3804 142.312 78.5776 140.959 72.2309 138.33
+C65.8842 135.702 60.117 131.848 55.2595 126.991
+C50.4019 122.133 46.5484 116.366 43.9196 110.019
+C41.2907 103.672 39.9375 96.8696 39.9375 90
+C39.9375 83.1304 41.2907 76.3276 43.9196 69.9809
+C46.5484 63.6342 50.4019 57.867 55.2595 53.0095
+C60.117 48.1519 65.8842 44.2984 72.2309 41.6696
+C78.5776 39.0407 85.3804 37.6875 92.25 37.6875
+C99.1196 37.6875 105.922 39.0407 112.269 41.6696
+C118.616 44.2984 124.383 48.1519 129.241 53.0095
+C134.098 57.867 137.952 63.6342 140.58 69.9809
+C143.209 76.3276 144.562 83.1304 144.562 90
+M162 90
+z
+" style="fill:#333399;"/>
+   </g>
+   <g id="matplotlib.axis_1"/>
+   <g id="matplotlib.axis_2"/>
+   <g id="text_1">
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;" transform="translate(63.055625 77.827375)">VAL</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;" transform="translate(47.3865625 109.18125)">120 A</text>
+   </g>
+  </g>
+ </g>
+</g>
+ <g transform='translate(615,142)'>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="
+M0 180
+L180 180
+L180 0
+L0 0
+L0 180" style="fill:none;"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="
+M162 90
+C162 80.8405 160.196 71.7701 156.691 63.3078
+C153.185 54.8456 148.047 47.156 141.571 40.6793
+C135.094 34.2026 127.404 29.0646 118.942 25.5594
+C110.48 22.0542 101.409 20.25 92.25 20.25
+C83.0905 20.25 74.0201 22.0542 65.5578 25.5594
+C57.0956 29.0646 49.406 34.2026 42.9293 40.6793
+C36.4526 47.156 31.3146 54.8456 27.8094 63.3078
+C24.3042 71.7701 22.5 80.8405 22.5 90
+C22.5 99.1595 24.3042 108.23 27.8094 116.692
+C31.3146 125.154 36.4526 132.844 42.9293 139.321
+C49.406 145.797 57.0956 150.935 65.5578 154.441
+C74.0201 157.946 83.0905 159.75 92.25 159.75
+C101.409 159.75 110.48 157.946 118.942 154.441
+C127.404 150.935 135.094 145.797 141.571 139.321
+C148.047 132.844 153.185 125.154 156.691 116.692
+C160.196 108.23 162 99.1595 162 90
+M144.562 90
+C144.562 96.8696 143.209 103.672 140.58 110.019
+C137.952 116.366 134.098 122.133 129.241 126.991
+C124.383 131.848 118.616 135.702 112.269 138.33
+C105.922 140.959 99.1196 142.312 92.25 142.312
+C85.3804 142.312 78.5776 140.959 72.2309 138.33
+C65.8842 135.702 60.117 131.848 55.2595 126.991
+C50.4019 122.133 46.5484 116.366 43.9196 110.019
+C41.2907 103.672 39.9375 96.8696 39.9375 90
+C39.9375 83.1304 41.2907 76.3276 43.9196 69.9809
+C46.5484 63.6342 50.4019 57.867 55.2595 53.0095
+C60.117 48.1519 65.8842 44.2984 72.2309 41.6696
+C78.5776 39.0407 85.3804 37.6875 92.25 37.6875
+C99.1196 37.6875 105.922 39.0407 112.269 41.6696
+C118.616 44.2984 124.383 48.1519 129.241 53.0095
+C134.098 57.867 137.952 63.6342 140.58 69.9809
+C143.209 76.3276 144.562 83.1304 144.562 90
+M162 90
+z
+" style="fill:#333399;"/>
+   </g>
+   <g id="matplotlib.axis_1"/>
+   <g id="matplotlib.axis_2"/>
+   <g id="text_1">
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;" transform="translate(63.020625 77.827375)">PHE</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;" transform="translate(47.3865625 109.18125)">325 A</text>
+   </g>
+  </g>
+ </g>
+</g>
+</svg>

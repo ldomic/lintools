@@ -1,2 +1,12 @@
+<<<<<<< HEAD
 
 lintools/testdata/.DS_Store
+=======
+# OS generated files #
+######################
+/lintools/.DS_Store
+
+lintools/topol.ipynb
+
+*.pyc
+>>>>>>> 21d76e036ac3874177a134ff9aa8b34f5c40f793

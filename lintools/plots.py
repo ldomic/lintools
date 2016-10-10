@@ -1,116 +1,131 @@
-#sudo apt-get install -y python-qt4
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib import pylab
-from topol import Topol_Data
+import numpy
+
+
 class Plots(object):
+    """
+    This module plots the residue data.
+    Types that are available are:
+    
+    * amino * (09.2016) - circle with residue name and id (and chain) colored by residue type
+    * domain * (09.2016) - residue name and id (and chain) circled by differently colored rings,
+    ring color depends on the chain the residue is on.
+    * clock * (09.2016) - residue name and id (and chain) circled by one or several differently
+    colored rings that display the fraction of time this residue has spent in the vicinity of 
+    the ligand.
+    
+    Takes:
+        * topology_data_object * - information about the system (lintools.Data object)
+        * diagram_type * - string of the selected diagram type (e.g. "amino" or "clocks")
+    """
+    __version__ = "09.2016"
     matplotlib.rcParams['svg.fonttype'] = 'none'
     matplotlib.rcParams['font.weight']=900
     matplotlib.rcParams['text.usetex'] = False
     matplotlib.rcParams['patch.linewidth'] = 0  
-    def __init__(self, topol_object):
-        #Group amino acids by charge and structure
-        self.amino_acids = {"acidic":["ASP","GLU"], "basic":["LYS","ARG"], "aromatic":["PHE","TYR","TRP"],"polar":["SER","THR","ASN","GLN","CYS","HIS"],"hydrophobic":["ALA","VAL","ILE","LEU","MET","GLY","PRO"],"ions":["PO4"]}
-        self.colors_amino_acids = {"acidic":"#D9774B", "basic":"#889DCC", "aromatic":"#9FC74A", "polar":"#D06AC1","hydrophobic":"#6AC297","ions":"#fce94f"}
-        self.amino_acid_type={}
-        self.colors_domains ={1:"#78D035",2:"#BE4F24",3:"#7676C2",4:"#7CC2C0",5:"#42291B",6:"#BB3B83",7:"#486128",8:"#6FCD7A",9:"#A43FC8",10:"#C09584",11:"#C5AD3D",12:"#43264D", 13:"#A9A9A9"}
-        self.residues_within_domain={}
-        self.plotted_domains = []
-        self.universe = topol_object
-    def define_amino_acids(self):
-        for residue in self.universe.dict_of_plotted_res.keys():
-            for aa_type, aa in self.amino_acids.items():
-                for amino_acid in aa:
-                    if residue[0:3] == amino_acid:
-                        self.amino_acid_type[residue]=aa_type
-        print "Defining amino acid type..."
-    def define_domains(self, domain_file, offset):
-        domains = {}
-        with open (domain_file, "r") as h:
-            lines = h.readlines()
-            for line in lines:
-                if len(line.rsplit(";",5))==3:
-                    domains[int(line.rsplit(";",5)[0])]=([],line.rsplit(";",5)[2])
-                if len(line.rsplit(";",5))==4:
-                    domains[int(line.rsplit(";",5)[0])]=([],line.rsplit(";",5)[2],line.rsplit(";",5)[3][:7])
-                if len(line.rsplit(";",5))==5:
-                    domains[int(line.rsplit(";",5)[0])]=([],line.rsplit(";",5)[2],line.rsplit(";",5)[3][:7],line.rsplit(";",5)[4])
-                for i in range(len(line.rsplit(";",5)[1].rsplit(",",50))):
-                    if len(line.rsplit(";",5)[1].rsplit(",",50)[i].rsplit("-",2))>1:
-                        for num in range(int(line.rsplit(";",5)[1].rsplit(",",50)[i].rsplit("-",2)[0]),int(line.rsplit(";",5)[1].rsplit(",",50)[i].rsplit("-",2)[1])+1):
-                            domains[int(line.rsplit(";",5)[0])][0].append(num)
-                    else:
-                        domains[int(line.rsplit(";",5)[0])][0].append(int(line.rsplit(";",5)[1].rsplit(",",50)[i]))
-        for domain in domains:
-            for res in self.universe.dict_of_plotted_res:
-                if int(res[3::]) in domains[domain][0] and len(domains[domain])==2:
-                    self.residues_within_domain[res]=[domain,domains[domain][1],self.colors_domains[domain],"N"]
-                if int(res[3::]) in domains[domain][0] and len(domains[domain])==3:
-                    self.residues_within_domain[res]=[domain,domains[domain][1],domains[domain][2],"N"]
-                if int(res[3::]) in domains[domain][0] and len(domains[domain])==4:
-                    #extra checks for dashes
-                    if str(domains[domain][2])=="None":
-                        print res
-                        if res not in self.residues_within_domain.keys():
-                            self.residues_within_domain[res]=[domain, domains[domain][1],"#A9A9A9",domains[domain][3]]
-                        self.residues_within_domain[res][3]=[domains[domain][3]]
-                        print self.residues_within_domain[res]
-                        domain_description=[domain, domains[domain][1],"#A9A9A9",domains[domain][3]]
-                        if domain_description not in self.plotted_domains:
-                            #domain_description=[domain, domains[domain][1],"#A9A9A9",domains[domain][3]]
-                            self.plotted_domains.append(domain_description)
-                    else:
-                        self.residues_within_domain[res]=[domain,domains[domain][1],domains[domain][2], domains[domain][3]]
+    def __init__(self, topology_data_object,diagram_type):
+        self.topology_data = topology_data_object
+        self.colors_amino_acids = {"acidic":"#D9774B", "basic":"#889DCC", 
+                                   "aromatic":"#9FC74A", "polar":"#D06AC1",
+                                   "hydrophobic":"#6AC297"}
+        self.amino_acids = {"ASP":"acidic","GLU":"acidic","LYS":"basic","ARG":"basic",
+                       "PHE":"aromatic","TYR":"aromatic","TRP":"aromatic","SER":"polar",
+                       "THR":"polar","ASN":"polar","GLN":"polar","CYS":"polar",
+                       "HIS":"polar","ALA":"hydrophobic","VAL":"hydrophobic",
+                       "ILE":"hydrophobic","LEU":"hydrophobic","MET":"hydrophobic",
+                       "GLY":"hydrophobic","PRO":"hydrophobic"}
+        if diagram_type == "amino":
+            self.plot_amino_diagrams()
+        if diagram_type == "domains":
+            self.plot_domain_diagrams()
+        if diagram_type == "clock":
+            self.plot_clock_diagrams()
+    def plot_amino_diagrams(self):
+        """
+        Plotting of amino diagrams - circles with residue name and id, colored according to the 
+        residue type. If the protein has more than one chain, chain identity is also included in
+        the plot. The plot is saved as svg file with residue id and chain id as filename for more
+        certain identification.
+        """
+        self.topology_data.ring_number = 1
 
-
-        for res in self.universe.dict_of_plotted_res:
-            if res not in self.residues_within_domain.keys():
-                self.residues_within_domain[res]=[0,"No specified domain", "#A9A9A9","N"]
-        for res in self.residues_within_domain:
-            if self.residues_within_domain[res] not in self.plotted_domains:
-                self.plotted_domains.append(self.residues_within_domain[res])
-
-        print "Defining domains..."
-        
-    def plot_amino_diagramms(self):
-        for res in self.amino_acid_type:
-            color = [self.colors_amino_acids[self.amino_acid_type[res]],'white']
-            plt.figure(figsize=(1.5,1.5))
-            #plot a random value (1) at the moment
+        for res in self.topology_data.dict_of_plotted_res:
+            color = [self.colors_amino_acids[self.amino_acids[res.resname]],'white']
+            plt.figure(figsize=(2.5,2.5))
             ring1,_=plt.pie([1],  radius=1, startangle=90, colors=color, counterclock=False)
             plt.axis('equal')
-            plt.setp(ring1, width=1, edgecolor=self.colors_amino_acids[self.amino_acid_type[res]])
-            plt.text(0,-0.55,res[0:3]+"\n"+res[3::],ha='center',size=24, fontweight="bold")
-            pylab.savefig(str(res[3::])+".svg", dpi=100, transparent=True)
-            
-        print "Plotting..."
+            plt.setp(ring1, width=1, edgecolor=self.colors_amino_acids[self.amino_acids[res.resname]])
+            if len(self.topology_data.universe.protein.segments)<=1:
+                #Parameters for amino diagrams without segids
+                plt.text(0,-0.45,res.resname+"\n"+str(res.resid),ha='center',size=36, fontweight="bold")
+            else:            
+                #Parameters for amino diagrams with segids
+                plt.text(0,-0.37,res.resname+"\n"+str(res.resid)+" "+res.segids[0],ha='center',size=30, fontweight="bold")
+            #play with the dpi
+            pylab.savefig(str(res.resid)+res.segids[0]+".svg", dpi=300, transparent=True)
         
-    def plot_domains_diagramms(self):
-        width=0.20        
-        for res in self.universe.closest_atoms:
-            color = [self.residues_within_domain[res][2],'white']
-            plt.figure(figsize=(1.5,1.5))
+            
+    def plot_domain_diagrams(self):
+        """
+        Plotting domain diagrams - a ring around the residue name and id and chain id. The colors are
+        determined by the chain id and are extracted from matplotlib colormap "terrain" (ver. "09.2016")
+        The plot is saved as svg file with residue id and chain id as filename for more certain 
+        identification.
+        """
+        # width of the circle around plot
+        width=0.20 
+        self.topology_data.ring_number = 1
+
+        # define color library
+        cmap = plt.get_cmap('terrain')
+        colors = [cmap(i) for i in numpy.linspace(0, 0.75, len(self.topology_data.universe.protein.segments))]
+        domain_colors = {seg:colors[i] for i,seg in enumerate(self.topology_data.universe.protein.segments.segids.tolist())}
+        for res in self.topology_data.dict_of_plotted_res:
+            color = [domain_colors[res.segids[0]],'white']
+            #color = [self.colors_amino_acids[self.amino_acids[res.resname]],'white']
+            plt.figure(figsize=(2.5,2.5))
             ring1,_=plt.pie([1],  radius=1-width, startangle=90, colors=color, counterclock=False)
             plt.axis('equal')
             plt.setp(ring1, width=width, edgecolor='white')
-            plt.text(0,-0.35,res[0:3]+"\n"+res[3::],ha='center',size=20, fontweight='bold')  
-            pylab.savefig(str(res[3::])+".svg", dpi=100, transparent = True)
-        print "Plotting..."
-
-
-    def plot_clock_diagramms(self):
-        """Uses matplotlib to plot clock diagramms used for data analysis of trajectories, for example, occurrence time  over timecourse of simulation"""
-        colors = [['#00441b','white'], ['#1b7837','white'],['#5aae61','white'], ['#9970ab','white'], ['#762a83','white'],['#40004b',"white"]]
-        for res in self.universe.dict_of_plotted_res.keys():
-            plt.figure(figsize=(1.9, 1.9))
-            ring_number=[sum(1 for x in v if x) for k,v in self.universe.dict_of_plotted_res.items()][0]
-            width=0.75/ring_number
+            if len(self.topology_data.universe.protein.segments)<=1:
+                #Parameters for amino diagrams without segids
+                plt.text(0,-0.4,res.resname+"\n"+str(res.resid),ha='center',size=36, fontweight="bold")
+            else:            
+                #Parameters for amino diagrams with segids
+                plt.text(0,-0.22,res.resname+"\n"+str(res.resid)+" "+res.segids[0],ha='center',size=28, fontweight="bold")
+            #play with the dpi
+            pylab.savefig(str(res.resid)+res.segids[0]+".svg", dpi=300, transparent=True)
+            
+            
+    def plot_clock_diagrams(self):
+        """
+        Ploting clock diagrams - one or more rings around residue name and id (and chain id).
+        The rings show the fraction of simulation time this residue has spent in the vicinity of the
+        ligand - characterised by distance.
+        """
+        cmap = plt.get_cmap('summer')
+        for res in self.topology_data.dict_of_plotted_res:
+            colors = [cmap(i) for i in numpy.linspace(0, 1, len(self.topology_data.dict_of_plotted_res[res]))]
+            traj_colors_ = {traj:colors[i] for i,traj in enumerate(self.topology_data.dict_of_plotted_res[res])}
+            plt.figure(figsize=(2.25, 2.25))
+            ring_number=[sum(1 for x in v if x) for k,v in self.topology_data.dict_of_plotted_res.items()][0]
+            self.topology_data.ring_number = ring_number
             rings=[]
-            for ring in range(1,ring_number):
-                ring,_=plt.pie([self.universe.dict_of_plotted_res[res][ring],self.universe.frame_count[ring-1]-self.universe.dict_of_plotted_res[res][ring]],  radius=0.65+width*ring, startangle=90, colors=colors[ring-1], counterclock=False)
+            # When only a few rings to plot they can be thicker
+            if ring_number<2:
+                width = 0.3
+            else:
+                width = 0.2
+            for ring in range(0,ring_number):
+                ring,_=plt.pie([self.topology_data.dict_of_plotted_res[res][ring],1-self.topology_data.dict_of_plotted_res[res][ring]],  radius=0.9+width*(ring+1), startangle=90, colors=[colors[ring],"white"], counterclock=False)
                 rings=rings+ring
             plt.setp(rings, width=width)
-            plt.text(-0.04,-0.45,res[0:3]+"\n"+res[3::],ha='center',size=20, fontweight='bold')
-            pylab.savefig(str(res[3::])+".svg", dpi=300, transparent=True)
-
+            if len(self.topology_data.universe.protein.segments)<=1:
+            #Settings with domain
+                plt.text(-0.0,-0.62,res.resname+"\n"+str(res.resid),ha='center',size=32, fontweight='bold')
+            else:
+                plt.text(-0.0,-0.72,res.resname+"\n"+str(res.resid)+"\n"+res.segids[0],ha='center',size=25, fontweight='bold')
+            pylab.savefig(str(res.resid)+res.segids[0]+".svg", dpi=300, transparent=True)   
