@@ -59,8 +59,8 @@ class Figure(object):
         """
         start1 = "width='900px' height='450px' >"
         start2 = "<rect style='opacity:1.0;fill:#FFFFFF;stroke:none' width='900' height='450' x='0' y='0'> </rect>"
-        bigger_box ="width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim)+"px' > "
-        big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(self.molecule.x_dim)+"px' height='"+str(self.molecule.y_dim)+"px' x='0' y='0'> </rect> <g transform='translate("+str((self.molecule.x_dim-900)/2)+","+str((self.molecule.y_dim-450)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='900' height='450' x='0' y='0' /> "
+        bigger_box ="width='"+str(int(self.molecule.x_dim))+"px' height='"+str(int(self.molecule.y_dim))+"px' > "
+        big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(int(self.molecule.x_dim))+"px' height='"+str(int(self.molecule.y_dim))+"px' x='0' y='0'> </rect> <g transform='translate("+str((self.molecule.x_dim-900)/2)+","+str((self.molecule.y_dim-450)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='900' height='450' x='0' y='0' /> "
         self.end_symbol = "</svg>"
         no_end_symbol = "</g>"
         #Make the lines in molecule drawing thicker to look better with the large plots

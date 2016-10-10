@@ -242,7 +242,7 @@ class Molecule(object):
         min_y = int(min(v[1] for k,v in self.nearest_points_coords.items()))
         max_y = int(max(v[1] for k,v in self.nearest_points_coords.items()))
         if min_x<0:
-            self.x_dim = (max_x-min_x)+600 #600 acts as buffer
+            self.x_dim =(max_x-min_x)+600 #600 acts as buffer
         elif max_x<900 and min_x<0: #In case all residues are grouped on one end of the molecule
             self.x_dim = (900-min_x)+600
         elif max_x<900 and min_x>0:
