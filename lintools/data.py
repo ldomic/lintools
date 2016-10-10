@@ -15,6 +15,7 @@ class Data(object):
     def __init__(self):
         self.dict_of_plotted_res = {}
         self.closest_atoms = {}
+        self.ring_number = 1
     def load_topology(self,topology):
         """
         Loads the topology file (e.g. GRO,PDB,INPCRD) as a MDAnalysis Universe, 
@@ -124,8 +125,11 @@ class Data(object):
         for residue in self.protein_selection.residues:
                 #for non-analysis plots
                 self.dict_of_plotted_res[residue]=[1]
+        #Make ordered dictionary - for tests
+        self.dict_of_plotted_res = sorted(self.dict_of_plotted_res.items(), key=operator.itemgetter(1))
         assert len(self.dict_of_plotted_res)!=0, "Nothing to draw for this ligand (residue number: "+ self.universe.ligand.resids[0] +" on the chain "+ self.universe.ligand.segids[0] +") - check the position of your ligand within the topology file."
         
+
     def find_the_closest_atoms(self,topology):
         """
         This function defines the ligand atoms that are closest to the residues that will be plotted 

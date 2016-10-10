@@ -50,7 +50,6 @@ class Plots(object):
         the plot. The plot is saved as svg file with residue id and chain id as filename for more
         certain identification.
         """
-        self.topology_data.ring_number = 1
 
         for res in self.topology_data.dict_of_plotted_res:
             color = [self.colors_amino_acids[self.amino_acids[res.resname]],'white']
@@ -77,7 +76,7 @@ class Plots(object):
         """
         # width of the circle around plot
         width=0.20 
-        self.topology_data.ring_number = 1
+        
 
         # define color library
         cmap = plt.get_cmap('terrain')

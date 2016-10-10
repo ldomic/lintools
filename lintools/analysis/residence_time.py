@@ -1,8 +1,9 @@
 import MDAnalysis
 from collections import Counter
 from timeit import default_timer as timer
-from lintools.utils.progressbar import ProgressBar
+from utils.progressbar import ProgressBar
 import sys
+import operator
 
 
 
@@ -117,6 +118,7 @@ class Residence_time(object):
                     self.frequency[residue].append(self.residue_counts_fraction[traj][residue])
 
         self.topology_data.dict_of_plotted_res = {i:self.frequency[i] for i in self.frequency if sum(self.frequency[i])>(int(len(self.trajectory))*analysis_cutoff)}
-
+        #Make sorted dictionary for tests
+        self.topology_data.dict_of_plotted_res = sorted(self.topology_data.dict_of_plotted_res.items(), key=operator.itemgetter(1))
         assert len(self.topology_data.dict_of_plotted_res)!=0,"Nothing to draw for this ligand:(residue number: "+ str(self.topology_data.universe.ligand.resids[0]) +" on the chain "+ str(self.topology_data.universe.ligand.segids[0]) +") - try reducing the analysis cutoff."
 
