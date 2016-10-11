@@ -30,7 +30,7 @@ class Plots(object):
         self.topology_data = topology_data_object
         self.colors_amino_acids = {"acidic":"#D9774B", "basic":"#889DCC", 
                                    "aromatic":"#9FC74A", "polar":"#D06AC1",
-                                   "hydrophobic":"#6AC297"}
+                                   "hydrophobic":"#6AC297","lipids":"#ffff99"}
         self.amino_acids = {"ASP":"acidic","GLU":"acidic","LYS":"basic","ARG":"basic",
                        "PHE":"aromatic","TYR":"aromatic","TRP":"aromatic","SER":"polar",
                        "THR":"polar","ASN":"polar","GLN":"polar","CYS":"polar",

@@ -68,11 +68,12 @@ class Lintools(object):
             self.res_time.measure_residence_time(self.cutoff)
             self.res_time.define_residues_for_plotting_traj(self.analysis_cutoff)
             self.topol_data.find_the_closest_atoms(self.topology)
-    def analysis_of_prot_lig_interactions(self):
+    def analysis_of_prot_lig_interactions(self,hydr_bonds):
         """
         The classes and function that deal with protein-ligand interaction analysis.
         """
-        self.hbonds = HBonds(self.topol_data,self.trajectory,self.start,self.end,self.skip,self.analysis_cutoff,distance=3)
+        if hydr_bonds!=True:
+            self.hbonds = HBonds(self.topol_data,self.trajectory,self.start,self.end,self.skip,self.analysis_cutoff,distance=3)
     def plot_residues(self):
         """
         Calls Plot() that plots the residues with the required diagram_type.
@@ -121,6 +122,7 @@ if __name__ == '__main__':
     parser.add_argument('-b', dest = "start", nargs="*", default=[None], help='Start frame number(s)')
     parser.add_argument('-e', dest = "end", nargs="*", default=[None], help='End frame number(s)')
     parser.add_argument('-skip', dest = "skip", nargs="*", default=[None], help='Skip frames')
+    parser.add_argument('--no_hbonds', dest='hydr_bonds', action="store_true", help="The hydrogen bonds will not be detected.")
 
 
 
@@ -190,7 +192,7 @@ if __name__ == '__main__':
     lintools = Lintools(args.topology,args.trajectory,args.mol2,ligand_name,args.offset,args.cutoff,args.start,args.end,args.skip,args.analysis_cutoff,diagram_type,args.output_name)
     lintools.save_files()
     lintools.data_input_and_res_time_analysis()
-    lintools.analysis_of_prot_lig_interactions()
+    lintools.analysis_of_prot_lig_interactions(args.hydr_bonds)
     lintools.plot_residues()
     lintools.draw_figure()
     lintools.remove_files()

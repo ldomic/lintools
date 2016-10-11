@@ -65,7 +65,7 @@ class Residence_time(object):
             prog = ProgressBar("Residence_time")
             self.topology_data.load_trajectory(traj)
             for frame in self.topology_data.universe.trajectory[self.start_frame_num[i]:self.end_frame_num[i]:self.skip[i]]:  
-                selection = self.topology_data.universe.select_atoms("protein and around "+str(cutoff)+' (segid '+str(self.topology_data.universe.ligand.segids[0])+' and resid '+str(self.topology_data.universe.ligand.resids[0])+')')
+                selection = self.topology_data.universe.select_atoms("all and around "+str(cutoff)+' (segid '+str(self.topology_data.universe.ligand.segids[0])+' and resid '+str(self.topology_data.universe.ligand.resids[0])+')')
                 #selection by residues - they can be accessed later to make sure on which chain they are
                 #also counter treats each residue as single object - i.e. no problems with multiple chains where
                 #there are several residues with the same resid and resname - they will be treated seperately
