@@ -121,7 +121,7 @@ class Data(object):
                 * 
         """
         
-        self.protein_selection = self.universe.select_atoms('protein and around '+str(cutoff)+' (segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')
+        self.protein_selection = self.universe.select_atoms('all and around '+str(cutoff)+' (segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')
         for atom in self.protein_selection.atoms:
                 #for non-analysis plots
                 residue = (atom.resname, str(atom.resid), atom.segid)
