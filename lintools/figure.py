@@ -82,7 +82,7 @@ class Figure(object):
         part of the plots (that contains text). This function creates white circles that provide
         background.
         """
-        for atom in self.molecule.nearest_points_coords:
+        for atom in sorted(self.molecule.nearest_points_coords.keys()):
                 self.white_circles = self.white_circles+"<circle cx='"+str(int(self.molecule.nearest_points_coords[atom][0]))+"' cy='"+str(int(self.molecule.nearest_points_coords[atom][1]))+"' r='55' fill='white' />"
     def draw_hydrogen_bonds(self):
         """
