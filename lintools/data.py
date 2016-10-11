@@ -122,9 +122,11 @@ class Data(object):
         """
         
         self.protein_selection = self.universe.select_atoms('protein and around '+str(cutoff)+' (segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')
-        for residue in self.protein_selection.residues:
+        for atom in self.protein_selection.atoms:
                 #for non-analysis plots
-                self.dict_of_plotted_res[residue]=[1]
+                residue = (atom.resname, str(atom.resid), atom.segid)
+                if residue not in self.dict_of_plotted_res.keys():
+                    self.dict_of_plotted_res[residue]=[1]
         
         assert len(self.dict_of_plotted_res)!=0, "Nothing to draw for this ligand (residue number: "+ self.universe.ligand.resids[0] +" on the chain "+ self.universe.ligand.segids[0] +") - check the position of your ligand within the topology file."
         
@@ -141,9 +143,9 @@ class Data(object):
         self.universe.ligand_noH = self.universe.ligand.select_atoms("not name H*")
         ligand_positions = self.universe.ligand_noH.positions
         
-        for residue in self.dict_of_plotted_res:
-            #residue_selection = self.universe.select_atoms("resid " + str(residue.resid))
-            residue_positions = residue.positions
+        for residue in self.dict_of_plotted_res.keys():
+            residue_selection = self.universe.select_atoms("resname "+residue[0]+" and resid "+residue[1]+" and segid "+ residue[2])
+            residue_positions = residue_selection.positions
             dist_array = MDAnalysis.analysis.distances.distance_array(ligand_positions,residue_positions)
             min_values_per_atom={}
             i=0

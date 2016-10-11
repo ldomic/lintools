@@ -101,7 +101,7 @@ class Lintools(object):
         """Removes intermediate files."""
         file_list = ["molecule.svg","LIG.pdb"]
         for residue in self.topol_data.dict_of_plotted_res.keys():
-            file_list.append(str(residue.resid)+residue.segids[0]+".svg")
+            file_list.append(residue[1]+residue[2]+".svg")
         for f in file_list:
             if os.path.isfile(f)==True:
                 os.remove(f)

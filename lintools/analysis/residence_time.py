@@ -70,7 +70,8 @@ class Residence_time(object):
                 #also counter treats each residue as single object - i.e. no problems with multiple chains where
                 #there are several residues with the same resid and resname - they will be treated seperately
                 prog.update(frame.frame,self.topology_data.universe.trajectory.n_frames)
-                residue_list = [residue for residue in selection.residues]
+                residue_list = [(atom.resname, str(atom.resid), atom.segid) for atom in selection.atoms]
+
                 frame_dict[frame.time]=set(residue_list)
                 
             # How many frames each individual simulation has? The simulations can be of differing length    

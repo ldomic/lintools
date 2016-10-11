@@ -52,19 +52,19 @@ class Plots(object):
         """
 
         for res in self.topology_data.dict_of_plotted_res:
-            color = [self.colors_amino_acids[self.amino_acids[res.resname]],'white']
+            color = [self.colors_amino_acids[self.amino_acids[res[0]]],'white']
             plt.figure(figsize=(2.5,2.5))
             ring1,_=plt.pie([1],  radius=1, startangle=90, colors=color, counterclock=False)
             plt.axis('equal')
-            plt.setp(ring1, width=1, edgecolor=self.colors_amino_acids[self.amino_acids[res.resname]])
+            plt.setp(ring1, width=1, edgecolor=self.colors_amino_acids[self.amino_acids[res[0]]])
             if len(self.topology_data.universe.protein.segments)<=1:
                 #Parameters for amino diagrams without segids
-                plt.text(0,-0.45,res.resname+"\n"+str(res.resid),ha='center',size=36, fontweight="bold")
+                plt.text(0,-0.45,res[0]+"\n"+res[1],ha='center',size=36, fontweight="bold")
             else:            
                 #Parameters for amino diagrams with segids
-                plt.text(0,-0.37,res.resname+"\n"+str(res.resid)+" "+res.segids[0],ha='center',size=30, fontweight="bold")
+                plt.text(0,-0.37,res[0]+"\n"+res[1]+" "+res[2],ha='center',size=30, fontweight="bold")
             #play with the dpi
-            pylab.savefig(str(res.resid)+res.segids[0]+".svg", dpi=300, transparent=True)
+            pylab.savefig(str(res[1])+res[2]+".svg", dpi=300, transparent=True)
         
             
     def plot_domain_diagrams(self):
@@ -83,7 +83,7 @@ class Plots(object):
         colors = [cmap(i) for i in numpy.linspace(0, 0.75, len(self.topology_data.universe.protein.segments))]
         domain_colors = {seg:colors[i] for i,seg in enumerate(self.topology_data.universe.protein.segments.segids.tolist())}
         for res in self.topology_data.dict_of_plotted_res:
-            color = [domain_colors[res.segids[0]],'white']
+            color = [domain_colors[res[2]],'white']
             #color = [self.colors_amino_acids[self.amino_acids[res.resname]],'white']
             plt.figure(figsize=(2.5,2.5))
             ring1,_=plt.pie([1],  radius=1-width, startangle=90, colors=color, counterclock=False)
@@ -91,12 +91,12 @@ class Plots(object):
             plt.setp(ring1, width=width, edgecolor='white')
             if len(self.topology_data.universe.protein.segments)<=1:
                 #Parameters for amino diagrams without segids
-                plt.text(0,-0.4,res.resname+"\n"+str(res.resid),ha='center',size=36, fontweight="bold")
+                plt.text(0,-0.4,res[0]+"\n"+res[1],ha='center',size=36, fontweight="bold")
             else:            
                 #Parameters for amino diagrams with segids
-                plt.text(0,-0.22,res.resname+"\n"+str(res.resid)+" "+res.segids[0],ha='center',size=28, fontweight="bold")
+                plt.text(0,-0.22,res[0]+"\n"+res[1]+" "+res[2],ha='center',size=28, fontweight="bold")
             #play with the dpi
-            pylab.savefig(str(res.resid)+res.segids[0]+".svg", dpi=300, transparent=True)
+            pylab.savefig(res[1]+res[2]+".svg", dpi=300, transparent=True)
             
             
     def plot_clock_diagrams(self):
@@ -124,7 +124,11 @@ class Plots(object):
             plt.setp(rings, width=width)
             if len(self.topology_data.universe.protein.segments)<=1:
             #Settings with domain
-                plt.text(-0.0,-0.62,res.resname+"\n"+str(res.resid),ha='center',size=32, fontweight='bold')
+                plt.text(-0.0,-0.62,res[0]+"\n"+res[1],ha='center',size=32, fontweight='bold')
             else:
-                plt.text(-0.0,-0.72,res.resname+"\n"+str(res.resid)+"\n"+res.segids[0],ha='center',size=25, fontweight='bold')
-            pylab.savefig(str(res.resid)+res.segids[0]+".svg", dpi=300, transparent=True)   
+                plt.text(-0.0,-0.72,res[0]+"\n"+res[1]+"\n"+res[2],ha='center',size=25, fontweight='bold')
+            pylab.savefig(res[1]+res[2]+".svg", dpi=300, transparent=True)   
+
+
+
+

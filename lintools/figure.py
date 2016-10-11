@@ -35,19 +35,19 @@ class Figure(object):
         included in the final figure.
         """
         diagram = ""
-        for residue in self.molecule.nearest_points_coords:
-            for i, line in enumerate(fileinput.input(str(residue.resid)+residue.segids[0]+".svg", inplace=1)):
+        for residue in sorted(self.molecule.nearest_points_coords.keys()):
+            for i, line in enumerate(fileinput.input(residue[1]+residue[2]+".svg", inplace=1)):
                     if i <= 8:
                         continue
                     else:
                         sys.stdout.write(line.replace ("</svg>","</g>"))
             input1 = "</defs>"
             output1 = "<g transform='translate("+str(int(self.molecule.nearest_points_coords[residue][0]+(self.molecule.x_dim-900)/2)-90)+","+str(int(self.molecule.nearest_points_coords[residue][1]+(self.molecule.y_dim-450)/2)-90)+")'>"
-            self.change_lines_in_svg(str(residue.resid)+residue.segids[0]+'.svg', input1, output1)
+            self.change_lines_in_svg(residue[1]+residue[2]+'.svg', input1, output1)
             input2 = "font-style:normal;"
             output2 = "font-style:normal;font-weight:bold;"
-            self.change_lines_in_svg(str(residue.resid)+residue.segids[0]+'.svg', input2, output2)
-            with open(str(residue.resid)+residue.segids[0]+".svg", "r") as f:
+            self.change_lines_in_svg(residue[1]+residue[2]+'.svg', input2, output2)
+            with open(residue[1]+residue[2]+".svg", "r") as f:
                 lines = f.readlines()
                 diagram = diagram +"".join(map(str,lines))
                 f.close()
@@ -89,7 +89,8 @@ class Figure(object):
         For each bond that has been determined to be important, a line gets drawn.
         """
         for bond in self.hbonds.hbonds_for_drawing:
-            residue = self.topology_data.universe.atoms[bond[0]-1].residue #zero-based index vs one-based index
+            atom = self.topology_data.universe.atoms[bond[0]-1] #zero-based index vs one-based index
+            residue = (atom.resname, str(atom.resid), atom.segid)
             self.draw_lines=self.draw_lines+"<line stroke-dasharray='5,5'  x1='"+str(int(self.molecule.nearest_points_coords[residue][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[residue][1]))+"' x2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][0]))+"' y2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][1]))+"' style='stroke:black;stroke-width:4' />"
 
     def put_everything_together(self):
