@@ -1,5 +1,5 @@
 import MDAnalysis
-from collections import Counter
+from collections import Counter, defaultdict
 from timeit import default_timer as timer
 from progressbar import ProgressBar
 import sys
@@ -36,7 +36,7 @@ class Residence_time(object):
     """
     def __init__(self, topology_data_object, trajectory,start_frame_num,end_frame_num,skip, topology,mol2,ligand,offset):
         self.residue_counts = {}
-        self.frequency ={}
+        self.frequency = defaultdict(list)
         self.frame_count = []
         self.topology_data = topology_data_object
         self.trajectory = trajectory
@@ -112,11 +112,7 @@ class Residence_time(object):
         
         for traj in self.residue_counts_fraction:
             for residue in self.residue_counts_fraction[traj]:
-                try:
-                    self.frequency[residue].append(self.residue_counts_fraction[traj][residue])
-                except KeyError:
-                    self.frequency[residue] = []
-                    self.frequency[residue].append(self.residue_counts_fraction[traj][residue])
+                self.frequency[residue].append(self.residue_counts_fraction[traj][residue])
 
         self.topology_data.dict_of_plotted_res = {i:self.frequency[i] for i in self.frequency if sum(self.frequency[i])>(int(len(self.trajectory))*analysis_cutoff)}
         
