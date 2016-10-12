@@ -1,3 +1,4 @@
+from collections import defaultdict
 import csv
 import MDAnalysis
 from MDAnalysis.analysis import hbonds
@@ -122,24 +123,16 @@ class HBonds(object):
             These hydrogen bonds will be plotted in the final image.
             
         """
-        self.frequency = {}
+        self.frequency = defaultdict(int)
         for traj in self.hbonds_by_type:
             for bond in self.hbonds_by_type[traj]:
             # frequency[(residue_atom_idx,ligand_atom_name,residue_atom_name)]=frequency
             # residue atom name will be used to determine if hydrogen bond is interacting with a sidechain or bakcbone
                 if bond["donor_resnm"]!="LIG":
-                    try:
-                        self.frequency[(bond["donor_idx"],bond["acceptor_atom"],bond["donor_atom"])] += bond["frequency"]
-                    except KeyError:
-                        self.frequency[(bond["donor_idx"],bond["acceptor_atom"],bond["donor_atom"])] = 0
-                        self.frequency[(bond["donor_idx"],bond["acceptor_atom"],bond["donor_atom"])] += bond["frequency"]
+                    self.frequency[(bond["donor_idx"],bond["acceptor_atom"],bond["donor_atom"])] += bond["frequency"]
                 #check whether ligand is donor or acceptor
                 else:
-                    try:
-                        self.frequency[(bond["acceptor_idx"],bond["donor_atom"],bond["acceptor_atom"])] += bond["frequency"]
-                    except KeyError:
-                        self.frequency[(bond["acceptor_idx"],bond["donor_atom"],bond["acceptor_atom"])] = 0
-                        self.frequency[(bond["acceptor_idx"],bond["donor_atom"],bond["acceptor_atom"])] += bond["frequency"]
+                    self.frequency[(bond["acceptor_idx"],bond["donor_atom"],bond["acceptor_atom"])] += bond["frequency"]
 
         #Add the frequency counts
         self.frequency = {i:self.frequency[i] for i in self.frequency if self.frequency[i]>(int(len(self.trajectory))*analysis_cutoff)}
