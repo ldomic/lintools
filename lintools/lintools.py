@@ -74,6 +74,8 @@ class Lintools(object):
         """
         if hydr_bonds!=True:
             self.hbonds = HBonds(self.topol_data,self.trajectory,self.start,self.end,self.skip,self.analysis_cutoff,distance=3)
+        else:
+            self.hbonds=None
     def plot_residues(self):
         """
         Calls Plot() that plots the residues with the required diagram_type.

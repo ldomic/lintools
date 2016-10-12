@@ -88,10 +88,16 @@ class Figure(object):
         """
         For each bond that has been determined to be important, a line gets drawn.
         """
-        for bond in self.hbonds.hbonds_for_drawing:
-            atom = self.topology_data.universe.atoms[bond[0]-1] #zero-based index vs one-based index
-            residue = (atom.resname, str(atom.resid), atom.segid)
-            self.draw_lines=self.draw_lines+"<line stroke-dasharray='5,5'  x1='"+str(int(self.molecule.nearest_points_coords[residue][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[residue][1]))+"' x2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][0]))+"' y2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][1]))+"' style='stroke:black;stroke-width:4' />"
+        if self.hbonds!=None:
+            for bond in self.hbonds.hbonds_for_drawing:
+                atom = self.topology_data.universe.atoms[bond[0]-1] #zero-based index vs one-based index
+                residue = (atom.resname, str(atom.resid), atom.segid)
+                if bond[2] in ["N","O","H"]:
+                    #backbone interactions
+                    self.draw_lines=self.draw_lines+"<line x1='"+str(int(self.molecule.nearest_points_coords[residue][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[residue][1]))+"' x2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][0]))+"' y2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][1]))+"' style='stroke:black;stroke-width:4' />"
+                else:    
+                    #sidechain interactions
+                    self.draw_lines=self.draw_lines+"<line stroke-dasharray='5,5'  x1='"+str(int(self.molecule.nearest_points_coords[residue][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[residue][1]))+"' x2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][0]))+"' y2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][1]))+"' style='stroke:black;stroke-width:4' />"
 
     def put_everything_together(self):
         """

@@ -125,20 +125,21 @@ class HBonds(object):
         self.frequency = {}
         for traj in self.hbonds_by_type:
             for bond in self.hbonds_by_type[traj]:
-            # frequency[(residue_atom_idx,ligand_atom_name)]=frequency
+            # frequency[(residue_atom_idx,ligand_atom_name,residue_atom_name)]=frequency
+            # residue atom name will be used to determine if hydrogen bond is interacting with a sidechain or bakcbone
                 if bond["donor_resnm"]!="LIG":
                     try:
-                        self.frequency[(bond["donor_idx"],bond["acceptor_atom"])] += bond["frequency"]
+                        self.frequency[(bond["donor_idx"],bond["acceptor_atom"],bond["donor_atom"])] += bond["frequency"]
                     except KeyError:
-                        self.frequency[(bond["donor_idx"],bond["acceptor_atom"])] = 0
-                        self.frequency[(bond["donor_idx"],bond["acceptor_atom"])] += bond["frequency"]
+                        self.frequency[(bond["donor_idx"],bond["acceptor_atom"],bond["donor_atom"])] = 0
+                        self.frequency[(bond["donor_idx"],bond["acceptor_atom"],bond["donor_atom"])] += bond["frequency"]
                 #check whether ligand is donor or acceptor
                 else:
                     try:
-                        self.frequency[(bond["acceptor_idx"],bond["donor_atom"])] += bond["frequency"]
+                        self.frequency[(bond["acceptor_idx"],bond["donor_atom"],bond["acceptor_atom"])] += bond["frequency"]
                     except KeyError:
-                        self.frequency[(bond["acceptor_idx"],bond["donor_atom"])] = 0
-                        self.frequency[(bond["acceptor_idx"],bond["donor_atom"])] += bond["frequency"]
+                        self.frequency[(bond["acceptor_idx"],bond["donor_atom"],bond["acceptor_atom"])] = 0
+                        self.frequency[(bond["acceptor_idx"],bond["donor_atom"],bond["acceptor_atom"])] += bond["frequency"]
 
         #Add the frequency counts
         self.frequency = {i:self.frequency[i] for i in self.frequency if self.frequency[i]>(int(len(self.trajectory))*analysis_cutoff)}
@@ -155,7 +156,7 @@ class HBonds(object):
                 for neigh in rdkit_atom.GetNeighbors():
                     neigh_atom_id = neigh.GetIdx()
                 lig_atom = [atom.name for index,atom in enumerate(self.topology_data.universe.ligand.atoms) if index==neigh_atom_id][0]
-            self.hbonds_for_drawing[(bond[0],lig_atom)]=self.frequency[bond]
+            self.hbonds_for_drawing[(bond[0],lig_atom,bond[2])]=self.frequency[bond]
     def write_output_files(self):
         """
         The total hydrogen bond count per frame is provided as CSV output file. 
