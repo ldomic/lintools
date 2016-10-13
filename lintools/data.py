@@ -73,7 +73,10 @@ class Data(object):
             self.mol2.GetSubstructMatches(mol, uniquify=1)
         except AttributeError:
             self.mol2 = Chem.MolFromMol2File(mol2_file,removeHs=False,sanitize=False)
-            self.mol2.UpdatePropertyCache(strict=False)
+            try:
+                self.mol2.UpdatePropertyCache(strict=False)
+            except AttributeError:
+                assert self.mol2 != None, "The MOL2 file could not be imported in RDKit environment. Suggestion: Check the atomtypes."
         assert self.mol2 != None, "The MOL2 file could not be imported in RDKit environment."
     
     def rename_ligand(self,ligand_name):
