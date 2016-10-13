@@ -30,13 +30,14 @@ class Plots(object):
         self.topology_data = topology_data_object
         self.colors_amino_acids = {"acidic":"#D9774B", "basic":"#889DCC", 
                                    "aromatic":"#9FC74A", "polar":"#D06AC1",
-                                   "hydrophobic":"#6AC297","lipids":"#ffff99"}
+                                   "hydrophobic":"#6AC297","lipids":"#ffff99",
+                                   "water":"turquoise","ions":"gold"}
         self.amino_acids = {"ASP":"acidic","GLU":"acidic","LYS":"basic","ARG":"basic",
                        "PHE":"aromatic","TYR":"aromatic","TRP":"aromatic","SER":"polar",
                        "THR":"polar","ASN":"polar","GLN":"polar","CYS":"polar",
                        "HIS":"polar","ALA":"hydrophobic","VAL":"hydrophobic",
-                       "ILE":"hydrophobic","LEU":"hydrophobic","MET":"hydrophobic",
-                       "GLY":"hydrophobic","PRO":"hydrophobic"}
+                       "ILE":"hydrophobic","LEU":"hydrophobic","MET":"hydrophobic","GLY":"hydrophobic","PRO":"hydrophobic",
+                       "PC":"lipids","HOH":"water","SOL":"water"}
         if diagram_type == "amino":
             self.plot_amino_diagrams()
         if diagram_type == "domains":
@@ -52,11 +53,14 @@ class Plots(object):
         """
 
         for res in self.topology_data.dict_of_plotted_res:
-            color = [self.colors_amino_acids[self.amino_acids[res[0]]],'white']
+            try:
+                color = [self.colors_amino_acids[self.amino_acids[res[0]]],'white']
+            except KeyError:
+                color = ["pink",'white']
             plt.figure(figsize=(2.5,2.5))
             ring1,_=plt.pie([1],  radius=1, startangle=90, colors=color, counterclock=False)
             plt.axis('equal')
-            plt.setp(ring1, width=1, edgecolor=self.colors_amino_acids[self.amino_acids[res[0]]])
+            plt.setp(ring1, width=1, edgecolor=color[0])
             if len(self.topology_data.universe.protein.segments)<=1:
                 #Parameters for amino diagrams without segids
                 plt.text(0,-0.45,res[0]+"\n"+res[1],ha='center',size=36, fontweight="bold")
