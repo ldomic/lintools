@@ -42,7 +42,7 @@ class Figure(object):
                     else:
                         sys.stdout.write(line.replace ("</svg>","</g>"))
             input1 = "</defs>"
-            output1 = "<g transform='translate("+str(int(self.molecule.nearest_points_coords[residue][0]+(self.molecule.x_dim-900)/2)-90)+","+str(int(self.molecule.nearest_points_coords[residue][1]+(self.molecule.y_dim-450)/2)-90)+")'>"
+            output1 = "<g transform='translate("+str(int(self.molecule.nearest_points_coords[residue][0]+(self.molecule.x_dim-self.molecule.molsize1)/2)-90)+","+str(int(self.molecule.nearest_points_coords[residue][1]+(self.molecule.y_dim-self.molecule.molsize2)/2)-90)+")'>"
             self.change_lines_in_svg(residue[1]+residue[2]+'.svg', input1, output1)
             input2 = "font-style:normal;"
             output2 = "font-style:normal;font-weight:bold;"
@@ -57,10 +57,10 @@ class Figure(object):
         Sets the size of the figure by expanding the space of molecule.svg file. These dimension have been 
         previously determined. Also makes the lines of the molecule thicker.
         """
-        start1 = "width='900px' height='450px' >"
-        start2 = "<rect style='opacity:1.0;fill:#FFFFFF;stroke:none' width='900' height='450' x='0' y='0'> </rect>"
+        start1 = "width='"+str(self.molecule.molsize1)+"px' height='"+str(self.molecule.molsize2)+"px' >"
+        start2 = "<rect style='opacity:1.0;fill:#FFFFFF;stroke:none' width='"+str(self.molecule.molsize1)+"' height='"+str(self.molecule.molsize2)+"' x='0' y='0'> </rect>"
         bigger_box ="width='"+str(int(self.molecule.x_dim))+"px' height='"+str(int(self.molecule.y_dim))+"px' > "
-        big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(int(self.molecule.x_dim))+"px' height='"+str(int(self.molecule.y_dim))+"px' x='0' y='0'> </rect> <g transform='translate("+str((self.molecule.x_dim-900)/2)+","+str((self.molecule.y_dim-450)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='900' height='450' x='0' y='0' /> "
+        big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(int(self.molecule.x_dim))+"px' height='"+str(int(self.molecule.y_dim))+"px' x='0' y='0'> </rect> <g transform='translate("+str((self.molecule.x_dim-self.molecule.molsize1)/2)+","+str((self.molecule.y_dim-self.molecule.molsize2)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='"+str(self.molecule.molsize1)+"' height='"+str(self.molecule.molsize2)+"' x='0' y='0' /> "
         self.end_symbol = "</svg>"
         no_end_symbol = "</g>"
         #Make the lines in molecule drawing thicker to look better with the large plots

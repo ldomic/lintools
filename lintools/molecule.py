@@ -8,6 +8,8 @@ from shapely import geometry
 import numpy as np
 from itertools import combinations
 import operator
+from timeit import default_timer as timer
+
 
 class Molecule(object):
     """
@@ -28,17 +30,22 @@ class Molecule(object):
     __version__= "09.2016"
     def __init__(self, topology_data_object):
         self.topology_data = topology_data_object
+        self.molsize1 = 900
+        self.molsize2 = 450
+        self.draw_molecule()
+    def draw_molecule(self):
         self.ligand_atom_coords_from_diagr={}
         self.nearest_points ={}
         self.nearest_points_projection = {}
         self.nearest_points_coords ={}
         self.coefficient ={}
-        self.ligand_atom_coords = []
         self.arc_coords=None
-        self.load_molecule_in_rdkit_smiles()
+
+
+        self.load_molecule_in_rdkit_smiles(molSize=(int(self.molsize1),int(self.molsize2)))
         self.convex_hull()
         self.make_new_projection_values()
-    def load_molecule_in_rdkit_smiles(self, molSize=(900,450),kekulize=True):
+    def load_molecule_in_rdkit_smiles(self, molSize,kekulize=True):
         """
         Loads mol2 file in rdkit without the hydrogens - they do not have to appear in the final
         figure. Once loaded, the molecule is converted to SMILES format which RDKit appears to 
@@ -96,7 +103,7 @@ class Molecule(object):
 
         """
         #Get coordinates of ligand atoms (needed to draw the convex hull around)
-        
+        self.ligand_atom_coords = []
         ligand_atoms = [x.name for x in self.topology_data.universe.ligand_noH.atoms]
         with open ("molecule.svg", "r") as f:
             lines = f.readlines()
@@ -111,7 +118,7 @@ class Molecule(object):
                     
         self.ligand_atom_coords=np.array(self.ligand_atom_coords)  
         self.a = geometry.MultiPoint(self.ligand_atom_coords).convex_hull
-        self.b = self.a.boundary.buffer(120).convex_hull
+        self.b = self.a.boundary.buffer(130).convex_hull
         self.b_for_all ={}
         self.b_lenght = self.b.boundary.length
         for residue in self.topology_data.closest_atoms:
@@ -217,6 +224,7 @@ class Molecule(object):
         """
         #Make gap between residues bigger if plots have a lot of rings - each ring after the 4th
         #give extra 12.5px space
+        start = timer()
         if self.topology_data.ring_number>4:
             width = width + (self.topology_data.ring_number-4)*12.5
         values = [v for v in self.nearest_points_projection.values()]
@@ -225,6 +233,7 @@ class Molecule(object):
         energy = 100
         while energy > 0.2:
             values, energy = self.do_step(values,xy_values,coeff_value, width)
+            time = timer() - start
             i=0
             xy_values =[]
             for residue in  self.nearest_points_coords:
@@ -235,7 +244,12 @@ class Molecule(object):
                 xy_values.append(self.nearest_points_coords[residue])
                 i+=1
             values = [v for v in self.nearest_points_projection.values()]
-        
+            if time>10:
+                self.molsize1 = self.molsize1 + self.molsize1 * 0.2 #Increase molecule svg size 
+                self.molsize2 = self.molsize2 + self.molsize2 * 0.2 
+                self.draw_molecule()
+                break
+            
         #Calculate the borders of the final image
         max_x = max(v[0] for k,v in self.nearest_points_coords.items())
         min_x = min(v[0] for k,v in self.nearest_points_coords.items())
@@ -243,17 +257,19 @@ class Molecule(object):
         max_y = max(v[1] for k,v in self.nearest_points_coords.items())
         if min_x<0:
             self.x_dim =(max_x-min_x)+600 #600 acts as buffer
-        elif max_x<900 and min_x<0: #In case all residues are grouped on one end of the molecule
-            self.x_dim = (900-min_x)+600
-        elif max_x<900 and min_x>0:
-            self.x_dim = 900+600
+        elif max_x<self.molsize1 and min_x<0: #In case all residues are grouped on one end of the molecule
+            self.x_dim = (self.molsize1-min_x)+600
+        elif max_x<self.molsize1 and min_x>0:
+            self.x_dim = self.molsize1+600
         else:
             self.x_dim = max_x+600
         if min_y<0:
             self.y_dim = (max_y-min_y)+400 #400 acts as buffer
-        elif max_y<450 and min_y<0:
-            self.y_dim = (450-min_y)+400
-        elif max_y<450 and min_y>0:
-            self.y_dim = 450+400
+        elif max_y<self.molsize2 and min_y<0:
+            self.y_dim = (self.molsize2-min_y)+400
+        elif max_y<self.molsize2 and min_y>0:
+            self.y_dim = self.molsize2+400
         else:
             self.y_dim = max_y+400
+        end = timer()
+        print "Drawing molecule:"+str(end-start)
