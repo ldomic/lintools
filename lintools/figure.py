@@ -58,7 +58,7 @@ class Figure(object):
         previously determined. Also makes the lines of the molecule thicker.
         """
         start1 = "width='"+str(self.molecule.molsize1)+"px' height='"+str(self.molecule.molsize2)+"px' >"
-        start2 = "<rect style='opacity:1.0;fill:#FFFFFF;stroke:none' width='"+str(self.molecule.molsize1)+"' height='"+str(self.molecule.molsize2)+"' x='0' y='0'> </rect>"
+        start2 = "<rect style='opacity:1.0;fill:#FFFFFF;stroke:none' width='"+str(int(self.molecule.molsize1))+"' height='"+str(int(self.molecule.molsize2))+"' x='0' y='0'> </rect>"
         bigger_box ="width='"+str(int(self.molecule.x_dim))+"px' height='"+str(int(self.molecule.y_dim))+"px' > "
         big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(int(self.molecule.x_dim))+"px' height='"+str(int(self.molecule.y_dim))+"px' x='0' y='0'> </rect> <g transform='translate("+str((self.molecule.x_dim-self.molecule.molsize1)/2)+","+str((self.molecule.y_dim-self.molecule.molsize2)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='"+str(self.molecule.molsize1)+"' height='"+str(self.molecule.molsize2)+"' x='0' y='0' /> "
         self.end_symbol = "</svg>"
