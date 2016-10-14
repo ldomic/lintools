@@ -100,7 +100,7 @@ class Data(object):
         try:
             assert (self.mol2_mda.atoms.names == self.universe.ligand.atoms.names).all(), "The atomnames from MOL2 and topology files do not match."
         except ValueError:
-            print "The MOL2 file does not match the selected ligand"
+            print "Error: The MOL2 file does not match the selected ligand"
             sys.exit()
             
     def renumber_system(self, offset):
