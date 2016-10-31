@@ -98,7 +98,7 @@ class Plots(object):
                 plt.text(0,-0.4,res[0]+"\n"+res[1],ha='center',size=36, fontweight="bold")
             else:            
                 #Parameters for amino diagrams with segids
-                plt.text(0,-0.22,res[0]+"\n"+res[1]+" "+res[2],ha='center',size=28, fontweight="bold")
+                plt.text(0,-0.22,res[0]+"\n"+res[1]+"\n"+res[2],ha='center',size=28, fontweight="bold")
             #play with the dpi
             pylab.savefig(res[1]+res[2]+".svg", dpi=300, transparent=True)
             
