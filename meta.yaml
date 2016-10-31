@@ -1,13 +1,14 @@
 package:
-  name:lintools
-  version:”0.2”
+  name: lintools
+  version: 0.2
 build:
-  string:py27
+  number: 0
+
 
 
 source:
-  git_rev:v0.2
-  git_url:https://github.com/ldomic/lintools.git
+  git_rev: v0.2
+  git_url: https://github.com/ldomic/lintools.git
 
 requirements:
   build:
@@ -33,7 +34,6 @@ test:
 
 
 about:
-  home:https://github.com/ldomic/lintools
-  license:GPL-3.0
-  license_file:LICENCE.md
-  summary:Produces 2D protein-ligand interaction plots.
+  home: https://github.com/ldomic/lintools
+  license: GPL
+  license_file: LICENCE.md

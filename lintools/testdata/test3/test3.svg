@@ -38,7 +38,7 @@
 <text x='773.404' y='139.021' style='font-size:15px;font-style:normal;font-weight:normal;fill-opacity:1;stroke:none;font-family:sans-serif;text-anchor:start;fill:#FF0000' ><tspan>OH</tspan></text>
 <text x='718.818' y='373.252' style='font-size:15px;font-style:normal;font-weight:normal;fill-opacity:1;stroke:none;font-family:sans-serif;text-anchor:start;fill:#FF0000' ><tspan>OH</tspan></text>
 </g>
- <g transform='translate(910,174)'>
+<g transform='translate(296.248848751,350.591034822)'>'<line x1='177' y1='-14' x2='556.7665' y2='201.3633' style='stroke:green;stroke-width:5' /><circle cx='556' cy='201' r='15' fill='green' /></g> <g transform='translate(910,174)'>
  <g id="figure_1">
   <g id="patch_1">
    <path d="M 0 180 
@@ -91,8 +91,9 @@ z
    <g id="matplotlib.axis_1"/>
    <g id="matplotlib.axis_2"/>
    <g id="text_1">
-    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(61.66 77.827375)">ALA</text>
-    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(47.31875 109.18125)">117 A</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(61.66 46.4735)">ALA</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(63.0271875 77.827375)">117</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(81.4153125 109.18125)">A</text>
    </g>
   </g>
  </g>
@@ -150,8 +151,9 @@ z
    <g id="matplotlib.axis_1"/>
    <g id="matplotlib.axis_2"/>
    <g id="text_1">
-    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(61.0715625 77.827375)">ASP</text>
-    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(47.31875 109.18125)">121 A</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(61.0715625 46.4735)">ASP</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(63.0271875 77.827375)">121</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(81.4153125 109.18125)">A</text>
    </g>
   </g>
  </g>
@@ -209,8 +211,9 @@ z
    <g id="matplotlib.axis_1"/>
    <g id="matplotlib.axis_2"/>
    <g id="text_1">
-    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(61.0715625 77.827375)">ASP</text>
-    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(57.0596875 109.18125)">46 A</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(61.0715625 46.4735)">ASP</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(72.768125 77.827375)">46</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(81.4153125 109.18125)">A</text>
    </g>
   </g>
  </g>
@@ -268,8 +271,9 @@ z
    <g id="matplotlib.axis_1"/>
    <g id="matplotlib.axis_2"/>
    <g id="text_1">
-    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(56.9153125 77.827375)">HOH</text>
-    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(47.31875 109.18125)">801 A</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(56.9153125 46.4735)">HOH</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(63.0271875 77.827375)">801</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(81.4153125 109.18125)">A</text>
    </g>
   </g>
  </g>
@@ -327,8 +331,9 @@ z
    <g id="matplotlib.axis_1"/>
    <g id="matplotlib.axis_2"/>
    <g id="text_1">
-    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(56.9153125 77.827375)">HOH</text>
-    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(47.31875 109.18125)">812 A</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(56.9153125 46.4735)">HOH</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(63.0271875 77.827375)">812</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(81.4153125 109.18125)">A</text>
    </g>
   </g>
  </g>
@@ -386,8 +391,9 @@ z
    <g id="matplotlib.axis_1"/>
    <g id="matplotlib.axis_2"/>
    <g id="text_1">
-    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(60.7084375 77.827375)">PHE</text>
-    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(47.31875 109.18125)">325 A</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(60.7084375 46.4735)">PHE</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(63.0271875 77.827375)">325</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(81.4153125 109.18125)">A</text>
    </g>
   </g>
  </g>
@@ -445,8 +451,9 @@ z
    <g id="matplotlib.axis_1"/>
    <g id="matplotlib.axis_2"/>
    <g id="text_1">
-    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(60.7084375 77.827375)">PHE</text>
-    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(57.0596875 109.18125)">43 A</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(60.7084375 46.4735)">PHE</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(72.768125 77.827375)">43</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(81.4153125 109.18125)">A</text>
    </g>
   </g>
  </g>
@@ -504,8 +511,9 @@ z
    <g id="matplotlib.axis_1"/>
    <g id="matplotlib.axis_2"/>
    <g id="text_1">
-    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(61.8240625 77.827375)">SER</text>
-    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(47.31875 109.18125)">421 A</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(61.8240625 46.4735)">SER</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(63.0271875 77.827375)">421</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(81.4153125 109.18125)">A</text>
    </g>
   </g>
  </g>
@@ -563,8 +571,9 @@ z
    <g id="matplotlib.axis_1"/>
    <g id="matplotlib.axis_2"/>
    <g id="text_1">
-    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(61.8240625 77.827375)">SER</text>
-    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(47.31875 109.18125)">422 A</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(61.8240625 46.4735)">SER</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(63.0271875 77.827375)">422</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(81.4153125 109.18125)">A</text>
    </g>
   </g>
  </g>
@@ -622,8 +631,9 @@ z
    <g id="matplotlib.axis_1"/>
    <g id="matplotlib.axis_2"/>
    <g id="text_1">
-    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(61.7825 77.827375)">TYR</text>
-    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(47.31875 109.18125)">124 A</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(61.7825 46.4735)">TYR</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(63.0271875 77.827375)">124</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(81.4153125 109.18125)">A</text>
    </g>
   </g>
  </g>
@@ -681,8 +691,9 @@ z
    <g id="matplotlib.axis_1"/>
    <g id="matplotlib.axis_2"/>
    <g id="text_1">
-    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(61.673125 77.827375)">VAL</text>
-    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(47.31875 109.18125)">120 A</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(61.673125 46.4735)">VAL</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(63.0271875 77.827375)">120</text>
+    <text style="font-family:Bitstream Vera Sans;font-size:28.0px;font-style:normal;font-weight:bold;font-weight:700;" transform="translate(81.4153125 109.18125)">A</text>
    </g>
   </g>
  </g>
