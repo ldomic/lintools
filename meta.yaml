@@ -24,6 +24,9 @@ requirements:
     - numpy
     - mdanalysis
 
+build:
+  script: python setup.py install
+
 test:
   source_files:
     - lintools/testdata
