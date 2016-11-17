@@ -3,6 +3,7 @@ import sys
 from rdkit import Chem
 from MDAnalysis.analysis import distances 
 import operator
+import os
 
 
 class Data(object):
@@ -59,14 +60,24 @@ class Data(object):
                 * self.mol2_mda * - the ligand as MDAnalysis Universe,
                 * self.mol2 * - the ligand in RDKit environment as Mol object.
         """
-        
         #Check if MOL2 file has been provided correctly and can be loaded in MDAnalysis
+        if mol2_file is None:
+            mol2_file = "lig.mol2"
         try: 
             self.mol2_mda = MDAnalysis.Universe(mol2_file)
         except IOError:
             print "Check your MOL2 file - it might be missing or misspelled."
             sys.exit()
         assert self.mol2_mda.filename.rsplit(".")[-1] == "mol2", "Wrong filetype for option -mol2: "+self.mol2_mda.filename.rsplit(".")[-1].upper()+", should be MOL2."
+        
+        #Check if the submitted MOL2 file matches the selected ligand
+        try:
+            assert (self.mol2_mda.atoms.names == self.universe.ligand.atoms.names).all(), "The atomnames from MOL2 and topology files do not match."
+        except ValueError:
+            print "Error: The MOL2 file does not match the selected ligand"
+            sys.exit()
+
+
         try:
             self.mol2 = Chem.MolFromMol2File(mol2_file,removeHs=False)
             mol = Chem.MolFromSmarts('[$([N;!H0;v3]),$([N;!H0;+1;v4]),$([O,S;H1;+0]),$([n;H1;+0])]')
@@ -79,7 +90,7 @@ class Data(object):
                 assert self.mol2 != None, "The MOL2 file could not be imported in RDKit environment. Suggestion: Check the atomtypes."
         assert self.mol2 != None, "The MOL2 file could not be imported in RDKit environment."
     
-    def rename_ligand(self,ligand_name):
+    def rename_ligand(self,ligand_name,mol2_file):
         """
         Get an atom selection for the selected from both topology and trajectory. Rename the ligand LIG 
         to help with ligand names that are not standard, e.g. contain numbers.
@@ -95,13 +106,11 @@ class Data(object):
         #Both resname and resnames options need to be reset in order for complete renaming.
         self.universe.ligand.resnames = "LIG"
         self.universe.ligand.resname = "LIG"
-        
-        #Check if the submitted MOL2 file matches the selected ligand
-        try:
-            assert (self.mol2_mda.atoms.names == self.universe.ligand.atoms.names).all(), "The atomnames from MOL2 and topology files do not match."
-        except ValueError:
-            print "Error: The MOL2 file does not match the selected ligand"
-            sys.exit()
+        if mol2_file is None:
+            self.universe.ligand.write("lig.pdb")
+
+            os.system("babel -ipdb lig.pdb -omol2 lig.mol2")
+
             
     def renumber_system(self, offset):
         """
@@ -166,8 +175,9 @@ class Data(object):
         
         self.load_topology(topology)
         self.renumber_system(offset)
+        self.rename_ligand(ligand_name,mol2_file)
         self.load_mol2(mol2_file)
-        self.rename_ligand(ligand_name)
+        
     def analyse_topology(self,topology, cutoff=3.5):
         """
         In case user wants to analyse only a single topology file, this process will determine the residues 

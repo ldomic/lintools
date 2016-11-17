@@ -43,7 +43,10 @@ class Lintools(object):
                 self.trajectory.append(os.path.abspath(traj))
         except Exception:
             self.trajectory = []
-        self.mol2_file = os.path.abspath(mol2_file)
+        if mol2_file!=None:
+            self.mol2_file = os.path.abspath(mol2_file)
+        else:
+            self.mol2_file = mol2_file
         self.ligand = ligand
         self.offset = offset
         self.cutoff = cutoff
@@ -133,7 +136,6 @@ if __name__ == '__main__':
     ####################################################################################################################
 
     assert len(args.topology) >0, "No topology file provided for analysis."
-    assert len(args.mol2) >0,"No ligand MOL2 file provided."
     assert len(args.output_name)>0,"No output name provided."
 
     def find_ligand_name():
