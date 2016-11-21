@@ -37,7 +37,6 @@ class HBonds(object):
     """
     __version__ = "09.2016"
     def __init__(self, topology_data_object, trajectory, start_frame_num=None,end_frame_num=None,skip=None,analysis_cutoff=0.3,distance=3):
-        print start_frame_num
         self.hbonds = None
         self.HDonorSmarts = Chem.MolFromSmarts('[$([N;!H0;v3]),$([N;!H0;+1;v4]),$([O,S;H1;+0]),$([n;H1;+0])]')
         haccep = "[$([O,S;H1;v2]-[!$(*=[O,N,P,S])]),$([O,S;H0;v2]),$([O,S;-]),$([N;v3;!$(N-*=!@[O,N,P,S])]),$([nH0,o,s;+0])]"

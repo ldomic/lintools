@@ -109,7 +109,7 @@ class Data(object):
         if mol2_file is None:
             self.universe.ligand.write("lig.pdb")
 
-            os.system("babel -ipdb lig.pdb -omol2 lig.mol2")
+            os.system("babel -ipdb lig.pdb -omol2 lig.mol2 -p")
 
             
     def renumber_system(self, offset):
