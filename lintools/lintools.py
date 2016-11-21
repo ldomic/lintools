@@ -8,6 +8,7 @@ from molecule import Molecule
 from figure import Figure
 from analysis.hbonds import HBonds
 from analysis.residence_time import Residence_time
+from analysis.rmsf import RMSF_measurements
 from timeit import default_timer as timer
 from ligand_description import LigDescr
 
@@ -83,6 +84,7 @@ class Lintools(object):
 
         self.lig_descr = LigDescr(self.topol_data)
         if self.trajectory!=[]:
+            self.rmsf = RMSF_measurements(self.topol_data,self.topology,self.trajectory,self.ligand)
     def plot_residues(self):
         """
         Calls Plot() that plots the residues with the required diagram_type.
