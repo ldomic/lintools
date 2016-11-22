@@ -72,7 +72,8 @@ class Data(object):
         
         #Check if the submitted MOL2 file matches the selected ligand
         try:
-            assert (self.mol2_mda.atoms.names == self.universe.ligand.atoms.names).all(), "The atomnames from MOL2 and topology files do not match."
+            if mol2_file != "lig.mol2":
+                assert (self.mol2_mda.atoms.names == self.universe.ligand.atoms.names).all(), "The atomnames from MOL2 and topology files do not match."
         except ValueError:
             print "Error: The MOL2 file does not match the selected ligand"
             sys.exit()
