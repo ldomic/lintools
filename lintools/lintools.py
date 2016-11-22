@@ -10,6 +10,8 @@ from analysis.hbonds import HBonds
 from analysis.residence_time import Residence_time
 from analysis.rmsf import RMSF_measurements
 from analysis.salt_bridges import SaltBridges
+from analysis.pistacking import PiStacking
+from analysis.sasa import SASA
 from timeit import default_timer as timer
 from ligand_description import LigDescr
 
@@ -82,11 +84,12 @@ class Lintools(object):
             self.hbonds = HBonds(self.topol_data,self.trajectory,self.start,self.end,self.skip,self.analysis_cutoff,distance=3)
         else:
             self.hbonds=None
-
+        self.pistacking = PiStacking(self.topol_data,self.trajectory,self.start,self.end,self.skip, self.analysis_cutoff)
+        self.sasa = SASA(self.topol_data,self.trajectory)
         self.lig_descr = LigDescr(self.topol_data)
         if self.trajectory!=[]:
             self.rmsf = RMSF_measurements(self.topol_data,self.topology,self.trajectory,self.ligand)
-        self.salt_bridges = SaltBridges(self.topol_data,self.lig_descr,self.topology,self.trajectory,self.start,self.end,self.skip,self.analysis_cutoff)
+        self.salt_bridges = SaltBridges(self.topol_data,self.trajectory,self.lig_descr,self.start,self.end,self.skip,self.analysis_cutoff)
     def plot_residues(self):
         """
         Calls Plot() that plots the residues with the required diagram_type.

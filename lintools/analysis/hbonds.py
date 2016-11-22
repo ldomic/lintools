@@ -100,6 +100,19 @@ class HBonds(object):
             self.hbonds_by_type[i] = h.count_by_type()
             i+=1
     def analyse_hydrogen_bonds_topology(self,distance=3):
+        """
+        MDAnalysis.analysis.hbonds module is used to analyse hydrogen bonds formed between protein
+        and ligand for each submitted trajectory. The hydrogen bonds are then counted by total value
+        per frame (count_by_time), as well as obtaining the frequency of each individual hydrogen 
+        bond (count_by_type). This function is used in case no trajectory has been submitted for analysis.
+        
+        Takes:
+            * distance * - distance between hydrogen bond donor and acceptor in angstroms
+        Output:
+            * self.hbonds * - array with information about all detected hydrogen bonds 
+            * self.hbonds_by_time * - total hbond number by frame 
+            * self.hbonds_by_type * - frequency of each hydrogen bond
+        """
         h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.topology_data.universe,'(segid '+str(self.topology_data.universe.ligand.segids[0])+' and resid '+str(self.topology_data.universe.ligand.resids[0])+')',"protein",distance=3,acceptors=self.acceptors,donors=self.donors)
         h.run()
         h.generate_table()  
