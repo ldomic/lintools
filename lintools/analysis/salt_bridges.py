@@ -169,9 +169,11 @@ class SaltBridges(object):
         for traj in self.saltbridges_by_type:
             for contact in self.saltbridges_by_type[traj]:
                 self.frequency[tuple(map(tuple,contact["ligandatomid"])),contact["ligandatomname"],contact["resid"],contact["resname"],contact["segid"]]+=contact["frequency"]
-        self.saltbridge_frequency = {i:self.frequency[i] for i in self.frequency if self.frequency[i]>(int(len(self.trajectory))*analysis_cutoff)}
+        draw_frequency = {i:self.frequency[i] for i in self.frequency if self.frequency[i]>(int(len(self.trajectory))*analysis_cutoff)}
 
-
+        self.saltbridges_for_drawing = {}
+        for contact in draw_frequency:
+            self.saltbridges_for_drawing[contact]=draw_frequency[contact]
 
     def euclidean3d(self,v1, v2):
         """Faster implementation of euclidean distance for the 3D case."""

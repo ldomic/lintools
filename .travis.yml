@@ -14,7 +14,7 @@ install:
   - source activate my-rdkit-env
   - conda install -y -n my-rdkit-env python=2.7 numpy nose matplotlib geos shapely scipy
   - conda install -c omnia openbabel=2015.09
-  - pip install MDAnalysis coveralls
+  - pip install MDAnalysis coveralls mdtraj
   - python setup.py build
   - python setup.py install
 script: 
