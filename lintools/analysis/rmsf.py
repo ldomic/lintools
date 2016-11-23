@@ -27,9 +27,8 @@ class RMSF_measurements(object):
             ligand_noH = aligned_universe.select_atoms('(segid '+str(ligand_name.segids[0])+' and resid '+str(ligand_name.resids[0])+')')
             R = MDAnalysis.analysis.rms.RMSF(ligand_noH)
             R.run()
-            print R.rmsf.tolist()
             rmsf_list[i] = R.rmsf.tolist()
-            
+
             i+=1
 
         for index,atom in enumerate(self.topology_data.universe.ligand_noH.atoms):

@@ -64,21 +64,21 @@ class Molecule(object):
         mol2_in_rdkit = self.topology_data.mol2 #need to reload without hydrogens
         try:
             mol2_in_rdkit = Chem.RemoveHs(mol2_in_rdkit)
-            self.smiles = Chem.MolFromSmiles(Chem.MolToSmiles(mol2_in_rdkit))
+            self.topology_data.smiles = Chem.MolFromSmiles(Chem.MolToSmiles(mol2_in_rdkit))
         except ValueError:
             mol2_in_rdkit = Chem.RemoveHs(mol2_in_rdkit, sanitize = False)
-            self.smiles = Chem.MolFromSmiles(Chem.MolToSmiles(mol2_in_rdkit), sanitize=False)
+            self.topology_data.smiles = Chem.MolFromSmiles(Chem.MolToSmiles(mol2_in_rdkit), sanitize=False)
         self.atom_identities = {}
         i=0
-        for atom in self.smiles.GetAtoms():
+        for atom in self.topology_data.smiles.GetAtoms():
             self.atom_identities[mol2_in_rdkit.GetProp('_smilesAtomOutputOrder')[1:].rsplit(",")[i]] = atom.GetIdx()
             i+=1
-        mc = Chem.Mol(self.smiles.ToBinary())
+        mc = Chem.Mol(self.topology_data.smiles.ToBinary())
         if kekulize:
             try:
                 Chem.Kekulize(mc)
             except:
-                mc = Chem.Mol(self.smiles.ToBinary())
+                mc = Chem.Mol(self.topology_data.smiles.ToBinary())
         if not mc.GetNumConformers():
             rdDepictor.Compute2DCoords(mc)
         for i in range(mol2_in_rdkit.GetNumAtoms()):

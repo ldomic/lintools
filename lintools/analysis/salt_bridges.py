@@ -42,7 +42,6 @@ class SaltBridges(object):
         
         self.saltbridge_dist = 5.5
         self.trajectory = trajectory
-        self.topology = topology
         self.start_frame_num = start_frame_num
         self.end_frame_num = end_frame_num
         self.skip = skip

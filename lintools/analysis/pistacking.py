@@ -67,12 +67,12 @@ class PiStacking(object):
 
     def detect_aromatic_rings_in_ligand(self):
         """Using rdkit to detect aromatic rings in ligand - size 4-6 atoms and all atoms are part of the ring. Saves this data in self.ligrings."""
-        ring_info = self.topology_data.smiles_rdkit.GetRingInfo()
+        ring_info = self.topology_data.mol2.GetRingInfo()
         self.ligrings = {}
         self.ligand_ring_num = ring_info.NumRings()
         i=0
         for ring in range(self.ligand_ring_num):
-            if 4 < len(ring_info.AtomRings()[ring]) <= 6 and  False not in [self.topology_data.smiles_rdkit.GetAtomWithIdx(x).GetIsAromatic() for x in ring_info.AtomRings()[ring]]: #narrow ring definition
+            if 4 < len(ring_info.AtomRings()[ring]) <= 6 and  False not in [self.topology_data.mol2.GetAtomWithIdx(x).GetIsAromatic() for x in ring_info.AtomRings()[ring]]: #narrow ring definition
                 atom_ids_in_ring = []
                 for atom in ring_info.AtomRings()[ring]:
                     atom_ids_in_ring.append(self.topology_data.universe.ligand.atoms[atom].name)
