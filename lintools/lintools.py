@@ -77,7 +77,7 @@ class Lintools(object):
             self.res_time.measure_residence_time(self.cutoff)
             self.res_time.define_residues_for_plotting_traj(self.analysis_cutoff)
             self.topol_data.find_the_closest_atoms(self.topology)
-    def analysis_of_prot_lig_interactions(self,hydr_bonds):
+    def analysis_of_prot_lig_interactions(self,hydr_bonds,pi_interactions,lig_sasa,lig_rmsf,salt_bridges):
         """
         The classes and function that deal with protein-ligand interaction analysis.
         """
@@ -85,17 +85,19 @@ class Lintools(object):
             self.hbonds = HBonds(self.topol_data,self.trajectory,self.start,self.end,self.skip,self.analysis_cutoff,distance=3)
         else:
             self.hbonds=None
-        self.pistacking = PiStacking(self.topol_data,self.trajectory,self.start,self.end,self.skip, self.analysis_cutoff)
-        self.sasa = SASA(self.topol_data,self.trajectory)
+        if pi_interactions!=True:
+            self.pistacking = PiStacking(self.topol_data,self.trajectory,self.start,self.end,self.skip, self.analysis_cutoff)
+        if lig_sasa!=True:
+            self.sasa = SASA(self.topol_data,self.trajectory)
     
-        if self.trajectory!=[]:
-            self.rmsf = RMSF_measurements(self.topol_data,self.topology,self.trajectory,self.ligand)
+        if self.trajectory!=[] and  lig_rmsf!=True:
+                self.rmsf = RMSF_measurements(self.topol_data,self.topology,self.trajectory,self.ligand)
         else:
             self.rmsf=None
 
         self.lig_descr = LigDescr(self.topol_data,self.rmsf,self.sasa)
-
-        self.salt_bridges = SaltBridges(self.topol_data,self.trajectory,self.lig_descr,self.start,self.end,self.skip,self.analysis_cutoff)
+        if salt_bridges!=True:
+            self.salt_bridges = SaltBridges(self.topol_data,self.trajectory,self.lig_descr,self.start,self.end,self.skip,self.analysis_cutoff)
     def plot_residues(self):
         """
         Calls Plot() that plots the residues with the required diagram_type.
@@ -147,6 +149,13 @@ if __name__ == '__main__':
     parser.add_argument('-e', dest = "end", nargs="*", default=[None], help='End frame number(s)')
     parser.add_argument('-skip', dest = "skip", nargs="*", default=[None], help='Skip frames')
     parser.add_argument('--no_hbonds', dest='hydr_bonds', action="store_true", help="The hydrogen bonds will not be detected.")
+    parser.add_argument('--no_pi', dest='pi_int', action="store_true", help="The pi stacking interactions will not be detected.")
+    parser.add_argument('--no_saltbridges', dest='salt_bridges', action="store_true", help="The salt bridges will not be detected.")
+    parser.add_argument('--no_rmsf', dest='lig_rmsf', action="store_true", help="RMSF will not be detected.")
+    parser.add_argument('--no_sasa', dest='lig_sasa', action="store_true", help="SASA will not be detected.")
+
+
+
 
 
 
@@ -215,7 +224,7 @@ if __name__ == '__main__':
     lintools = Lintools(args.topology,args.trajectory,args.mol2,ligand_name,args.offset,args.cutoff,args.start,args.end,args.skip,args.analysis_cutoff,diagram_type,args.output_name)
     lintools.save_files()
     lintools.data_input_and_res_time_analysis()
-    lintools.analysis_of_prot_lig_interactions(args.hydr_bonds)
+    lintools.analysis_of_prot_lig_interactions(args.hydr_bonds, args.pi_int, args.lig_sasa,args.lig_rmsf,args.salt_bridges)
     lintools.plot_residues()
     lintools.draw_figure()
     lintools.remove_files()

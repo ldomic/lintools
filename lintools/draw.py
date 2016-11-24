@@ -24,7 +24,7 @@ class Draw(object):
 		self.draw_salt_bridges()
 		self.draw_pi_contacts()
 		self.add_smiles_id()
-		self.draw_molecule(None,"logP","SASA",None)
+		self.draw_molecule(None,None,None,None)
 	def draw_hydrogen_bonds(self,color="black"):
 		"""For each bond that has been determined to be important, a line gets drawn.
 		"""
