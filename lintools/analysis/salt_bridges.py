@@ -143,7 +143,7 @@ class SaltBridges(object):
             #count by residue name not by proteinring
             pkey = (contact.ligandatomid,contact.ligandatomname, contact.resid,contact.resname,contact.segid)
             saltbridges[pkey]+=1
-        dtype = [("ligand_atom_id",int),("ligand_atom_name","|U4"),("resid",int),("resname","|U4"),("segid","|U4"),("frequency",float) ]
+        dtype = [("ligand_atom_id",int),("ligand_atom_name","|U4"),("resid",int),("resname","|U4"),("segid","|U8"),("frequency",float) ]
         out = np.empty((len(saltbridges),),dtype=dtype)
         tsteps = float(len(self.timesteps))
         for cursor,(key,count) in enumerate(saltbridges.iteritems()):

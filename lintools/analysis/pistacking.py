@@ -165,6 +165,7 @@ class PiStacking(object):
                                                     type="T",resname=self.protein_rings[prot_ring].residues.resnames[0], 
                                                     resid=self.protein_rings[prot_ring].residues.resids[0], segid=self.protein_rings[prot_ring].residues.segids[0])
                                     self.timeseries.append(contacts)
+                                print "Pistack_segid: ",self.protein_rings[prot_ring].residues.segids[0]
             self.pistacking[i] = self.make_table()
 
             self.pistacking_by_time[i] = self.count_by_time()
@@ -179,7 +180,7 @@ class PiStacking(object):
         dtype = [
                 ("frame",float),("time",float),("proteinring",int,(1,6)),
                 ("ligand_ring_ids",int,(1,6)),("distance",float),("angle",float),
-                ("offset",float),("type","|U4"),("resid",int),("resname","|U4"),("segid","|U4") ]
+                ("offset",float),("type","|U4"),("resid",int),("resname","|U4"),("segid","|U8") ]
         out = np.empty((num_records,),dtype=dtype)
         cursor=0
         for contact in self.timeseries:
@@ -205,7 +206,7 @@ class PiStacking(object):
             #count by residue name not by proteinring
             pkey = (contact.ligandring,contact.type, contact.resid,contact.resname,contact.segid)
             pistack[pkey]+=1
-        dtype = [("ligand_ring_ids",int,(1,6)),("type","|U4"),("resid",int),("resname","|U4"),("segid","|U4"),("frequency",float) ]
+        dtype = [("ligand_ring_ids",int,(1,6)),("type","|U4"),("resid",int),("resname","|U4"),("segid","|U8"),("frequency",float) ]
         out = np.empty((len(pistack),),dtype=dtype)
         tsteps = float(len(self.timesteps))
         for cursor,(key,count) in enumerate(pistack.iteritems()):
