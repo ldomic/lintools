@@ -12,6 +12,7 @@ from analysis.rmsf import RMSF_measurements
 from analysis.salt_bridges import SaltBridges
 from analysis.pistacking import PiStacking
 from analysis.sasa import SASA
+from draw import Draw
 from timeit import default_timer as timer
 from ligand_description import LigDescr
 
@@ -86,9 +87,14 @@ class Lintools(object):
             self.hbonds=None
         self.pistacking = PiStacking(self.topol_data,self.trajectory,self.start,self.end,self.skip, self.analysis_cutoff)
         self.sasa = SASA(self.topol_data,self.trajectory)
-        self.lig_descr = LigDescr(self.topol_data)
+    
         if self.trajectory!=[]:
             self.rmsf = RMSF_measurements(self.topol_data,self.topology,self.trajectory,self.ligand)
+        else:
+            self.rmsf=None
+
+        self.lig_descr = LigDescr(self.topol_data,self.rmsf,self.sasa)
+
         self.salt_bridges = SaltBridges(self.topol_data,self.trajectory,self.lig_descr,self.start,self.end,self.skip,self.analysis_cutoff)
     def plot_residues(self):
         """
@@ -101,11 +107,13 @@ class Lintools(object):
         Figure().
         """
         self.molecule = Molecule(self.topol_data)
-    
-        self.figure = Figure(self.molecule,self.topol_data,self.hbonds)
+        
+        self.draw = Draw(self.topol_data,self.molecule,self.hbonds,self.pistacking,self.salt_bridges,self.lig_descr)
+
+
+        self.figure = Figure(self.molecule,self.topol_data,self.draw)
         self.figure.add_bigger_box()
         self.figure.manage_the_plots()
-        self.figure.draw_hydrogen_bonds()
         self.figure.draw_white_circles()
         self.figure.put_everything_together()
         self.figure.write_final_draw_file(self.output_name)

@@ -13,8 +13,10 @@ class LigDescr(object):
 		* ligand_atoms * - dictionary with information about ligand properties
 		* rot_bonds * - list of tuples with atom indices
 		"""
-	def __init__(self,topology_data_object):
+	def __init__(self,topology_data_object,rmsf_object,sasa_object):
 		self.topology_data = topology_data_object
+		self.sasa = sasa_object
+		self.rmsf = rmsf_object
 		mol = Chem.RemoveHs(self.topology_data.mol2)
 		self.calculate_descriptors(mol)
 	def calculate_descriptors(self,mol):
@@ -36,6 +38,10 @@ class LigDescr(object):
 			self.ligand_atoms[atom]["MR"]=contribs[atom][1]
 			self.ligand_atoms[atom]["Gasteiger_ch"]=mol.GetAtomWithIdx(atom).GetProp("_GasteigerCharge")
 			self.ligand_atoms[atom]["Formal charges"]=fcharges[atom]
+			if self.sasa!=None:
+				self.ligand_atoms[atom]["SASA"]=self.sasa.total_sasa[self.ligand_atoms[atom]["name"]]
+			if self.rmsf!=None:
+				self.ligand_atoms[atom]["RMSF"]=self.rmsf.ligand_rmsf[self.ligand_atoms[atom]["name"]]
 
 		#Determine rotatable bonds
 		self.rot_bonds=self.get_rotatable_bonds(mol)

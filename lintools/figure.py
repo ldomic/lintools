@@ -7,10 +7,10 @@ class Figure(object):
     as well as creating new information (e.g. lines for hydrogen bonds).
     """
     __version__="09.2016"
-    def __init__(self,molecule_object,topology_data_object,hydrogen_bonds_object):
+    def __init__(self,molecule_object,topology_data_object,draw_object):
         self.molecule = molecule_object
         self.topology_data = topology_data_object
-        self.hbonds = hydrogen_bonds_object
+        self.draw = draw_object
         self.draw_plots = None
         self.draw_lines = ""
         self.white_circles = ""
@@ -84,27 +84,13 @@ class Figure(object):
         """
         for atom in sorted(self.molecule.nearest_points_coords.keys()):
                 self.white_circles = self.white_circles+"<circle cx='"+str(int(self.molecule.nearest_points_coords[atom][0]))+"' cy='"+str(int(self.molecule.nearest_points_coords[atom][1]))+"' r='55' fill='white' />"
-    def draw_hydrogen_bonds(self):
-        """
-        For each bond that has been determined to be important, a line gets drawn.
-        """
-        if self.hbonds!=None:
-            for bond in self.hbonds.hbonds_for_drawing:
-                atom = self.topology_data.universe.atoms[bond[0]-1] #zero-based index vs one-based index
-                residue = (atom.resname, str(atom.resid), atom.segid)
-                if bond[2] in ["N","O","H"]:
-                    #backbone interactions
-                    self.draw_lines=self.draw_lines+"<line x1='"+str(int(self.molecule.nearest_points_coords[residue][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[residue][1]))+"' x2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][0]))+"' y2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][1]))+"' style='stroke:black;stroke-width:4' />"
-                else:    
-                    #sidechain interactions
-                    self.draw_lines=self.draw_lines+"<line stroke-dasharray='5,5'  x1='"+str(int(self.molecule.nearest_points_coords[residue][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[residue][1]))+"' x2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][0]))+"' y2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][1]))+"' style='stroke:black;stroke-width:4' />"
-
+    
     def put_everything_together(self):
         """
         All of the elements of the final SVG file are put together in the correct order (e.g. lines are placed behind plots 
         and the molecule).
         """
-        molecule_list = [self.filestart]+[self.draw_lines]+[self.white_circles]+[self.draw_molecule]+[self.draw_plots]+[self.end_symbol]
+        molecule_list = [self.filestart]+[self.white_circles]+[self.draw_molecule]+[self.draw.draw_hbonds]+[self.draw.draw_pi_lines]+[self.draw.draw_saltbridges]+[self.draw.cloud]+[self.draw_plots]+[self.end_symbol]
         self.final_molecule = "".join(map(str,molecule_list))
     def write_final_draw_file(self, output_name):
         """The result of put_everything_together() function is writen in a file.

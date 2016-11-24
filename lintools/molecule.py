@@ -45,7 +45,7 @@ class Molecule(object):
         self.load_molecule_in_rdkit_smiles(molSize=(int(self.molsize1),int(self.molsize2)))
         self.convex_hull()
         self.make_new_projection_values()
-    def load_molecule_in_rdkit_smiles(self, molSize,kekulize=True):
+    def load_molecule_in_rdkit_smiles(self, molSize,kekulize=True,bonds=[],bond_color=None,atom_color = {}, size= {} ):
         """
         Loads mol2 file in rdkit without the hydrogens - they do not have to appear in the final
         figure. Once loaded, the molecule is converted to SMILES format which RDKit appears to 
@@ -59,8 +59,7 @@ class Molecule(object):
         The molecule is then drawn from SMILES in 2D representation without hydrogens. The drawing is 
         saved as an SVG file.
         """
-        highlight=[]
-        colors={}
+        
         mol2_in_rdkit = self.topology_data.mol2 #need to reload without hydrogens
         try:
             mol2_in_rdkit = Chem.RemoveHs(mol2_in_rdkit)
@@ -81,11 +80,16 @@ class Molecule(object):
                 mc = Chem.Mol(self.topology_data.smiles.ToBinary())
         if not mc.GetNumConformers():
             rdDepictor.Compute2DCoords(mc)
+        atoms=[]
+        colors={}
         for i in range(mol2_in_rdkit.GetNumAtoms()):
-            highlight.append(i)
-            colors[i]=(1,1,1)
-        drawer = rdMolDraw2D.MolDraw2DSVG(molSize[0],molSize[1])
-        drawer.DrawMolecule(mc,highlightAtoms=highlight,highlightBonds=[], highlightAtomColors=colors)
+            atoms.append(i)
+            if len(atom_color)==0:
+                colors[i]=(1,1,1)
+            else:
+                colors = atom_color
+        drawer = rdMolDraw2D.MolDraw2DSVG(int(molSize[0]),int(molSize[1]))
+        drawer.DrawMolecule(mc,highlightAtoms=atoms,highlightBonds=bonds, highlightAtomColors=colors,highlightAtomRadii=size,highlightBondColors=bond_color)
         drawer.FinishDrawing()
         self.svg = drawer.GetDrawingText().replace('svg:','')
         filesvg = open("molecule.svg", "w+")
