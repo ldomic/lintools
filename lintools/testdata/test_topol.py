@@ -17,7 +17,7 @@ class TestBasic1(TestCase):
         self.lintools = Lintools(AMI_GRO,[],AMI_MOL2,lig_name,30,3.5,[1],[None],[None],0.3,"amino",self.output_name)
         self.lintools.save_files()
         self.lintools.data_input_and_res_time_analysis()
-    	self.lintools.analysis_of_prot_lig_interactions(False)
+    	self.lintools.analysis_of_prot_lig_interactions(False,False,False,False,False)
     	self.lintools.plot_residues()
     	self.lintools.draw_figure()
     def tearDown(self):
@@ -47,7 +47,7 @@ class TestBasic2(TestCase):
         self.lintools = Lintools(AMI_GRO,[AMI_XTC],AMI_MOL2,lig_name,30,3.5,[1],[None],[None],0.3,"clock",self.output_name)
         self.lintools.save_files()
         self.lintools.data_input_and_res_time_analysis()
-        self.lintools.analysis_of_prot_lig_interactions(False)
+        self.lintools.analysis_of_prot_lig_interactions(False,False,False,False,False)
         self.lintools.plot_residues()
         self.lintools.draw_figure()
     def tearDown(self):
@@ -76,7 +76,7 @@ class TestBasic3(TestCase):
         self.lintools = Lintools(PDB_4XP1,[],LDP_MOL2,lig_name,0,3.5,[1],[None],[None],0.3,"domains",self.output_name)
         self.lintools.save_files()
         self.lintools.data_input_and_res_time_analysis()
-        self.lintools.analysis_of_prot_lig_interactions(False)
+        self.lintools.analysis_of_prot_lig_interactions(False,False,False,False,False)
         self.lintools.plot_residues()
         self.lintools.draw_figure()
     def tearDown(self):
