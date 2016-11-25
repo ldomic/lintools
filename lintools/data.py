@@ -103,7 +103,7 @@ class Data(object):
                 present in the final 2D representation and are therefore excluded from some analysis scripts.)
         """
         
-        self.universe.ligand = self.universe.select_atoms('(segid '+str(ligand_name.segids[0])+' and resid '+str(ligand_name.resids[0])+')')
+        self.universe.ligand = self.universe.select_atoms(ligand_name)
         #Both resname and resnames options need to be reset in order for complete renaming.
         self.universe.ligand.resnames = "LIG"
         self.universe.ligand.resname = "LIG"
@@ -121,28 +121,7 @@ class Data(object):
         """
         
         self.universe.protein = self.universe.select_atoms("protein")
-        self.universe.protein.resids = self.universe.protein.resids+int(offset)
-    
-    def define_residues_for_plotting_topology(self,cutoff):
-        """
-        This function defines the residues for plotting in case only a topology file has been submitted. 
-        In this case the residence time analysis in not necessary and it is enough just to find all 
-        residues within a cutoff distance.
-            Takes:
-                * cutoff * - cutoff distance in angstroms that defines native contacts
-            Output:
-                * 
-        """
-        
-        self.protein_selection = self.universe.select_atoms('all and around '+str(cutoff)+' (segid '+str(self.universe.ligand.segids[0])+' and resid '+str(self.universe.ligand.resids[0])+')')
-        for atom in self.protein_selection.atoms:
-                #for non-analysis plots
-                residue = (atom.resname, str(atom.resid), atom.segid)
-                if residue not in self.dict_of_plotted_res.keys():
-                    self.dict_of_plotted_res[residue]=[1]
-        
-        assert len(self.dict_of_plotted_res)!=0, "Nothing to draw for this ligand (residue number: "+ self.universe.ligand.resids[0] +" on the chain "+ self.universe.ligand.segids[0] +") - check the position of your ligand within the topology file."
-        
+        self.universe.protein.resids = self.universe.protein.resids+int(offset)        
 
     def find_the_closest_atoms(self,topology):
         """
@@ -179,11 +158,4 @@ class Data(object):
         self.rename_ligand(ligand_name,mol2_file)
         self.load_mol2(mol2_file)
         
-    def analyse_topology(self,topology, cutoff=3.5):
-        """
-        In case user wants to analyse only a single topology file, this process will determine the residues 
-        that should be plotted and find the ligand atoms closest to these residues.
-        """
-        
-        self.define_residues_for_plotting_topology(cutoff)
-        self.find_the_closest_atoms(topology)
+   

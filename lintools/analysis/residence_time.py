@@ -59,6 +59,11 @@ class Residence_time(object):
             contact
         """
         i=0
+        if self.trajectory==[]:
+            self.trajectory = [self.topology_data.universe.filename]
+            self.start_frame_num=[None]
+            self.end_frame_num = [None]
+            self.skip =[None]
         for traj in self.trajectory:
             frame_dict = {}
             start = timer()

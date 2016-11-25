@@ -15,6 +15,7 @@ from analysis.sasa import SASA
 from draw import Draw
 from timeit import default_timer as timer
 from ligand_description import LigDescr
+from collections import namedtuple
 
 class Lintools(object):
     """This class controls the behaviour of all other classes (Data,Plots,Molecule,Figure) 
@@ -53,7 +54,7 @@ class Lintools(object):
             self.mol2_file = os.path.abspath(mol2_file)
         else:
             self.mol2_file = mol2_file
-        self.ligand = ligand
+        self.ligand = "resid "+str(ligand.resids[0])+" and segid "+ligand.segids[0]
         self.offset = offset
         self.cutoff = cutoff
         self.start = [None if start_frame==[None] else int(start_frame[i]) for i in range(len(trajectory))]
@@ -70,13 +71,14 @@ class Lintools(object):
         """
         self.topol_data = Data()
         self.topol_data.load_data(self.topology,self.mol2_file,self.ligand,self.offset)
-        if len(self.trajectory) == 0:
-            self.topol_data.analyse_topology(self.topology,self.cutoff)
-        else:
-            self.res_time = Residence_time(self.topol_data,self.trajectory, self.start, self.end, self.skip,self.topology,self.mol2_file, self.ligand,self.offset)
-            self.res_time.measure_residence_time(self.cutoff)
-            self.res_time.define_residues_for_plotting_traj(self.analysis_cutoff)
-            self.topol_data.find_the_closest_atoms(self.topology)
+        input_tuple = namedtuple("input","topology, trajectory, mol2, ligand_name, offset, cutoff, start, end, skip, analysis_cutoff")
+        self.input_data = input_tuple(topology=self.topology,trajectory=self.trajectory,mol2=self.topol_data.mol2, ligand_name=self.ligand, offset=self.offset,
+                                cutoff=self.cutoff,start=self.start, end=self.end,skip=self.skip,analysis_cutoff=self.analysis_cutoff)
+
+        self.res_time = Residence_time(self.topol_data,self.trajectory, self.start, self.end, self.skip,self.topology,self.mol2_file, self.ligand,self.offset)
+        self.res_time.measure_residence_time(self.cutoff)
+        self.res_time.define_residues_for_plotting_traj(self.analysis_cutoff)
+        self.topol_data.find_the_closest_atoms(self.topology)
     def analysis_of_prot_lig_interactions(self,hydr_bonds,pi_interactions,lig_sasa,lig_rmsf,salt_bridges):
         """
         The classes and function that deal with protein-ligand interaction analysis.
@@ -98,6 +100,7 @@ class Lintools(object):
         self.lig_descr = LigDescr(self.topol_data,self.rmsf,self.sasa)
         if salt_bridges!=True:
             self.salt_bridges = SaltBridges(self.topol_data,self.trajectory,self.lig_descr,self.start,self.end,self.skip,self.analysis_cutoff)
+        analysis_tuple = namedtuple("analysis","residence_time, hbonds, pistacking, sasa, rmsf, lig_descr, salt_bridges")
     def plot_residues(self):
         """
         Calls Plot() that plots the residues with the required diagram_type.
