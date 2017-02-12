@@ -5,34 +5,35 @@ from MDAnalysis.analysis import hbonds
 from timeit import default_timer as timer
 from rdkit import Chem
 import rdkit
+import numpy as np
 
 class HBonds(object):
     """
     This module analyses hydrogen bonds the ligand forms with the protein (version "09.2016").
     The donor and acceptor atoms in ligand molecule are detected by RDKit, then the bonds are
     detected by MDAnalysis hydrogen bonding analysis and counted by time (how many total bonds
-    per frame) and by type (fraction of time per each hydrogen bond). Information about the 
+    per frame) and by type (fraction of time per each hydrogen bond). Information about the
     total count of hydrogen bonds over time is provided in a data file (CSV format). Each hydro-
     gen bond is then analysed to decide whether to plot it in the final image.
-    
+
     Takes:
         * topology_data_object * - information about the system (lintools.Data object)
         * trajectory * - list of trajectories
         * start_frame_num * - list^^ of frame numbers for start of analysis (Opt)
-        * end_frame_num * - list^^ of frame numbers for end of analysis (Opt) 
+        * end_frame_num * - list^^ of frame numbers for end of analysis (Opt)
         * skip * - list^^ of numbers of how many frames should be skipped for this analysis (Opt)
-        * distance * - distance between hydrogen bond donor and acceptor atoms in angstroms 
-        * analysis_cutoff * - (user-defined) fraction of time a hydrogen bond has to be 
+        * distance * - distance between hydrogen bond donor and acceptor atoms in angstroms
+        * analysis_cutoff * - (user-defined) fraction of time a hydrogen bond has to be
             present for to be plotted (default - 0.3). It is multiplied by number of trajectories
-    
-    ^^ The reason these values are lists is because several trajectories can be submitted for 
-    analysis and different values could be required for each simulation. Therefore, similarly 
-    as with trajectories, start, end and skip variables are submitted as lists with values 
+
+    ^^ The reason these values are lists is because several trajectories can be submitted for
+    analysis and different values could be required for each simulation. Therefore, similarly
+    as with trajectories, start, end and skip variables are submitted as lists with values
     corresponding for each trajectory.
-    
-    Example: trajectory = ["1.xtc","2.xtc"] #Both are 1000 frames, but the user only wants to 
+
+    Example: trajectory = ["1.xtc","2.xtc"] #Both are 1000 frames, but the user only wants to
              analyse second half the the second trajectory
-             start = [0(for the first traj),500(for the second traj)]   
+             start = [0(for the first traj),500(for the second traj)]
              Other values can be left as default.
     """
     __version__ = "09.2016"
@@ -40,7 +41,7 @@ class HBonds(object):
         self.hbonds = None
         self.HDonorSmarts = Chem.MolFromSmarts('[$([N;!H0;v3]),$([N;!H0;+1;v4]),$([O,S;H1;+0]),$([n;H1;+0])]')
         haccep = "[$([O,S;H1;v2]-[!$(*=[O,N,P,S])]),$([O,S;H0;v2]),$([O,S;-]),$([N;v3;!$(N-*=!@[O,N,P,S])]),$([nH0,o,s;+0])]"
-        self.HAcceptorSmarts = Chem.MolFromSmarts(haccep) 
+        self.HAcceptorSmarts = Chem.MolFromSmarts(haccep)
         self.donors = []
         self.acceptors = []
         self.topology_data = topology_data_object
@@ -61,8 +62,8 @@ class HBonds(object):
     def find_donors_and_acceptors_in_ligand(self):
         """
         Since MDAnalysis a pre-set list for acceptor and donor atoms for proteins and solvents
-        from specific forcefields, it is necessary to find donor and acceptor atoms for the 
-        ligand molecule. This function uses RDKit and searches through ligand atoms to find 
+        from specific forcefields, it is necessary to find donor and acceptor atoms for the
+        ligand molecule. This function uses RDKit and searches through ligand atoms to find
         matches for pre-set list of possible donor and acceptor atoms. The resulting list is then
         parsed to MDAnalysis through the donors and acceptors arguments.
         """
@@ -75,16 +76,16 @@ class HBonds(object):
         """
         MDAnalysis.analysis.hbonds module is used to analyse hydrogen bonds formed between protein
         and ligand for each submitted trajectory. The hydrogen bonds are then counted by total value
-        per frame (count_by_time), as well as obtaining the frequency of each individual hydrogen 
+        per frame (count_by_time), as well as obtaining the frequency of each individual hydrogen
         bond (count_by_type).
-        
+
         Takes:
             * distance * - distance between hydrogen bond donor and acceptor in angstroms
         Output:
-            * self.hbonds * - array with information about all detected hydrogen bonds 
-            * self.hbonds_by_time * - total hbond number by frame 
+            * self.hbonds * - array with information about all detected hydrogen bonds
+            * self.hbonds_by_time * - total hbond number by frame
             * self.hbonds_by_type * - frequency of each hydrogen bond
-        
+
         """
         i=0
         for traj in self.trajectory:
@@ -92,48 +93,64 @@ class HBonds(object):
             start = timer()
             h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.topology_data.universe,'(segid '+str(self.topology_data.universe.ligand.segids[0])+' and resid '+str(self.topology_data.universe.ligand.resids[0])+')',"protein",distance=3,acceptors=self.acceptors,donors=self.donors,start=self.start_frame_num[i],stop=self.end_frame_num[i],step=self.skip[i])
             h.run()
-            h.generate_table()  
+            h.generate_table()
             end = timer()
             print "HBonds: " + str(end-start)
             self.hbonds[i]=h.table
             self.hbonds_by_time[i] = h.count_by_time()
-            self.hbonds_by_type[i] = h.count_by_type()
+            self.hbonds_by_type[i] = self.count_by_type(h.table,h.timesteps)
             i+=1
     def analyse_hydrogen_bonds_topology(self,distance=3):
         """
         MDAnalysis.analysis.hbonds module is used to analyse hydrogen bonds formed between protein
         and ligand for each submitted trajectory. The hydrogen bonds are then counted by total value
-        per frame (count_by_time), as well as obtaining the frequency of each individual hydrogen 
+        per frame (count_by_time), as well as obtaining the frequency of each individual hydrogen
         bond (count_by_type). This function is used in case no trajectory has been submitted for analysis.
-        
+
         Takes:
             * distance * - distance between hydrogen bond donor and acceptor in angstroms
         Output:
-            * self.hbonds * - array with information about all detected hydrogen bonds 
-            * self.hbonds_by_time * - total hbond number by frame 
+            * self.hbonds * - array with information about all detected hydrogen bonds
+            * self.hbonds_by_time * - total hbond number by frame
             * self.hbonds_by_type * - frequency of each hydrogen bond
         """
         h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.topology_data.universe,'(segid '+str(self.topology_data.universe.ligand.segids[0])+' and resid '+str(self.topology_data.universe.ligand.resids[0])+')',"protein",distance=3,acceptors=self.acceptors,donors=self.donors)
         h.run()
-        h.generate_table()  
+        h.generate_table()
         self.hbonds[0]=h.table
         self.hbonds_by_time[0] = h.count_by_time()
-        self.hbonds_by_type[0] = h.count_by_type()
+        self.hbonds_by_type[0] = self.count_by_type(h.table,h.timesteps)
+
+    def count_by_type(self,table,timesteps):
+        """Count how many times each individual hydrogen bonds occured throughout the simulation.
+        Returns numpy array."""
+        hbonds = defaultdict(int)
+        for contact in table:
+            #count by residue name not by proteinring
+            pkey = (contact.donor_idx,contact.acceptor_idx,contact.donor_atom, contact.acceptor_atom,contact.donor_resnm)
+            hbonds[pkey]+=1
+        dtype = [("donor_idx",int),("acceptor_idx",int),("donor_atom","|U4"),("acceptor_atom","|U4"),("donor_resnm","|U8"),("frequency",float) ]
+        out = np.empty((len(hbonds),),dtype=dtype)
+        tsteps = float(len(timesteps))
+        for cursor,(key,count) in enumerate(hbonds.iteritems()):
+            out[cursor] = key + (count / tsteps,)
+        return out.view(np.recarray)
+
     def determine_hbonds_for_drawing(self, analysis_cutoff):
         """
         Since plotting all hydrogen bonds could lead to a messy plot, a cutoff has to be imple-
         mented. In this function the frequency of each hydrogen bond is summated and the total
-        compared against analysis cutoff - a fraction multiplied by trajectory count. Those 
-        hydrogen bonds that are present for longer than analysis cutoff will be plotted in the 
+        compared against analysis cutoff - a fraction multiplied by trajectory count. Those
+        hydrogen bonds that are present for longer than analysis cutoff will be plotted in the
         final plot.
-        
+
         Takes:
-            * analysis_cutoff * - (user-defined) fraction of time a hydrogen bond has to be 
+            * analysis_cutoff * - (user-defined) fraction of time a hydrogen bond has to be
             present for to be plotted (default - 0.3). It is multiplied by number of trajectories
         Output:
-            * frequency * - dictionary of hydrogen bond donor-acceptor indices and frequencies 
+            * frequency * - dictionary of hydrogen bond donor-acceptor indices and frequencies
             These hydrogen bonds will be plotted in the final image.
-            
+
         """
         self.frequency = defaultdict(int)
         for traj in self.hbonds_by_type:
@@ -147,11 +164,11 @@ class HBonds(object):
                     self.frequency[(bond["acceptor_idx"],bond["donor_atom"],bond["acceptor_atom"])] += bond["frequency"]
 
         #Add the frequency counts
-        self.frequency = {i:self.frequency[i] for i in self.frequency if self.frequency[i]>(int(len(self.trajectory))*analysis_cutoff)}
+        self.frequency = {i:self.frequency[i] for i in self.frequency if self.frequency[i]>(int(len(self.trajectory))*float(analysis_cutoff))}
 
         #change the ligand atomname to a heavy atom - required for plot since only heavy atoms shown in final image
         self.hbonds_for_drawing = {}
-        for bond in self.frequency: 
+        for bond in self.frequency:
             atomname = bond[1]
             if atomname.startswith("O",0) or atomname.startswith("N",0):
                 lig_atom=atomname
@@ -164,7 +181,7 @@ class HBonds(object):
             self.hbonds_for_drawing[(bond[0],lig_atom,bond[2])]=self.frequency[bond]
     def write_output_files(self):
         """
-        The total hydrogen bond count per frame is provided as CSV output file. 
+        The total hydrogen bond count per frame is provided as CSV output file.
         Each trajectory has a seperate file.
         """
         for traj in range(len(self.trajectory)):
@@ -172,4 +189,3 @@ class HBonds(object):
                 hwriter = csv.writer(outfile, delimiter=' ')
                 for time in self.hbonds_by_time[traj]:
                     hwriter.writerow([time[0],time[1]])
-
