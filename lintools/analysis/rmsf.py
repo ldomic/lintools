@@ -24,7 +24,7 @@ class RMSF_measurements(object):
             reference = MDAnalysis.Universe(self.topology)
             MDAnalysis.analysis.align.rms_fit_trj(self.topology_data.universe, reference, filename='test.xtc',select='protein')
             aligned_universe = MDAnalysis.Universe(self.topology,"test.xtc")
-            ligand_noH = aligned_universe.select_atoms('(segid '+str(ligand_name.segids[0])+' and resid '+str(ligand_name.resids[0])+')')
+            ligand_noH = aligned_universe.select_atoms(ligand_name+" and not name H*")
             R = MDAnalysis.analysis.rms.RMSF(ligand_noH)
             R.run()
             rmsf_list[i] = R.rmsf.tolist()
