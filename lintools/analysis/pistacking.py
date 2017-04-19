@@ -93,10 +93,13 @@ class PiStacking(object):
                     aromatic_aa.write(ar_resname+".pdb")
                     break
         for ar_resname in ["PHE","TRP","TYR","HIS"]:
-            arom_aa_rdkit = Chem.MolFromPDBFile(ar_resname+".pdb")
-            arom_aa_mda = MDAnalysis.Universe(ar_resname+".pdb")
-            ring_info = arom_aa_rdkit.GetRingInfo()
-            number_of_rings = ring_info.NumRings()
+            try:
+                arom_aa_rdkit = Chem.MolFromPDBFile(ar_resname+".pdb")
+                arom_aa_mda = MDAnalysis.Universe(ar_resname+".pdb")
+                ring_info = arom_aa_rdkit.GetRingInfo()
+                number_of_rings = ring_info.NumRings()
+            except IOError:
+                continue
             for ring in range(number_of_rings):
                 atom_names_in_ring = []
                 for atom in ring_info.AtomRings()[ring]:
