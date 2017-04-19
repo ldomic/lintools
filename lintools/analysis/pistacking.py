@@ -98,14 +98,14 @@ class PiStacking(object):
                 arom_aa_mda = MDAnalysis.Universe(ar_resname+".pdb")
                 ring_info = arom_aa_rdkit.GetRingInfo()
                 number_of_rings = ring_info.NumRings()
+                for ring in range(number_of_rings):
+                    atom_names_in_ring = []
+                    for atom in ring_info.AtomRings()[ring]:
+                        atom_names_in_ring.append(arom_aa_mda.atoms[atom].name)
+                    self.rings[(ar_resname,ring)]=atom_names_in_ring
             except IOError:
                 continue
-            for ring in range(number_of_rings):
-                atom_names_in_ring = []
-                for atom in ring_info.AtomRings()[ring]:
-                    atom_names_in_ring.append(arom_aa_mda.atoms[atom].name)
-                self.rings[(ar_resname,ring)]=atom_names_in_ring
-
+                
     def define_all_protein_rings(self):
         """Make MDAnalysis atom selections for rings in protein residues that will be plotted in the final figure - since they are the only ones that
         should be analysed.
