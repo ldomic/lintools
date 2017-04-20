@@ -103,13 +103,13 @@ class Plots(object):
             pylab.savefig(res[1]+res[2]+".svg", dpi=300, transparent=True)
             
             
-    def plot_clock_diagrams(self):
+    def plot_clock_diagrams(self, colormap):
         """
         Ploting clock diagrams - one or more rings around residue name and id (and chain id).
         The rings show the fraction of simulation time this residue has spent in the vicinity of the
         ligand - characterised by distance.
         """
-        cmap = plt.get_cmap('summer')
+        cmap = plt.get_cmap(colormap)
         for res in self.topology_data.dict_of_plotted_res:
             colors = [cmap(i) for i in numpy.linspace(0, 1, len(self.topology_data.dict_of_plotted_res[res]))]
             traj_colors_ = {traj:colors[i] for i,traj in enumerate(self.topology_data.dict_of_plotted_res[res])}
