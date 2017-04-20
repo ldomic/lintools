@@ -101,11 +101,11 @@ class Lintools(object):
         if salt_bridges!=True:
             self.salt_bridges = SaltBridges(self.topol_data,self.trajectory,self.lig_descr,self.start,self.end,self.skip,self.analysis_cutoff)
         analysis_tuple = namedtuple("analysis","residence_time, hbonds, pistacking, sasa, rmsf, lig_descr, salt_bridges")
-    def plot_residues(self):
+    def plot_residues(self,colormap):
         """
         Calls Plot() that plots the residues with the required diagram_type.
         """
-        self.plots = Plots(self.topol_data,self.diagram_type)
+        self.plots = Plots(self.topol_data,self.diagram_type,colormap)
     def draw_figure(self):
         """
         Draws molecule through Molecule() and then puts the final figure together with
@@ -156,6 +156,7 @@ if __name__ == '__main__':
     parser.add_argument('--no_saltbridges', dest='salt_bridges', action="store_true", help="The salt bridges will not be detected.")
     parser.add_argument('--no_rmsf', dest='lig_rmsf', action="store_true", help="RMSF will not be detected.")
     parser.add_argument('--no_sasa', dest='lig_sasa', action="store_true", help="SASA will not be detected.")
+    parser.add_argument('-cmp', dest='cmp',default="summer", help="A Matplotlib colormap for clocks.")
 
 
 
@@ -228,7 +229,7 @@ if __name__ == '__main__':
     lintools.save_files()
     lintools.data_input_and_res_time_analysis()
     lintools.analysis_of_prot_lig_interactions(args.hydr_bonds, args.pi_int, args.lig_sasa,args.lig_rmsf,args.salt_bridges)
-    lintools.plot_residues()
+    lintools.plot_residues(args.colormap)
     lintools.draw_figure()
     lintools.remove_files()
     end = timer()
