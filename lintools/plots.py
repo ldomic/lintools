@@ -26,7 +26,7 @@ class Plots(object):
     matplotlib.rcParams['font.weight']=900
     matplotlib.rcParams['text.usetex'] = False
     matplotlib.rcParams['patch.linewidth'] = 0  
-    def __init__(self, topology_data_object,diagram_type):
+    def __init__(self, topology_data_object,diagram_type,colormap):
         self.topology_data = topology_data_object
         self.colors_amino_acids = {"acidic":"#D9774B", "basic":"#889DCC", 
                                    "aromatic":"#9FC74A", "polar":"#D06AC1",
@@ -43,7 +43,7 @@ class Plots(object):
         if diagram_type == "domains":
             self.plot_domain_diagrams()
         if diagram_type == "clock":
-            self.plot_clock_diagrams()
+            self.plot_clock_diagrams(colormap)
     def plot_amino_diagrams(self):
         """
         Plotting of amino diagrams - circles with residue name and id, colored according to the 
