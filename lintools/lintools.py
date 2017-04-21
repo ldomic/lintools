@@ -89,8 +89,12 @@ class Lintools(object):
             self.hbonds=None
         if pi_interactions!=True:
             self.pistacking = PiStacking(self.topol_data,self.trajectory,self.start,self.end,self.skip, self.analysis_cutoff)
+        else:
+            self.pistacking = None
         if lig_sasa!=True:
             self.sasa = SASA(self.topol_data,self.trajectory)
+        else:
+            self.sasa = None
     
         if self.trajectory!=[] and  lig_rmsf!=True:
                 self.rmsf = RMSF_measurements(self.topol_data,self.topology,self.trajectory,self.ligand)
@@ -100,7 +104,8 @@ class Lintools(object):
         self.lig_descr = LigDescr(self.topol_data,self.rmsf,self.sasa)
         if salt_bridges!=True:
             self.salt_bridges = SaltBridges(self.topol_data,self.trajectory,self.lig_descr,self.start,self.end,self.skip,self.analysis_cutoff)
-        analysis_tuple = namedtuple("analysis","residence_time, hbonds, pistacking, sasa, rmsf, lig_descr, salt_bridges")
+        else:
+            self.salt_bridges = None
     def plot_residues(self,colormap):
         """
         Calls Plot() that plots the residues with the required diagram_type.
