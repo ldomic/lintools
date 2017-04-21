@@ -229,7 +229,7 @@ if __name__ == '__main__':
     lintools.save_files()
     lintools.data_input_and_res_time_analysis()
     lintools.analysis_of_prot_lig_interactions(args.hydr_bonds, args.pi_int, args.lig_sasa,args.lig_rmsf,args.salt_bridges)
-    lintools.plot_residues(args.colormap)
+    lintools.plot_residues(args.cmp)
     lintools.draw_figure()
     lintools.remove_files()
     end = timer()
