@@ -17,7 +17,7 @@ class Figure(object):
     def change_lines_in_svg(self,filename, string1,string2):
         """Used to change lines in an SVG file. String1 is input - what is already present
         in the file, while string2 is output - the desired line. The input has to be searchable
-        since .replace function is used. 
+        since .replace function is used.
         Takes:
             * filename * - name of the SVG file to change
             * string1 * - input string
@@ -28,10 +28,10 @@ class Figure(object):
             sys.stdout.write(line.replace(str(string1),str(string2)))
     def manage_the_plots(self):
         """
-        Each plotted residue SVG file is edited and the contents of the file transfered into 
+        Each plotted residue SVG file is edited and the contents of the file transfered into
         an SVG group (g). This allows a plot to be included in the final image and the group
-        transform function allows to move the plot to the correct 2D coordinates in respect 
-        to the 2D drug molecule. The groups are added to self.draw_plots variable which is 
+        transform function allows to move the plot to the correct 2D coordinates in respect
+        to the 2D drug molecule. The groups are added to self.draw_plots variable which is
         included in the final figure.
         """
         diagram = ""
@@ -42,7 +42,9 @@ class Figure(object):
                     else:
                         sys.stdout.write(line.replace ("</svg>","</g>"))
             input1 = "</defs>"
-            output1 = "<g transform='translate("+str(int(self.molecule.nearest_points_coords[residue][0]+(self.molecule.x_dim-self.molecule.molsize1)/2)-90)+","+str(int(self.molecule.nearest_points_coords[residue][1]+(self.molecule.y_dim-self.molecule.molsize2)/2)-90)+")'>"
+            x = str(int(self.molecule.nearest_points_coords[residue][0]+(self.molecule.x_dim-self.molecule.molsize1)/2)-90)
+            y = str(int(self.molecule.nearest_points_coords[residue][1]+(self.molecule.y_dim-self.molecule.molsize2)/2)-90)
+            output1 = "<g  id='"+residue[0]+residue[1]+"_"+residue[2]+"' class='residue' transform='translate("+x+","+y+" )' x='"+x+"' y='"+y+"'>"
             self.change_lines_in_svg(residue[1]+residue[2]+'.svg', input1, output1)
             input2 = "font-style:normal;"
             output2 = "font-style:normal;font-weight:bold;"
@@ -54,13 +56,13 @@ class Figure(object):
         self.draw_plots = diagram
     def add_bigger_box(self):
         """
-        Sets the size of the figure by expanding the space of molecule.svg file. These dimension have been 
+        Sets the size of the figure by expanding the space of molecule.svg file. These dimension have been
         previously determined. Also makes the lines of the molecule thicker.
         """
         start1 = "width='"+str(int(self.molecule.molsize1))+"px' height='"+str(int(self.molecule.molsize2))+"px' >"
         start2 = "<rect style='opacity:1.0;fill:#FFFFFF;stroke:none' width='"+str(int(self.molecule.molsize1))+"' height='"+str(int(self.molecule.molsize2))+"' x='0' y='0'> </rect>"
-        bigger_box ="width='"+str(int(self.molecule.x_dim))+"px' height='"+str(int(self.molecule.y_dim))+"px' > "
-        big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(int(self.molecule.x_dim))+"px' height='"+str(int(self.molecule.y_dim))+"px' x='0' y='0'> </rect> <g transform='translate("+str((self.molecule.x_dim-self.molecule.molsize1)/2)+","+str((self.molecule.y_dim-self.molecule.molsize2)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='"+str(self.molecule.molsize1)+"' height='"+str(self.molecule.molsize2)+"' x='0' y='0' /> "
+        bigger_box ="width='100%' height='100%' viewbox='0 0 "+str(int(self.molecule.x_dim))+" "+str(int(self.molecule.y_dim))+"' > "
+        big_box2= "<rect style='opacity:1.0;fill:white;stroke:none' width='"+str(int(self.molecule.x_dim))+"px' height='"+str(int(self.molecule.y_dim))+"px' x='0' y='0'> </rect> <g id='molecularDrawing' transform='translate("+str((self.molecule.x_dim-self.molecule.molsize1)/2)+","+str((self.molecule.y_dim-self.molecule.molsize2)/2)+")'>'<rect style='opacity:1.0;fill:#ffffff;stroke:none' width='"+str(self.molecule.molsize1)+"' height='"+str(self.molecule.molsize2)+"' x='0' y='0' /> "
         self.end_symbol = "</svg>"
         no_end_symbol = "</g>"
         #Make the lines in molecule drawing thicker to look better with the large plots
@@ -78,16 +80,16 @@ class Figure(object):
             f.close()
     def draw_white_circles(self):
         """
-        The plots are transparent and therefore this function is required to cover up the middle 
+        The plots are transparent and therefore this function is required to cover up the middle
         part of the plots (that contains text). This function creates white circles that provide
         background.
         """
         for atom in sorted(self.molecule.nearest_points_coords.keys()):
                 self.white_circles = self.white_circles+"<circle cx='"+str(int(self.molecule.nearest_points_coords[atom][0]))+"' cy='"+str(int(self.molecule.nearest_points_coords[atom][1]))+"' r='55' fill='white' />"
-    
+
     def put_everything_together(self):
         """
-        All of the elements of the final SVG file are put together in the correct order (e.g. lines are placed behind plots 
+        All of the elements of the final SVG file are put together in the correct order (e.g. lines are placed behind plots
         and the molecule).
         """
         molecule_list = [self.filestart]+[self.white_circles]+[self.draw_molecule]+[self.draw.draw_hbonds]+[self.draw.draw_pi_lines]+[self.draw.draw_saltbridges]+[self.draw.cloud]+[self.draw_plots]+[self.end_symbol]
@@ -95,7 +97,7 @@ class Figure(object):
     def write_final_draw_file(self, output_name):
         """The result of put_everything_together() function is writen in a file.
         Takes:
-            * output_name * - name for the output file 
+            * output_name * - name for the output file
         """
         finalsvg = open(output_name+".svg","w")
         finalsvg.writelines(self.final_molecule)

@@ -6,6 +6,7 @@ from timeit import default_timer as timer
 from rdkit import Chem
 import rdkit
 import numpy as np
+import os
 
 class HBonds(object):
     """
@@ -47,6 +48,7 @@ class HBonds(object):
         self.topology_data = topology_data_object
         self.trajectory = trajectory
         self.hbonds = {}
+        self.hbonds_timesteps={}
         self.hbonds_by_time = {}
         self.hbonds_by_type = {}
         self.start_frame_num = start_frame_num
@@ -68,10 +70,21 @@ class HBonds(object):
         parsed to MDAnalysis through the donors and acceptors arguments.
         """
         atom_names=[x.name for x in self.topology_data.universe.ligand]
-        for atom in self.topology_data.mol2.GetSubstructMatches(self.HDonorSmarts, uniquify=1):
-            self.donors.append(atom_names[atom[0]])
-        for atom in self.topology_data.mol2.GetSubstructMatches(self.HAcceptorSmarts, uniquify=1):
-            self.acceptors.append(atom_names[atom[0]])
+        try:
+            for atom in self.topology_data.mol.GetSubstructMatches(self.HDonorSmarts, uniquify=1):
+                self.donors.append(atom_names[atom[0]])
+            for atom in self.topology_data.mol.GetSubstructMatches(self.HAcceptorSmarts, uniquify=1):
+                self.acceptors.append(atom_names[atom[0]])
+        except Exception as e:
+            m = Chem.MolFromPDBFile("lig.pdb")
+            self.donors = []
+            self.acceptors = []
+            for atom in m.GetSubstructMatches(self.HDonorSmarts, uniquify=1):
+                self.donors.append(atom_names[atom[0]])
+            haccep = "[$([O,S;H1;v2]-[!$(*=[O,N,P,S])]),$([O,S;H0;v2]),$([O,S;-]),$([N;v3;!$(N-*=!@[O,N,P,S])]),$([nH0,o,s;+0])]"
+            self.HAcceptorSmarts = Chem.MolFromSmarts(haccep)
+            for atom in m.GetSubstructMatches(self.HAcceptorSmarts, uniquify=1):
+                self.acceptors.append(atom_names[atom[0]])
     def analyse_hydrogen_bonds_traj(self,distance=3):
         """
         MDAnalysis.analysis.hbonds module is used to analyse hydrogen bonds formed between protein
@@ -97,9 +110,26 @@ class HBonds(object):
             end = timer()
             print "HBonds: " + str(end-start)
             self.hbonds[i]=h.table
+            self.hbonds_timesteps[i] =h.timesteps
             self.hbonds_by_time[i] = h.count_by_time()
             self.hbonds_by_type[i] = self.count_by_type(h.table,h.timesteps)
             i+=1
+
+    def count_by_type(self,table,timesteps):
+        """Count how many times each individual hydrogen bonds occured throughout the simulation.
+        Returns numpy array."""
+        hbonds = defaultdict(int)
+        for contact in table:
+            #count by residue name not by proteinring
+            pkey = (contact.donor_idx,contact.acceptor_idx,contact.donor_atom, contact.acceptor_atom,contact.donor_resnm,contact.donor_resid, contact.acceptor_resnm,contact.acceptor_resid)
+            hbonds[pkey]+=1
+        dtype = [("donor_idx",int),("acceptor_idx",int),("donor_atom","|U4"),("acceptor_atom","|U4"),("donor_resnm","|U8"),("donor_resid","|U8"),("acceptor_resnm","|U8"),("acceptor_resid","|U8"),("frequency",float) ]
+        out = np.empty((len(hbonds),),dtype=dtype)
+        tsteps = float(len(timesteps))
+        for cursor,(key,count) in enumerate(hbonds.iteritems()):
+            out[cursor] = key + (count / tsteps,)
+        return out.view(np.recarray)
+
     def analyse_hydrogen_bonds_topology(self,distance=3):
         """
         MDAnalysis.analysis.hbonds module is used to analyse hydrogen bonds formed between protein
@@ -119,23 +149,8 @@ class HBonds(object):
         h.generate_table()
         self.hbonds[0]=h.table
         self.hbonds_by_time[0] = h.count_by_time()
-        self.hbonds_by_type[0] = self.count_by_type(h.table,h.timesteps)
-
-    def count_by_type(self,table,timesteps):
-        """Count how many times each individual hydrogen bonds occured throughout the simulation.
-        Returns numpy array."""
-        hbonds = defaultdict(int)
-        for contact in table:
-            #count by residue name not by proteinring
-            pkey = (contact.donor_idx,contact.acceptor_idx,contact.donor_atom, contact.acceptor_atom,contact.donor_resnm)
-            hbonds[pkey]+=1
-        dtype = [("donor_idx",int),("acceptor_idx",int),("donor_atom","|U4"),("acceptor_atom","|U4"),("donor_resnm","|U8"),("frequency",float) ]
-        out = np.empty((len(hbonds),),dtype=dtype)
-        tsteps = float(len(timesteps))
-        for cursor,(key,count) in enumerate(hbonds.iteritems()):
-            out[cursor] = key + (count / tsteps,)
-        return out.view(np.recarray)
-
+        self.hbonds_by_type[0] = h.count_by_type()
+        print h.table
     def determine_hbonds_for_drawing(self, analysis_cutoff):
         """
         Since plotting all hydrogen bonds could lead to a messy plot, a cutoff has to be imple-
@@ -158,13 +173,13 @@ class HBonds(object):
             # frequency[(residue_atom_idx,ligand_atom_name,residue_atom_name)]=frequency
             # residue atom name will be used to determine if hydrogen bond is interacting with a sidechain or bakcbone
                 if bond["donor_resnm"]!="LIG":
-                    self.frequency[(bond["donor_idx"],bond["acceptor_atom"],bond["donor_atom"])] += bond["frequency"]
+                    self.frequency[(bond["donor_idx"],bond["acceptor_atom"],bond["donor_atom"],bond["acceptor_idx"])] += bond["frequency"]
                 #check whether ligand is donor or acceptor
                 else:
-                    self.frequency[(bond["acceptor_idx"],bond["donor_atom"],bond["acceptor_atom"])] += bond["frequency"]
+                    self.frequency[(bond["acceptor_idx"],bond["donor_atom"],bond["acceptor_atom"],bond["donor_idx"])] += bond["frequency"]
 
         #Add the frequency counts
-        self.frequency = {i:self.frequency[i] for i in self.frequency if self.frequency[i]>(int(len(self.trajectory))*float(analysis_cutoff))}
+        self.frequency = {i:self.frequency[i] for i in self.frequency if self.frequency[i]>(int(len(self.trajectory))*analysis_cutoff)}
 
         #change the ligand atomname to a heavy atom - required for plot since only heavy atoms shown in final image
         self.hbonds_for_drawing = {}
@@ -174,18 +189,36 @@ class HBonds(object):
                 lig_atom=atomname
             else:
                 atomindex = [index for index,atom in enumerate(self.topology_data.universe.ligand.atoms) if atom.name==atomname][0]
-                rdkit_atom = self.topology_data.mol2.GetAtomWithIdx(atomindex)
+                rdkit_atom = self.topology_data.mol.GetAtomWithIdx(atomindex)
                 for neigh in rdkit_atom.GetNeighbors():
                     neigh_atom_id = neigh.GetIdx()
                 lig_atom = [atom.name for index,atom in enumerate(self.topology_data.universe.ligand.atoms) if index==neigh_atom_id][0]
-            self.hbonds_for_drawing[(bond[0],lig_atom,bond[2])]=self.frequency[bond]
+            self.hbonds_for_drawing[(bond[0],lig_atom,bond[2],bond[3])]=self.frequency[bond]
     def write_output_files(self):
         """
         The total hydrogen bond count per frame is provided as CSV output file.
-        Each trajectory has a seperate file.
+        Each trajectory has a separate file.
         """
+        os.mkdir("analysis")
+        os.chdir("analysis")
+        os.mkdir("hydrogen_bonds")
+        os.chdir("hydrogen_bonds")
         for traj in range(len(self.trajectory)):
-            with open('hbonds_data_total_'+str(traj)+'.txt', 'wb') as outfile:
+            with open('hbonds_data_total_'+str(traj)+'.csv', 'wb') as outfile:
                 hwriter = csv.writer(outfile, delimiter=' ')
                 for time in self.hbonds_by_time[traj]:
                     hwriter.writerow([time[0],time[1]])
+            for bond in self.hbonds_by_type[traj]:
+                if bond["donor_resnm"]=="LIG" and (bond["acceptor_idx"],bond["donor_idx"]) in [(k[0],k[3]) for k,v in self.hbonds_for_drawing.items()]:
+                    with open('hbond_'+bond["acceptor_resnm"]+"_"+str(bond["acceptor_resid"])+"_"+bond["donor_atom"]+"_"+str(traj)+".csv","wb") as outfile:
+                        hwriter = csv.writer(outfile, delimiter=' ')
+                        for time in self.hbonds_timesteps[traj]:
+                            result = [1 if x[0]==time and x["acceptor_idx"]==bond["acceptor_idx"] else 0 for x in self.hbonds[traj]][0]
+                            hwriter.writerow([time,result])
+                if bond["donor_resnm"]!="LIG" and (bond["donor_idx"],bond["acceptor_idx"]) in [(k[0],k[3]) for k,v in self.hbonds_for_drawing.items()]:
+                    with open('hbond_'+bond["donor_resnm"]+"_"+str(bond["donor_resid"])+"_"+bond["acceptor_atom"]+"_"+str(traj)+".csv","wb") as outfile:
+                        hwriter = csv.writer(outfile, delimiter=' ')
+                        for time in self.hbonds_timesteps[traj]:
+                            result = [1 if x[0]==time and x["donor_idx"]==bond["donor_idx"] else 0 for x in self.hbonds[traj]][0]
+                            hwriter.writerow([time,result])
+        os.chdir("../../")

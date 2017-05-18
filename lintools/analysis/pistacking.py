@@ -5,7 +5,8 @@ import MDAnalysis
 from collections import namedtuple, defaultdict
 import os
 from timeit import default_timer as timer
-
+import maths_functions as math
+import csv
 """
 The code in this module has been inspired by PLIP (Protein Ligand Interaction Profiler) from Salentin et al. Nucl. Acids Res. (2015).
 PLIP is originally published under the Apache License v2 and is available at https://github.com/ssalentin/plip
@@ -67,12 +68,17 @@ class PiStacking(object):
 
     def detect_aromatic_rings_in_ligand(self):
         """Using rdkit to detect aromatic rings in ligand - size 4-6 atoms and all atoms are part of the ring. Saves this data in self.ligrings."""
-        ring_info = self.topology_data.mol2.GetRingInfo()
         self.ligrings = {}
-        self.ligand_ring_num = ring_info.NumRings()
+        try:
+            ring_info = self.topology_data.mol.GetRingInfo()
+            self.ligand_ring_num = ring_info.NumRings()
+        except Exception as e:
+            m = Chem.MolFromPDBFile("lig.pdb")
+            ring_info = m.GetRingInfo()
+            self.ligand_ring_num = ring_info.NumRings()
         i=0
         for ring in range(self.ligand_ring_num):
-            if 4 < len(ring_info.AtomRings()[ring]) <= 6 and  False not in [self.topology_data.mol2.GetAtomWithIdx(x).GetIsAromatic() for x in ring_info.AtomRings()[ring]]: #narrow ring definition
+            if 4 < len(ring_info.AtomRings()[ring]) <= 6 and  False not in [self.topology_data.mol.GetAtomWithIdx(x).GetIsAromatic() for x in ring_info.AtomRings()[ring]]: #narrow ring definition
                 atom_ids_in_ring = []
                 for atom in ring_info.AtomRings()[ring]:
                     atom_ids_in_ring.append(self.topology_data.universe.ligand.atoms[atom].name)
@@ -89,19 +95,22 @@ class PiStacking(object):
         for ar_resname in ["PHE","TRP","TYR","HIS"]:
             for res in self.topology_data.universe.residues:
                 if res.resname == ar_resname:
-                    aromatic_aa = self.topology_data.universe.select_atoms("resname "+res.resname+" and resid "+str(res.resid)+" and segid "+ res.segids[0])
+                    aromatic_aa = self.topology_data.universe.select_atoms("resname "+res.resname+" and resid "+str(res.resid)+" and segid "+ res.segid)
                     aromatic_aa.write(ar_resname+".pdb")
                     break
         for ar_resname in ["PHE","TRP","TYR","HIS"]:
-            arom_aa_rdkit = Chem.MolFromPDBFile(ar_resname+".pdb")
-            arom_aa_mda = MDAnalysis.Universe(ar_resname+".pdb")
-            ring_info = arom_aa_rdkit.GetRingInfo()
-            number_of_rings = ring_info.NumRings()
-            for ring in range(number_of_rings):
-                atom_names_in_ring = []
-                for atom in ring_info.AtomRings()[ring]:
-                    atom_names_in_ring.append(arom_aa_mda.atoms[atom].name)
-                self.rings[(ar_resname,ring)]=atom_names_in_ring
+            try:
+                arom_aa_rdkit = Chem.MolFromPDBFile(ar_resname+".pdb")
+                arom_aa_mda = MDAnalysis.Universe(ar_resname+".pdb")
+                ring_info = arom_aa_rdkit.GetRingInfo()
+                number_of_rings = ring_info.NumRings()
+                for ring in range(number_of_rings):
+                    atom_names_in_ring = []
+                    for atom in ring_info.AtomRings()[ring]:
+                        atom_names_in_ring.append(arom_aa_mda.atoms[atom].name)
+                    self.rings[(ar_resname,ring)]=atom_names_in_ring
+            except IOError:
+                continue
 
     def define_all_protein_rings(self):
         """Make MDAnalysis atom selections for rings in protein residues that will be plotted in the final figure - since they are the only ones that
@@ -141,17 +150,17 @@ class PiStacking(object):
                         l = self.get_ligand_ring_selection(ring)
                         p = self.protein_rings[prot_ring]
                         for frame in self.topology_data.universe.trajectory[self.start_frame_num[i]:self.end_frame_num[i]:self.skip[i]]:
-                            lig_norm_vec = self.prepare_normal_vectors(l)
-                            protein_norm_vec = self.prepare_normal_vectors(p)
-                            dist = self.euclidean3d(l.center_of_geometry(),p.center_of_geometry())
+                            lig_norm_vec = math.prepare_normal_vectors(l)
+                            protein_norm_vec = math.prepare_normal_vectors(p)
+                            dist = math.euclidean3d(l.center_of_geometry(),p.center_of_geometry())
 
-                            a = self.vecangle(lig_norm_vec,protein_norm_vec)
+                            a = math.vecangle(lig_norm_vec,protein_norm_vec)
                             angle = min(a, 180 - a if not 180 - a < 0 else a)
 
                             #Measure offset
-                            proj1 = self.projection(lig_norm_vec,l.center_of_geometry(),p.center_of_geometry())
-                            proj2 = self.projection(protein_norm_vec,p.center_of_geometry(),l.center_of_geometry())
-                            offset = min(self.euclidean3d(proj1,l.center_of_geometry()), self.euclidean3d(proj2,p.center_of_geometry()))
+                            proj1 = math.projection(lig_norm_vec,l.center_of_geometry(),p.center_of_geometry())
+                            proj2 = math.projection(protein_norm_vec,p.center_of_geometry(),l.center_of_geometry())
+                            offset = min(math.euclidean3d(proj1,l.center_of_geometry()), math.euclidean3d(proj2,p.center_of_geometry()))
 
 
                             if dist < self.max_distance:
@@ -165,18 +174,18 @@ class PiStacking(object):
                                                     type="T",resname=self.protein_rings[prot_ring].residues.resnames[0],
                                                     resid=self.protein_rings[prot_ring].residues.resids[0], segid=self.protein_rings[prot_ring].residues.segids[0])
                                     self.timeseries.append(contacts)
-                                print "Pistack_segid: ",self.protein_rings[prot_ring].residues.segids[0]
             self.pistacking[i] = self.make_table()
 
             self.pistacking_by_time[i] = self.count_by_time()
             self.pistacking_by_type[i] = self.count_by_type()
+            self.write_output_files(i)
             i+=1
         end = timer()
         print "Pi-Stacking:"+str(end-start)
 
     def make_table(self):
         """Make numpy array from timeseries data."""
-        num_records = np.sum([1 for frame in self.timeseries])
+        num_records = int(np.sum([1 for frame in self.timeseries]))
         dtype = [
                 ("frame",float),("time",float),("proteinring",list),
                 ("ligand_ring_ids",list),("distance",float),("angle",float),
@@ -184,7 +193,6 @@ class PiStacking(object):
         out = np.empty((num_records,),dtype=dtype)
         cursor=0
         for contact in self.timeseries:
-            print contact.proteinring
             out[cursor] = (contact.frame, contact.time,contact.proteinring,contact.ligandring,contact.distance,contact.angle,contact.offset,contact.type,contact.resid,contact.resname,contact.segid)
             cursor+=1
         return out.view(np.recarray)
@@ -206,7 +214,7 @@ class PiStacking(object):
             #count by residue name not by proteinring
             pkey = (contact.ligandring,contact.type, contact.resid,contact.resname,contact.segid)
             pistack[pkey]+=1
-        dtype = [("ligand_ring_ids",int,(1,6)),("type","|U4"),("resid",int),("resname","|U4"),("segid","|U8"),("frequency",float) ]
+        dtype = [("ligand_ring_ids",list),("type","|U4"),("resid",int),("resname","|U4"),("segid","|U8"),("frequency",float) ]
         out = np.empty((len(pistack),),dtype=dtype)
         tsteps = float(len(self.timesteps))
         for cursor,(key,count) in enumerate(pistack.iteritems()):
@@ -235,72 +243,34 @@ class PiStacking(object):
         self.frequency = defaultdict(int)
         for traj in self.pistacking_by_type:
             for contact in self.pistacking_by_type[traj]:
-                self.frequency[tuple(map(tuple,contact["ligand_ring_ids"])),contact["type"],contact["resid"],contact["resname"],contact["segid"]]+=contact["frequency"]
+                self.frequency[contact["ligand_ring_ids"],contact["type"],contact["resid"],contact["resname"],contact["segid"]]+=contact["frequency"]
         draw_frequency = {i:self.frequency[i] for i in self.frequency if self.frequency[i]>(int(len(self.trajectory))*float(analysis_cutoff))}
 
         self.pi_contacts_for_drawing = {}
         for contact in draw_frequency:
             self.pi_contacts_for_drawing[contact]=draw_frequency[contact]
 
-
-    def prepare_normal_vectors(self,atomselection):
-        """Create and normalize a vector across ring plane."""
-        ring_atomselection = [atomselection.coordinates()[a] for a in [0,2,4]]
-        vect1 = self.vector(ring_atomselection[0],ring_atomselection[1])
-        vect2 = self.vector(ring_atomselection[2],ring_atomselection[0])
-        return self.normalize_vector(np.cross(vect1,vect2))
-
-
-    def normalize_vector(self,v):
-        """Take a vector and return the normalized vector
-        :param v: a vector v
-        :returns : normalized vector v
+    def write_output_files(self,traj):
         """
-        norm = np.linalg.norm(v)
-        return v/norm if not norm == 0 else v
-
-    def vector(self,p1, p2):
-        """Vector from p1 to p2.
-        :param p1: coordinates of point p1
-        :param p2: coordinates of point p2
-        :returns : numpy array with vector coordinates
+        The total hydrogen bond count per frame is provided as CSV output file.
+        Each trajectory has a separate file.
         """
-        return None if len(p1) != len(p2) else np.array([p2[i] - p1[i] for i in xrange(len(p1))])
-
-    def vecangle(self,v1, v2, deg=True):
-        """Calculate the angle between two vectors
-        :param v1: coordinates of vector v1
-        :param v2: coordinates of vector v2
-        :returns : angle in degree or rad
-        """
-        if np.array_equal(v1, v2):
-            return 0.0
-        dm = np.dot(v1, v2)
-        cm = np.linalg.norm(v1) * np.linalg.norm(v2)
-        angle = np.arccos(round(dm / cm, 10))  # Round here to prevent floating point errors
-        return np.degrees([angle, ])[0] if deg else angle
-
-    def projection(self,pnormal1, ppoint, tpoint):
-        """Calculates the centroid from a 3D point cloud and returns the coordinates
-        :param pnormal1: normal of plane
-        :param ppoint: coordinates of point in the plane
-        :param tpoint: coordinates of point to be projected
-        :returns : coordinates of point orthogonally projected on the plane
-        """
-        # Choose the plane normal pointing to the point to be projected
-        pnormal2 = [coo*(-1) for coo in pnormal1]
-        d1 = self.euclidean3d(tpoint, pnormal1 + ppoint)
-        d2 = self.euclidean3d(tpoint, pnormal2 + ppoint)
-        pnormal = pnormal1 if d1 < d2 else pnormal2
-        # Calculate the projection of tpoint to the plane
-        sn = -np.dot(pnormal, self.vector(ppoint, tpoint))
-        sd = np.dot(pnormal, pnormal)
-        sb = sn / sd
-        return [c1 + c2 for c1, c2 in zip(tpoint, [sb * pn for pn in pnormal])]
-
-    def euclidean3d(self,v1, v2):
-        """Faster implementation of euclidean distance for the 3D case."""
-        if not len(v1) == 3 and len(v2) == 3:
-            print("Vectors are not in 3D space. Returning None.")
-            return None
-        return np.sqrt((v1[0] - v2[0]) ** 2 + (v1[1] - v2[1]) ** 2 + (v1[2] - v2[2]) ** 2)
+        try:
+            os.chdir("analysis")
+        except Exception as e:
+            os.mkdir("analysis")
+            os.chdir("analysis")
+        os.mkdir("pistacking")
+        os.chdir("pistacking")
+        with open('pistacking_data_total_'+str(traj)+'.csv', 'wb') as outfile:
+            hwriter = csv.writer(outfile, delimiter=' ')
+            for time in self.pistacking_by_time[traj]:
+                hwriter.writerow([time[0],time[1]])
+        for bond in self.pistacking_by_type[traj]:
+            if bond in self.pi_contacts_for_drawing.keys():
+                with open("pi_contact_"+str(traj)+".csv","wb") as outfile:
+                    hwriter = csv.writer(outfile, delimiter=' ')
+                    for time in self.timesteps:
+                        result = [1 if x[0]==time and x["acceptor_idx"]==bond["acceptor_idx"] else 0 for x in self.timeseries][0]
+                        hwriter.writerow([time,result])
+        os.chdir("../../")

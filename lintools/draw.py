@@ -1,4 +1,4 @@
-import matplotlib 
+import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.transforms import IdentityTransform,Affine2D
 
@@ -20,33 +20,39 @@ class Draw(object):
 		self.saltbridges = saltbridges_object
 		self.lig_descr = lig_descr_object
 		self.cloud=""
+		self.draw_pi_lines = ""
 		self.draw_hydrogen_bonds()
 		self.draw_salt_bridges()
 		self.draw_pi_contacts()
 		self.add_smiles_id()
-		self.draw_molecule(None,None,None,None)
+
 	def draw_hydrogen_bonds(self,color="black"):
 		"""For each bond that has been determined to be important, a line gets drawn.
 		"""
-		self.draw_hbonds ="<g transform='translate("+str((self.molecule.x_dim-self.molecule.molsize1)/2)+","+str((self.molecule.y_dim-self.molecule.molsize2)/2)+")'>'"
-
+		self.draw_hbonds=""
 		if self.hbonds!=None:
 			for bond in self.hbonds.hbonds_for_drawing:
+				x = str((self.molecule.x_dim-self.molecule.molsize1)/2)
+				y = str((self.molecule.y_dim-self.molecule.molsize2)/2)
+				self.draw_hbonds ="<g id='"+str(bond[0])+"' class='HBonds' transform='translate("+x+","+y+")' x='"+x+"' y='"+y+"'>'"
 				atom = self.topology_data.universe.atoms[bond[0]-1] #zero-based index vs one-based index
 				residue = (atom.resname, str(atom.resid), atom.segid)
 				if bond[2] in ["N","O","H"]:
 					#backbone interactions
-					self.draw_hbonds=self.draw_hbonds+"<line x1='"+str(int(self.molecule.nearest_points_coords[residue][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[residue][1]))+"' x2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][0]))+"' y2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][1]))+"' style='stroke:"+color+";stroke-width:4' />"
-				else:    
+					self.draw_hbonds=self.draw_hbonds+"<line id='"+str(bond[0])+"' class='HBonds' x1='"+str(int(self.molecule.nearest_points_coords[residue][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[residue][1]))+"' x2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][0]))+"' y2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][1]))+"' style='stroke:white;stroke-width:15' />"
+					self.draw_hbonds=self.draw_hbonds+"<line id='"+str(bond[0])+"' class='HBonds' x1='"+str(int(self.molecule.nearest_points_coords[residue][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[residue][1]))+"' x2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][0]))+"' y2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][1]))+"' style='stroke:"+color+";stroke-width:4' />"
+				else:
 					#sidechain interactions
-					self.draw_hbonds=self.draw_hbonds+"<line stroke-dasharray='5,5'  x1='"+str(int(self.molecule.nearest_points_coords[residue][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[residue][1]))+"' x2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][0]))+"' y2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][1]))+"' style='stroke:"+color+";stroke-width:4' />"
-		self.draw_hbonds+="</g>"
+					self.draw_hbonds=self.draw_hbonds+"<line id='"+str(bond[0])+"' class='HBonds'  x1='"+str(int(self.molecule.nearest_points_coords[residue][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[residue][1]))+"' x2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][0]))+"' y2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][1]))+"' style='stroke:white;stroke-width:15' />"
+					self.draw_hbonds=self.draw_hbonds+"<line id='"+str(bond[0])+"' class='HBonds' stroke-dasharray='5,5'  x1='"+str(int(self.molecule.nearest_points_coords[residue][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[residue][1]))+"' x2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][0]))+"' y2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][1]))+"' style='stroke:"+color+";stroke-width:4' />"
+				self.draw_hbonds+="</g>"
 
 	def draw_pi_contacts(self):
+		self.draw_pi_lines=""
 		if self.pi_contacts!=None:
-			self.draw_pi_lines="<g transform='translate("+str((self.molecule.x_dim-self.molecule.molsize1)/2)+","+str((self.molecule.y_dim-self.molecule.molsize2)/2)+")'>'"
 			colors = {"P":"#B36AE2","T":"green"}
 			for contact in self.pi_contacts.pi_contacts_for_drawing:
+				self.draw_pi_lines="<g class='PiInteractions' transform='translate("+str((self.molecule.x_dim-self.molecule.molsize1)/2)+","+str((self.molecule.y_dim-self.molecule.molsize2)/2)+")'>'"
 				ligand_atom_coords = []
 				residue = str(contact[3]),str(contact[2]),str(contact[4])
 				for atom_id in contact[0][0]:
@@ -54,22 +60,25 @@ class Draw(object):
 					coord = self.molecule.ligand_atom_coords_from_diagr[name]
 					ligand_atom_coords.append(coord)
 				a = geometry.MultiPoint(ligand_atom_coords).centroid.coords.xy
+				self.draw_pi_lines=self.draw_pi_lines+"<line x1='"+str(int(self.molecule.nearest_points_coords[residue][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[residue][1]))+"' x2='"+str(float(a[0][0]))+"' y2='"+str(float(a[1][0]))+"' style='stroke:white;stroke-width:15' />"
+				self.draw_pi_lines = self.draw_pi_lines+"<circle cx='"+str(int(a[0][0]))+"' cy='"+str(int(a[1][0]))+"' r='30' fill='white' />"
 				self.draw_pi_lines=self.draw_pi_lines+"<line x1='"+str(int(self.molecule.nearest_points_coords[residue][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[residue][1]))+"' x2='"+str(float(a[0][0]))+"' y2='"+str(float(a[1][0]))+"' style='stroke:"+colors[contact[1]]+";stroke-width:5' />"
 				self.draw_pi_lines = self.draw_pi_lines+"<circle cx='"+str(int(a[0][0]))+"' cy='"+str(int(a[1][0]))+"' r='15' fill='"+colors[contact[1]]+"' />"
-			self.draw_pi_lines = self.draw_pi_lines+"</g>"
+				self.draw_pi_lines = self.draw_pi_lines+"</g>"
 
 	def draw_salt_bridges(self,color="blue"):
 		"""
 		For each bond that has been determined to be important, a line gets drawn.
 		"""
-		self.draw_saltbridges ="<g transform='translate("+str((self.molecule.x_dim-self.molecule.molsize1)/2)+","+str((self.molecule.y_dim-self.molecule.molsize2)/2)+")'>'"
-
+		self.draw_saltbridges=""
 		if self.saltbridges!=None:
 			for bond in self.saltbridges.saltbridges_for_drawing:
+				self.draw_saltbridges ="<g class='SaltBridges' transform='translate("+str((self.molecule.x_dim-self.molecule.molsize1)/2)+","+str((self.molecule.y_dim-self.molecule.molsize2)/2)+")'>'"
 				atom = self.topology_data.universe.atoms[bond[0]-1] #zero-based index vs one-based index
 				residue = (atom.resname, str(atom.resid), atom.segid)
-				self.draw_saltbridges=self.draw_saltbriges+"<line x1='"+str(int(self.molecule.nearest_points_coords[residue][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[residue][1]))+"' x2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][0]))+"' y2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][1]))+"' style='stroke:"+color+";stroke-width:4' />"
-		self.draw_saltbridges= self.draw_saltbridges+"</g>"
+				self.draw_saltbridges=self.draw_saltbridges+"<line x1='"+str(int(self.molecule.nearest_points_coords[residue][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[residue][1]))+"' x2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][0]))+"' y2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][1]))+"' style='stroke:white;stroke-width:15' />"
+				self.draw_saltbridges=self.draw_saltbridges+"<line x1='"+str(int(self.molecule.nearest_points_coords[residue][0]))+"' y1='"+str(int(self.molecule.nearest_points_coords[residue][1]))+"' x2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][0]))+"' y2='"+str(float(self.molecule.ligand_atom_coords_from_diagr[bond[1]][1]))+"' style='stroke:"+color+";stroke-width:4' />"
+				self.draw_saltbridges= self.draw_saltbridges+"</g>"
 
 	def add_smiles_id(self):
 		for atom in self.lig_descr.ligand_atoms:
@@ -97,7 +106,7 @@ class Draw(object):
 		return size
 
 	def make_clouds(self,buff=90):
-		#get fraction of size 
+		#get fraction of size
 		buff = int(90 * float(self.molecule.molsize1)/900)
 		polygons = [geometry.Point(point).buffer(buff) for point in self.molecule.ligand_atom_coords_from_diagr.values()]
 		a =cascaded_union(polygons)
@@ -119,14 +128,14 @@ class Draw(object):
 		fig_size_in_points_y = self.molecule.molsize2+int(200 * float(self.molecule.molsize1)/900) #To give enough expansion to the cloud - might have to update later
 		color = self.normalise_colour(data_type,color_type)
 		plt.figure(figsize=(float(fig_size_in_points_x)/72,float(fig_size_in_points_y)/72))
-		
+
 		#find if coordinates are under 0 and therefore will not show
 		min_x = min([x for xds in self.shared_coords_x.values() for x in xds])
 		if min_x >0:
 			min_x = 0
 		min_y = min([y for yds in self.shared_coords_y.values() for y in yds])
 		if min_y >0:
-			min_y =0 
+			min_y =0
 		for atom in self.molecule.ligand_atom_coords_from_diagr:
 			xs = self.shared_coords_x[atom]
 			ys= self.shared_coords_y[atom]
@@ -143,7 +152,7 @@ class Draw(object):
 				segs[-1][0].append(xs[idx2]-min_x)
 				segs[-1][1].append(ys[idx2]-min_y)
 			for seg_x, seg_y in segs:
-				plt.plot(seg_x,seg_y,linewidth=8,c=color[[k for k,v in self.lig_descr.ligand_atoms.items() if v["name"]==atom][0]],transform=IdentityTransform()) 
+				plt.plot(seg_x,seg_y,linewidth=8,c=color[[k for k,v in self.lig_descr.ligand_atoms.items() if v["name"]==atom][0]],transform=IdentityTransform())
 		plt.axis('equal')
 		plt.axis("off")
 
@@ -178,14 +187,14 @@ class Draw(object):
 	def get_rot_bonds(self):
 		bond_ids=[]
 		for atoms in self.lig_descr.rot_bonds:
-			bond = self.topology_data.mol2.GetBondBetweenAtoms(atoms[0],atoms[1])
+			bond = self.topology_data.mol.GetBondBetweenAtoms(atoms[0],atoms[1])
 			bond_ids.append(bond.GetIdx())
 		return bond_ids
 
 	def draw_molecule(self,data_for_color,data_for_size,data_for_clouds,rot_bonds,color_for_clouds="Blues",color_type_color="viridis"):
 		if data_for_color!=None:
 			atom_colors = self.normalise_colour(data_for_color,color_type_color)
-		else: 
+		else:
 			atom_colors = {}
 		if data_for_size!=None:
 			atom_size = self.normalise_size(data_for_size)
@@ -194,10 +203,10 @@ class Draw(object):
 		else:
 			atom_size = {}
 		if rot_bonds!=None:
-			bonds = self.get_rot_bonds()
+			new_bonds = self.get_rot_bonds()
 		else:
-			bonds = []
-		self.molecule.load_molecule_in_rdkit_smiles((self.molecule.molsize1,self.molecule.molsize2),kekulize=True,bonds=bonds,bond_color=None,atom_color = atom_colors, size= atom_size )
+			new_bonds = []
+		self.molecule.load_molecule_in_rdkit_smiles((self.molecule.molsize1,self.molecule.molsize2),kekulize=True,bonds=new_bonds,bond_color=None,atom_color = atom_colors, size= atom_size )
 
 		if data_for_clouds!=None:
 			self.make_clouds()
@@ -205,7 +214,7 @@ class Draw(object):
 	def change_lines_in_svg(self,filename, string1,string2):
 		"""Used to change lines in an SVG file. String1 is input - what is already present
 		in the file, while string2 is output - the desired line. The input has to be searchable
-		since .replace function is used. 
+		since .replace function is used.
 		Takes:
 			* filename * - name of the SVG file to change
 			* string1 * - input string
@@ -214,5 +223,3 @@ class Draw(object):
 		"""
 		for i,line in enumerate(fileinput.input(filename, inplace=1)):
 			sys.stdout.write(line.replace(str(string1),str(string2)))
-
-

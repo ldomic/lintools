@@ -1,0 +1,4 @@
+0000000000000000000000000000000000000000 556dcdc67e8b20c1134cf17c871095fbede2d82f ldomic <ldomicevica@gmail.com> 1470646813 +0100	fetch --progress --prune --recurse-submodules=on-demand origin: storing head
+556dcdc67e8b20c1134cf17c871095fbede2d82f ac126367fe48b50f27579c2f2df23a7912d93f86 ldomic <ldomicevica@gmail.com> 1470649779 +0100	fetch --progress --prune --recurse-submodules=on-demand origin: fast-forward
+ac126367fe48b50f27579c2f2df23a7912d93f86 da78f0d563e135e7f3e1b502f3bd965d061b4604 ldomic <ldomicevica@gmail.com> 1470651429 +0100	fetch --progress --prune --recurse-submodules=on-demand origin: fast-forward
+da78f0d563e135e7f3e1b502f3bd965d061b4604 2a62e1d745c2945d93a56731a24b861409231fa8 ldomic <ldomicevica@gmail.com> 1470838677 +0100	fetch --progress --prune --recurse-submodules=on-demand origin: fast-forward
