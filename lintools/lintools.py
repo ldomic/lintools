@@ -2,7 +2,6 @@ from argparse import ArgumentParser
 import os
 import shutil
 import sys
-import yaml
 import MDAnalysis
 from data import Data
 from plots import Plots
