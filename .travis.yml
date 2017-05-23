@@ -4,7 +4,7 @@ env:
   global:
     - GH_DOC_BRANCH: lintools-analysis
 before_install:
-  - wget http://repo.continuum.io/miniconda/Miniconda-latest-MacOSX-x86_64.sh -O miniconda.sh
+  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
   - chmod +x miniconda.sh
   - ./miniconda.sh -b -p $(pwd)/miniconda
   - export PATH=$(pwd)/miniconda/bin:$PATH
@@ -17,12 +17,12 @@ install:
   - pip install MDAnalysis==0.16.0  coveralls mdtraj
   - python setup.py build
   - python setup.py install
-script: 
+script:
   - nosetests --with-coverage --cover-package lintools
   - |
      test ${TRAVIS_PULL_REQUEST} == "false" && \
      test ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} && \
-     test "${TRAVIS_BUILD_NUMBER}.1" == "${TRAVIS_JOB_NUMBER}" 
+     test "${TRAVIS_BUILD_NUMBER}.1" == "${TRAVIS_JOB_NUMBER}"
 after_success:
   - coveralls
   - |
