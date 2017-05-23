@@ -1,0 +1,26 @@
+TITLE     MDANALYSIS FRAMES FROM 0, SKIP 1: Created by PDBWriter
+CRYST1  125.854  125.854  186.741  90.00  90.00  90.00 P 1           1
+MODEL         1
+ATOM      1  N   TYR S  42      71.230  31.000  92.650  1.00  0.00      SYST N
+ATOM      2  H   TYR S  42      71.540  31.860  93.070  1.00  0.00      SYST H
+ATOM      3  CA  TYR S  42      69.800  30.760  92.610  1.00  0.00      SYST C
+ATOM      4  HA  TYR S  42      69.730  29.770  93.040  1.00  0.00      SYST H
+ATOM      5  CB  TYR S  42      69.050  31.600  93.640  1.00  0.00      SYST C
+ATOM      6  HB1 TYR S  42      68.090  31.130  93.820  1.00  0.00      SYST H
+ATOM      7  HB2 TYR S  42      68.920  32.590  93.200  1.00  0.00      SYST H
+ATOM      8  CG  TYR S  42      69.850  31.750  94.910  1.00  0.00      SYST C
+ATOM      9  CD1 TYR S  42      70.060  30.640  95.740  1.00  0.00      SYST C
+ATOM     10  HD1 TYR S  42      69.550  29.740  95.430  1.00  0.00      SYST H
+ATOM     11  CE1 TYR S  42      70.980  30.680  96.790  1.00  0.00      SYST C
+ATOM     12  HE1 TYR S  42      71.200  29.740  97.270  1.00  0.00      SYST H
+ATOM     13  CZ  TYR S  42      71.630  31.900  97.110  1.00  0.00      SYST C
+ATOM     14  OH  TYR S  42      72.420  32.010  98.210  1.00  0.00      SYST O
+ATOM     15  HH  TYR S  42      72.980  32.780  98.150  1.00  0.00      SYST H
+ATOM     16  CE2 TYR S  42      71.350  33.050  96.340  1.00  0.00      SYST C
+ATOM     17  HE2 TYR S  42      71.700  34.010  96.670  1.00  0.00      SYST H
+ATOM     18  CD2 TYR S  42      70.390  32.980  95.330  1.00  0.00      SYST C
+ATOM     19  HD2 TYR S  42      70.070  33.850  94.780  1.00  0.00      SYST H
+ATOM     20  C   TYR S  42      69.210  30.590  91.220  1.00  0.00      SYST C
+ATOM     21  O   TYR S  42      68.000  30.370  91.130  1.00  0.00      SYST O
+ENDMDL
+END

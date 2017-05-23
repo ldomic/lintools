@@ -1,0 +1,25 @@
+TITLE     MDANALYSIS FRAMES FROM 0, SKIP 1: Created by PDBWriter
+CRYST1  125.854  125.854  186.741  90.00  90.00  90.00 P 1           1
+MODEL         1
+ATOM      1  N   PHE S  37      80.370  34.060  90.450  1.00  0.00      SYST N
+ATOM      2  H   PHE S  37      80.680  34.430  91.340  1.00  0.00      SYST H
+ATOM      3  CA  PHE S  37      79.260  33.130  90.330  1.00  0.00      SYST C
+ATOM      4  HA  PHE S  37      78.860  33.280  89.330  1.00  0.00      SYST H
+ATOM      5  CB  PHE S  37      79.710  31.680  90.210  1.00  0.00      SYST C
+ATOM      6  HB1 PHE S  37      79.690  31.400  91.270  1.00  0.00      SYST H
+ATOM      7  HB2 PHE S  37      80.750  31.770  89.910  1.00  0.00      SYST H
+ATOM      8  CG  PHE S  37      79.080  30.580  89.390  1.00  0.00      SYST C
+ATOM      9  CD1 PHE S  37      78.250  30.930  88.320  1.00  0.00      SYST C
+ATOM     10  HD1 PHE S  37      77.990  31.960  88.120  1.00  0.00      SYST H
+ATOM     11  CE1 PHE S  37      77.790  29.840  87.580  1.00  0.00      SYST C
+ATOM     12  HE1 PHE S  37      77.050  30.030  86.810  1.00  0.00      SYST H
+ATOM     13  CZ  PHE S  37      78.150  28.510  87.800  1.00  0.00      SYST C
+ATOM     14  HZ  PHE S  37      77.720  27.680  87.250  1.00  0.00      SYST H
+ATOM     15  CE2 PHE S  37      79.020  28.180  88.850  1.00  0.00      SYST C
+ATOM     16  HE2 PHE S  37      79.180  27.160  89.170  1.00  0.00      SYST H
+ATOM     17  CD2 PHE S  37      79.380  29.240  89.690  1.00  0.00      SYST C
+ATOM     18  HD2 PHE S  37      79.880  29.030  90.620  1.00  0.00      SYST H
+ATOM     19  C   PHE S  37      78.060  33.360  91.230  1.00  0.00      SYST C
+ATOM     20  O   PHE S  37      76.930  33.360  90.740  1.00  0.00      SYST O
+ENDMDL
+END
