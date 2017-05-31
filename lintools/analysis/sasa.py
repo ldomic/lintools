@@ -7,7 +7,7 @@ class SASA(object):
 	"""This module analyses the solvent accessible surface area (SASA) of the ligand
 	using a module from MDTraj. It calculates SASA for every atom during the simulation
 	and returns all the values as well as averaged values.
-	Takes: 
+	Takes:
 		* topology data object * - information about system (lintools.Data object)
 		* trajectory * - list of trajectories
 	Output:
@@ -26,20 +26,25 @@ class SASA(object):
 		start = timer()
 		if self.trajectory == []:
 			self.trajectory = [self.topology_data.universe.filename]
-		for traj in self.trajectory:
-			new_traj = mdtraj.load(traj,top=self.topology_data.universe.filename)
-			#Analyse only non-H ligand
-			ligand_slice = new_traj.atom_slice(atom_indices=self.topology_data.universe.ligand_noH.ids)
-			self.sasa = mdtraj.shrake_rupley(ligand_slice)
-			self.atom_sasa[i]=self.assign_per_atom_sasa()
-			
-			i+=1
-		self.total_sasa = self.get_total_per_atom_sasa()
+		try:
+			for traj in self.trajectory:
+				new_traj = mdtraj.load(traj,top=self.topology_data.universe.filename)
+				#Analyse only non-H ligand
+				ligand_slice = new_traj.atom_slice(atom_indices=self.topology_data.universe.ligand_noH.ids)
+
+				self.sasa = mdtraj.shrake_rupley(ligand_slice)
+				self.atom_sasa[i]=self.assign_per_atom_sasa()
+				i+=1
+			self.total_sasa = self.get_total_per_atom_sasa()
+		except KeyError as e:
+			print "WARNING: SASA analysis cannot be performed due to incorrect atom names in"
+			print "the topology ", e
+
 		print "SASA: "+str(timer()-start)
 
 
 	def assign_per_atom_sasa(self):
-		"""Make a dictionary with SASA assigned to each ligand atom, stored as list of SASA values over 
+		"""Make a dictionary with SASA assigned to each ligand atom, stored as list of SASA values over
 		the simulation time."""
 		atom_names= [atom.name for atom in self.topology_data.universe.ligand_noH.atoms]
 		sasa_dict = {}
@@ -56,6 +61,3 @@ class SASA(object):
 		for atom in total_sasa:
 			total_sasa[atom]=float(total_sasa[atom])/len(self.atom_sasa)
 		return total_sasa
-
-
-

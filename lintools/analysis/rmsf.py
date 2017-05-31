@@ -7,11 +7,14 @@ from timeit import default_timer as timer
 
 class RMSF_measurements(object):
     """Measures RMSF of ligand atoms over a single trajectory."""
-    def __init__(self,topology_data_object, topology, trajectory,ligand_name):
+    def __init__(self,topology_data_object, topology, trajectory,ligand_name,start_frame_num=None,end_frame_num=None,skip=None):
         self.ligand_rmsf = defaultdict(int)
         self.topology_data = topology_data_object
         self.trajectory = trajectory
         self.topology = topology
+        self.start = start_frame_num
+        self.end = end_frame_num
+        self.skip = skip
         self.measure_ligand_rmsf(ligand_name)
         self.min_value = min(self.ligand_rmsf.values())
         self.max_value = max(self.ligand_rmsf.values())
@@ -22,7 +25,9 @@ class RMSF_measurements(object):
         for traj in self.trajectory:
             self.topology_data.universe.load_new(traj)
             reference = MDAnalysis.Universe(self.topology)
-            MDAnalysis.analysis.align.rms_fit_trj(self.topology_data.universe, reference, filename='test.xtc',select='protein')
+            #align = MDAnalysis.analysis.align.AlignTraj(self.topology_data.universe, reference, filename='test.xtc',select='protein',start=self.start[i],stop = self.end[i],step = self.skip[i],verbose=True)
+            align = MDAnalysis.analysis.align.AlignTraj(self.topology_data.universe, reference, filename='test.xtc',select='protein',verbose=True)
+            align.run()
             aligned_universe = MDAnalysis.Universe(self.topology,"test.xtc")
             ligand_noH = aligned_universe.select_atoms(ligand_name+" and not name H*")
             R = MDAnalysis.analysis.rms.RMSF(ligand_noH)
