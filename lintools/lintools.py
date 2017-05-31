@@ -88,19 +88,35 @@ class Lintools(object):
         """
         The classes and function that deal with protein-ligand interaction analysis.
         """
-        self.hbonds = HBonds(self.topol_data,self.trajectory,self.start,self.end,self.skip,self.analysis_cutoff,distance=3)
-        self.pistacking = PiStacking(self.topol_data,self.trajectory,self.start,self.end,self.skip, self.analysis_cutoff)
-        self.sasa = SASA(self.topol_data,self.trajectory)
-        self.lig_descr = LigDescr(self.topol_data)
-        if self.trajectory!=[]:
-            self.rmsf = RMSF_measurements(self.topol_data,self.topology,self.trajectory,self.ligand,self.start,self.end,self.skip)
-        self.salt_bridges = SaltBridges(self.topol_data,self.trajectory,self.lig_descr,self.start,self.end,self.skip,self.analysis_cutoff)
-    def plot_residues(self):
+        if hydr_bonds!=True:
+            self.hbonds = HBonds(self.topol_data,self.trajectory,self.start,self.end,self.skip,self.analysis_cutoff,distance=3)
+        else:
+            self.hbonds=None
+        if pi_interactions!=True:
+            self.pistacking = PiStacking(self.topol_data,self.trajectory,self.start,self.end,self.skip, self.analysis_cutoff)
+        else:
+            self.pistacking = None
+        if lig_sasa!=True:
+            self.sasa = SASA(self.topol_data,self.trajectory)
+        else:
+            self.sasa = None
+
+        if self.trajectory!=[] and  lig_rmsf!=True:
+                self.rmsf = RMSF_measurements(self.topol_data,self.topology,self.trajectory,self.ligand)
+        else:
+            self.rmsf=None
+
+        self.lig_descr = LigDescr(self.topol_data,self.rmsf,self.sasa)
+        if salt_bridges!=True:
+            self.salt_bridges = SaltBridges(self.topol_data,self.trajectory,self.lig_descr,self.start,self.end,self.skip,self.analysis_cutoff)
+        else:
+            self.salt_bridges = None
+    def plot_residues(self,colormap):
         """
         Calls Plot() that plots the residues with the required diagram_type.
         """
-        self.plots = Plots(self.topol_data,self.diagram_type)
-    def draw_figure(self,data_for_color=None, data_for_size=None, data_for_clouds=None, rot_bonds=None, color_for_clouds="Blues", color_type_color="viridis"):
+        self.plots = Plots(self.topol_data,self.diagram_type,colormap)
+    def draw_figure(self):
         """
         Draws molecule through Molecule() and then puts the final figure together with
         Figure().
@@ -263,13 +279,24 @@ if __name__ == '__main__':
                         print "Error. No such group "+str(raw_d)
                 except ValueError:
                     print "Error. No such group "+str(raw_d)
-                    pass
-            diagram_type=available_diagrams[int(raw_d)]
-            return diagram_type
+            except ValueError:
+                print "Error. No such group "+str(raw_d)
+                pass
+        diagram_type=available_diagrams[int(raw_d)]
+        return diagram_type
+    ligand_name = find_ligand_name()
+    diagram_type = find_diagram_type()
+    start = timer()
+    lintools = Lintools(args.topology,args.trajectory,args.mol2,ligand_name,args.offset,args.cutoff,args.start,args.end,args.skip,args.analysis_cutoff,diagram_type,args.output_name)
+    lintools.save_files()
+    lintools.data_input_and_res_time_analysis()
+    lintools.analysis_of_prot_lig_interactions(args.hydr_bonds, args.pi_int, args.lig_sasa,args.lig_rmsf,args.salt_bridges)
+    lintools.plot_residues(args.cmp)
+    lintools.draw_figure()
+    lintools.remove_files()
+    end = timer()
+    print "Total time for analysis: "+str(end-start)
 
-
-        ligand_name = find_ligand_name()
-        diagram_type = find_diagram_type()
 
         lintools = Lintools(args.topology,args.trajectory,None,ligand_name,0,args.cutoff,[None],[None],[None],float(args.analysis_cutoff),diagram_type,args.output_name,cfg=False)
         lintools.save_files()

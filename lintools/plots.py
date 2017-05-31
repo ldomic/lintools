@@ -102,8 +102,7 @@ class Plots(object):
             #play with the dpi
             pylab.savefig(res[1]+res[2]+".svg", dpi=300, transparent=True)
 
-
-    def plot_clock_diagrams(self,colormap):
+    def plot_clock_diagrams(self, colormap="summer"):
         """
         Ploting clock diagrams - one or more rings around residue name and id (and chain id).
         The rings show the fraction of simulation time this residue has spent in the vicinity of the
