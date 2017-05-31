@@ -150,7 +150,6 @@ class HBonds(object):
         self.hbonds[0]=h.table
         self.hbonds_by_time[0] = h.count_by_time()
         self.hbonds_by_type[0] = h.count_by_type()
-        print h.table
     def determine_hbonds_for_drawing(self, analysis_cutoff):
         """
         Since plotting all hydrogen bonds could lead to a messy plot, a cutoff has to be imple-
