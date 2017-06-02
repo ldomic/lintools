@@ -9,4 +9,9 @@ setup(name='lintools',
       author_email='ldomicevica@gmail.com',
       license='GPL',
       packages=['lintools','lintools.analysis'],
+      entry_points={
+          'console_scripts': [
+              'lintools = lintools.lintools:main'
+          ]
+      },
       zip_safe=False)
