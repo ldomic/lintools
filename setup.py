@@ -11,7 +11,7 @@ setup(name='lintools',
       packages=['lintools','lintools.analysis'],
       entry_points={
           'console_scripts': [
-              'lintools1 = lintools.__main__:main'
+              'lintools = lintools.__main__:main'
           ]
       },
       zip_safe=False)
