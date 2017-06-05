@@ -1,3 +1,4 @@
+#!/opt/miniconda/bin/python
 from argparse import ArgumentParser
 import os
 import shutil

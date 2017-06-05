@@ -3,7 +3,8 @@ package:
   version: 0.3
 build:
   number: 0
-
+  entry_points:
+    - lintools = lintools.__main__:main
 
 source:
   git_rev: v0.3
