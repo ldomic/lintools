@@ -31,7 +31,6 @@ requirements:
     - numpy
     - mdanalysis
     - mdtraj
-    - pyyaml
 
 test:
   imports:
