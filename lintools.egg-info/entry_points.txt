@@ -1,3 +1,0 @@
-[console_scripts]
-lintools1 = lintools.__main__:main
-
