@@ -14,13 +14,13 @@ requirements:
     - python
     - setuptools
     - python
-    - rdkit/rdkit
+    - rdkit
     - matplotlib
     - geos
     - shapely
     - numpy
-    - MDAnalysis/mdanalysis
-    - omnia/mdtraj
+    - mdanalysis
+    - mdtraj
 
   run:
     - python
