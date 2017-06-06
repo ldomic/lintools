@@ -3,7 +3,8 @@ package:
   version: 0.3
 build:
   number: 0
-  
+  entry_points:
+    - lintools:lintools.__main__:main  
 
 source:
   git_rev: v0.3
@@ -13,30 +14,27 @@ requirements:
   build:
     - python
     - setuptools
-    - python
-    - rdkit
-    - matplotlib
-    - geos
-    - shapely
-    - numpy
-    - mdanalysis
-    - mdtraj
 
   run:
     - python
-    - rdkit
+    - rdkit 2016.03.4
     - matplotlib
     - geos
     - shapely
     - numpy
-    - mdanalysis
-    - mdtraj
+    - mdanalysis 0.16.0
+    - mdtraj 1.7.2
     - pyyaml
 
 test:
   imports:
     - lintools.lintools
-
+  source_files:
+    - lintools/testdata
+  requires:
+    - nose
+  test:
+    - testdata/test_topol.py    
 about:
   home: https://github.com/ldomic/lintools
   license: GPL
