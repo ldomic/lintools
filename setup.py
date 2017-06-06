@@ -2,9 +2,9 @@
 from setuptools import setup
 
 setup(name='lintools',
-      version='05.2017',
+      version='06.2017',
       description='Illustrates protein-ligand interactions',
-      url='http://github.com/ldomic/lintools',
+      url='https://github.com/ldomic/lintools.git',
       author='Laura Domicevica',
       author_email='ldomicevica@gmail.com',
       license='GPL',
